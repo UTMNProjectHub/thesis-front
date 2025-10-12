@@ -9,6 +9,8 @@ services:
     container_name: thesis-front
     ports:
       - '5123:80'
+    env_file:
+      - .env
     networks:
       - thesis-network
     restart: unless-stopped
