@@ -1,7 +1,16 @@
-import axios, { AxiosError } from 'axios'
-import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios'
-import type { AuthResponse, RefreshResponse, ApiError } from '@/types/auth'
-import type { ProfileResponse, UpdateProfileRequest, ChangePasswordRequest, ChangePasswordResponse } from '@/types/profile'
+import axios from 'axios'
+import type {
+  AxiosError,
+  AxiosInstance,
+  InternalAxiosRequestConfig,
+} from 'axios'
+import type { AuthResponse, RefreshResponse } from '@/types/auth'
+import type {
+  ChangePasswordRequest,
+  ChangePasswordResponse,
+  ProfileResponse,
+  UpdateProfileRequest,
+} from '@/types/profile'
 
 class ApiClient {
   private client: AxiosInstance
@@ -153,8 +162,13 @@ class ApiClient {
     return response.data
   }
 
-  async changePassword(data: ChangePasswordRequest): Promise<ChangePasswordResponse> {
-    const response = await this.client.put<ChangePasswordResponse>('/profile/password', data)
+  async changePassword(
+    data: ChangePasswordRequest,
+  ): Promise<ChangePasswordResponse> {
+    const response = await this.client.put<ChangePasswordResponse>(
+      '/profile/password',
+      data,
+    )
     return response.data
   }
 }

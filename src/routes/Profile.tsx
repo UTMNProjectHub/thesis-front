@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Cog, IdCard } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
@@ -20,11 +21,10 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
 import {
+  useChangePassword,
   useProfile,
   useUpdateProfile,
-  useChangePassword,
 } from '@/hooks/useProfile'
-import { Cog, IdCard } from 'lucide-react'
 
 // Схемы валидации
 const updateProfileSchema = z.object({
@@ -137,11 +137,11 @@ function SettingsTab() {
     mode: 'onBlur',
   })
 
-  async function onProfileSubmit(values: UpdateProfileForm) {
+  function onProfileSubmit(values: UpdateProfileForm) {
     updateProfileMutation.mutate(values)
   }
 
-  async function onPasswordSubmit(values: ChangePasswordForm) {
+  function onPasswordSubmit(values: ChangePasswordForm) {
     changePasswordMutation.mutate(values, {
       onSuccess: () => {
         resetPassword()

@@ -1,14 +1,13 @@
-import { useState } from 'react'
-import { Avatar, AvatarFallback } from './ui/avatar'
-import { useAuth, useLogout, useUser } from '@/hooks/useAuth'
-import { fullNameToInitials, fullNameToLetters } from '@/lib/utils'
 import { Link } from '@tanstack/react-router'
+import { Avatar, AvatarFallback } from './ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
+import { useLogout, useUser } from '@/hooks/useAuth'
+import { fullNameToInitials, fullNameToLetters } from '@/lib/utils'
 
 export default function Header() {
   const userData = useUser()

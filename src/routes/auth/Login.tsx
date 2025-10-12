@@ -45,7 +45,7 @@ function Login() {
 
   const loginMutation = useLogin()
 
-  async function onSubmit(values: LoginForm) {
+  function onSubmit(values: LoginForm) {
     loginMutation.mutate(values)
   }
 
@@ -60,7 +60,7 @@ function Login() {
           </FieldDescription>
           {loginMutation.error && (
             <FieldDescription className="text-red-500">
-              {loginMutation.error?.response?.data?.message || 'Ошибка входа'}
+              Ошибка входа
             </FieldDescription>
           )}
           <FieldGroup className="!gap-1">

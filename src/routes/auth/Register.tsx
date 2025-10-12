@@ -63,8 +63,7 @@ function Register() {
           </FieldDescription>
           {registerMutation.error && (
             <FieldDescription className="text-red-500">
-              {registerMutation.error?.response?.data?.message ||
-                'Ошибка регистрации'}
+              Ошибка регистрации
             </FieldDescription>
           )}
           <FieldGroup className="!gap-0.5">
