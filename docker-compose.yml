@@ -8,7 +8,7 @@ services:
       target: app
     container_name: thesis-front
     ports:
-      - '80:80'
+      - '5123:80'
     networks:
       - thesis-network
     restart: unless-stopped
