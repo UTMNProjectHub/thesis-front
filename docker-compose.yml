@@ -9,6 +9,8 @@ services:
     container_name: thesis-front
     ports:
       - '5123:80'
+    environment:
+      - NODE_ENV=production
     env_file:
       - .env
     networks:
