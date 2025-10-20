@@ -11,6 +11,7 @@ import type {
   ProfileResponse,
   UpdateProfileRequest,
 } from '@/types/profile'
+import type { Subject, Theme } from '@/types/subject'
 
 class ApiClient {
   private client: AxiosInstance
@@ -22,7 +23,7 @@ class ApiClient {
 
   constructor() {
     this.client = axios.create({
-      baseURL: process.env.API_URL,
+      baseURL: import.meta.env.VITE_API_URL,
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
@@ -116,10 +117,8 @@ class ApiClient {
 
   async register(userData: {
     email: string
-    firstName: string
-    lastName: string
-    middleName?: string
     password: string
+    full_name: string | null
   }): Promise<AuthResponse> {
     const response = await this.client.post<AuthResponse>('/register', userData)
 
@@ -169,6 +168,26 @@ class ApiClient {
       '/profile/password',
       data,
     )
+    return response.data
+  }
+
+  async getSubjects(): Promise<Array<Subject>> {
+    const response = await this.client.get<Array<Subject>>('/subject/all')
+    return response.data
+  }
+
+  async getSubjectById(subjectId: number): Promise<Subject> {
+    const response = await this.client.get<Subject>(`/subject/${subjectId}`)
+    return response.data
+  }
+
+  async getThemeById(themeId: number): Promise<Theme> {
+    const response = await this.client.get<Theme>(`/theme/${themeId}`)
+    return response.data
+  }
+
+  async getThemesBySubjectId(subjectId: number): Promise<Array<Theme>> {
+    const response = await this.client.get<Array<Theme>>(`/subject/${subjectId}/themes`)
     return response.data
   }
 }

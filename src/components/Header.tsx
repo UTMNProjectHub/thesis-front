@@ -15,7 +15,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="p-4 flex justify-between items-center bg-[#00acec] text-white shadow-lg">
+      <header className="p-4 h-[8vh] flex justify-between items-center bg-[#00acec] text-white shadow-lg">
         <h1 className="text-logo">
           <Link to="/">КВИЗИ</Link>
         </h1>

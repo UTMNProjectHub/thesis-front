@@ -1,7 +1,5 @@
 # shadcn instructions
 
-Use the latest version of Shadcn to install new components, like this command to add a button component:
+Use the latest version of Shadcn to install new components, install using Bun.
 
-```bash
-pnpx shadcn@latest add button
-```
+Don't run the dev server without asking the user.

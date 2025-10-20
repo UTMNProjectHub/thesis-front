@@ -50,7 +50,11 @@ function Register() {
   const registerMutation = useRegister()
 
   function onSubmit(values: RegisterForm) {
-    registerMutation.mutate(values)
+    registerMutation.mutate({
+      ...values,
+      full_name:
+        `${values.lastName} ${values.firstName} ${values.middleName || ''}`.trim(),
+    })
   }
 
   return (

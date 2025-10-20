@@ -20,6 +20,7 @@ import App from './App.tsx'
 import Login from './routes/auth/Login.tsx'
 import Register from './routes/auth/Register.tsx'
 import Profile from './routes/Profile.tsx'
+import Generation from './routes/generation/Generation.tsx'
 
 /**
  * Root route no longer renders the global header directly.
@@ -40,10 +41,12 @@ const headerLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: 'headerLayout',
   component: () => (
-    <>
+    <div className="flex flex-col h-screen">
       <Header />
-      <Outlet />
-    </>
+      <div className="flex-1">
+        <Outlet />
+      </div>
+    </div>
   ),
 })
 
@@ -76,8 +79,14 @@ const profileRoute = createRoute({
   component: Profile,
 })
 
+const generationRoute = createRoute({
+  getParentRoute: () => headerLayoutRoute,
+  path: 'generation',
+  component: Generation,
+})
+
 const routeTree = rootRoute.addChildren([
-  headerLayoutRoute.addChildren([indexRoute, profileRoute]),
+  headerLayoutRoute.addChildren([indexRoute, profileRoute, generationRoute]),
   authRoute.addChildren([loginRoute, registerRoute]),
 ])
 

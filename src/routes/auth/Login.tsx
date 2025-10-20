@@ -60,7 +60,11 @@ function Login() {
           </FieldDescription>
           {loginMutation.error && (
             <FieldDescription className="text-red-500">
-              Ошибка входа
+              {loginMutation.error.response?.status === 404
+                ? 'Пользователь не найден'
+                : loginMutation.error.response?.status === 401
+                ? 'Неверный email или пароль'
+                : 'Ошибка входа'}
             </FieldDescription>
           )}
           <FieldGroup className="!gap-1">

@@ -13,9 +13,7 @@ export interface LoginRequest {
 
 export interface RegisterRequest {
   email: string
-  firstName: string
-  lastName: string
-  middleName?: string
+  full_name: string
   password: string
 }
 
