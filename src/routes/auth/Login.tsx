@@ -49,6 +49,18 @@ function Login() {
     loginMutation.mutate(values)
   }
 
+  let errorMessage: string | null = null
+  if (loginMutation.error) {
+    const err = loginMutation.error as unknown
+    let status: number | undefined
+    if (err && typeof err === 'object' && 'response' in err) {
+      status = (err as any).response?.status
+    }
+    if (status === 404) errorMessage = 'Пользователь не найден'
+    else if (status === 401) errorMessage = 'Неверный email или пароль'
+    else errorMessage = 'Ошибка входа'
+  }
+
   return (
     <div className="flex mx-auto justify-center items-center h-screen">
       <form className="w-xl" onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -58,13 +70,9 @@ function Login() {
             Еще не зарегистрированы?{' '}
             <Link to="/auth/register">Зарегистрируйтесь здесь</Link>
           </FieldDescription>
-          {loginMutation.error && (
+          {errorMessage && (
             <FieldDescription className="text-red-500">
-              {loginMutation.error.response?.status === 404
-                ? 'Пользователь не найден'
-                : loginMutation.error.response?.status === 401
-                ? 'Неверный email или пароль'
-                : 'Ошибка входа'}
+              {errorMessage}
             </FieldDescription>
           )}
           <FieldGroup className="!gap-1">
