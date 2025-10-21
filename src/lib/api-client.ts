@@ -23,7 +23,7 @@ class ApiClient {
 
   constructor() {
     this.client = axios.create({
-      baseURL: 'https://api.quizy.saveitsky.ru/api',
+      baseURL: import.meta.env.VITE_API_URL,
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
