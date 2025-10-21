@@ -6,6 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: app
+      args:
+        VITE_API_URL: /api
     container_name: thesis-front
     ports:
       - '5123:80'
