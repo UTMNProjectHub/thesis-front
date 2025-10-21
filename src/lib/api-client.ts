@@ -23,7 +23,7 @@ class ApiClient {
 
   constructor() {
     this.client = axios.create({
-      baseURL: import.meta.env.VITE_API_URL,
+      baseURL: 'https://api.quizy.saveitsky.ru/api',
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
@@ -187,7 +187,9 @@ class ApiClient {
   }
 
   async getThemesBySubjectId(subjectId: number): Promise<Array<Theme>> {
-    const response = await this.client.get<Array<Theme>>(`/subject/${subjectId}/themes`)
+    const response = await this.client.get<Array<Theme>>(
+      `/subject/${subjectId}/themes`,
+    )
     return response.data
   }
 }
