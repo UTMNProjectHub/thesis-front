@@ -1,15 +1,20 @@
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
-import { Separator } from '@/components/ui/separator'
-import { useSubject } from '@/hooks/useSubject'
 import ThemeSelector from './left/ThemeSelector'
-import { useTheme } from '@/hooks/useTheme'
 import GenerationSkeleton from './right/GenerationSkeleton'
 import SubjectSelector from './left/SubjectSelector'
-import { Button } from '@/components/ui/button'
 import GenerationButtons from './right/GenerationButtons'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import { Separator } from '@/components/ui/separator'
+import { useSubject } from '@/hooks/useSubject'
+import { useTheme } from '@/hooks/useTheme'
 
 function Generation() {
-  const { clearCurrent: clearCurrentSubject, current: currentSubject } = useSubject()
+  const { clearCurrent: clearCurrentSubject, current: currentSubject } =
+    useSubject()
   const { clearCurrent: clearCurrentTheme, current: currentTheme } = useTheme()
 
   return (
@@ -18,32 +23,37 @@ function Generation() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <a onClick={() => {clearCurrentSubject(); clearCurrentTheme()}}>Домой</a>
+              <a
+                onClick={() => {
+                  clearCurrentSubject()
+                  clearCurrentTheme()
+                }}
+              >
+                Домой
+              </a>
             </BreadcrumbItem>
             {currentSubject && (
               <>
-              <BreadcrumbSeparator/>
-              <BreadcrumbItem>
-                <a onClick={() => clearCurrentTheme()}>{currentSubject.shortName}</a>
-              </BreadcrumbItem>
-              </>
-            )
-            }
-            {currentTheme && 
-                (<>
-                <BreadcrumbSeparator/>
+                <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  {currentTheme.name}
+                  <a onClick={() => clearCurrentTheme()}>
+                    {currentSubject.shortName}
+                  </a>
                 </BreadcrumbItem>
-                </>
-              )}
-
+              </>
+            )}
+            {currentTheme && (
+              <>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>{currentTheme.name}</BreadcrumbItem>
+              </>
+            )}
           </BreadcrumbList>
         </Breadcrumb>
         {!currentSubject && <SubjectSelector />}
         {currentSubject && !currentTheme && <ThemeSelector />}
       </div>
-      
+
       <Separator orientation="vertical" />
       <div className="flex flex-col w-full py-4 px-2">
         <GenerationSkeleton />

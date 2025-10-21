@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import type { AuthResponse, LoginRequest, RegisterRequest } from '@/types/auth'
-import apiClient from '@/lib/api-client'
 import type { ProfileResponse } from '@/types/profile'
+import apiClient from '@/lib/api-client'
 
 export const authKeys = {
   all: ['auth'] as const,
@@ -81,7 +81,6 @@ export function useLogout() {
   })
 }
 
-// Хук для обновления токена (используется внутри API клиента)
 export function useRefreshToken() {
   return useMutation({
     mutationFn: () => apiClient.refreshToken(),
