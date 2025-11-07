@@ -51,11 +51,8 @@ function Login() {
 
   let errorMessage: string | null = null
   if (loginMutation.error) {
-    const err = loginMutation.error as unknown
-    let status: number | undefined
-    if (err && typeof err === 'object' && 'response' in err) {
-      status = (err as any).response?.status
-    }
+    const err = loginMutation.error as any
+    const status = err?.response?.status
     if (status === 404) errorMessage = 'Пользователь не найден'
     else if (status === 401) errorMessage = 'Неверный email или пароль'
     else errorMessage = 'Ошибка входа'

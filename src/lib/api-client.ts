@@ -12,6 +12,14 @@ import type {
   UpdateProfileRequest,
 } from '@/types/profile'
 import type { Subject, Theme } from '@/types/subject'
+import type {
+  Quiz,
+  Question,
+  SubmitAnswerRequest,
+  SubmitAnswerResponse,
+  Session,
+  SessionSubmitWithDetails,
+} from '@/types/quiz'
 
 class ApiClient {
   private client: AxiosInstance
@@ -52,7 +60,14 @@ class ApiClient {
           _retry?: boolean
         }
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        const isAuthEndpoint =
+          originalRequest.url === '/login' || originalRequest.url === '/register'
+
+        if (
+          error.response?.status === 401 &&
+          !originalRequest._retry &&
+          !isAuthEndpoint
+        ) {
           if (this.isRefreshing) {
             // Если уже идет процесс обновления токена, добавляем запрос в очередь
             return new Promise((resolve, reject) => {
@@ -191,6 +206,58 @@ class ApiClient {
       `/subject/${subjectId}/themes`,
     )
     return response.data
+  }
+
+  async getQuizById(quizId: string): Promise<Quiz> {
+    const response = await this.client.get<Quiz>(`/quizes/${quizId}`)
+    return response.data
+  }
+
+  async getQuizQuestions(
+    quizId: string,
+    sessionId?: string,
+  ): Promise<Array<Question>> {
+    const headers: Record<string, string> = {}
+    if (sessionId) {
+      headers['X-Active-Session'] = sessionId
+    }
+    const response = await this.client.get<Array<Question>>(
+      `/quizes/${quizId}/questions`,
+      { headers },
+    )
+    return response.data
+  }
+
+  async submitQuestionAnswer(
+    questionId: string,
+    data: SubmitAnswerRequest,
+  ): Promise<SubmitAnswerResponse> {
+    const response = await this.client.post<SubmitAnswerResponse>(
+      `/questions/${questionId}/solve`,
+      data,
+    )
+    return response.data
+  }
+
+  async getActiveSessions(quizId: string): Promise<Array<Session>> {
+    const response = await this.client.get<Array<Session>>(
+      `/quizes/${quizId}/sessions/active`,
+    )
+    return response.data
+  }
+
+  async getSessionSubmits(
+    quizId: string,
+    sessionId: string,
+  ): Promise<Array<SessionSubmitWithDetails>> {
+    const response = await this.client.get<Array<SessionSubmitWithDetails>>(
+      `/quizes/${quizId}/sessions/${sessionId}/submits`,
+    )
+    return response.data
+  }
+
+  async finishSession(quizId: string, sessionId: string): Promise<void> {
+    await this.client.post(`/quizes/${quizId}/sessions/${sessionId}/finish`)
   }
 }
 
