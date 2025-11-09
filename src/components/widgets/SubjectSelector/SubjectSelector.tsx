@@ -2,23 +2,32 @@ import { useEffect, useState } from 'react'
 import type { Subject } from '@/types/subject'
 import apiClient from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { useSubject } from '@/hooks/useSubject'
 
 function SubjectSelector() {
   const [subjects, setSubjects] = useState<Array<Subject>>([])
   const [subjectSelected, setSubjectSelected] = useState<Number>(0)
+  const [searchQuery, setSearchQuery] = useState<string>('')
   const { setCurrent } = useSubject()
 
   useEffect(() => {
-    apiClient.getSubjects().then((data) => {
+    apiClient.getSubjects(searchQuery || undefined).then((data) => {
       setSubjects(data)
     })
-  }, [])
+  }, [searchQuery])
 
   return (
     <div className="flex flex-col">
       <h2 className="text-lg mb-2">Пожалуйста, выберите предмет:</h2>
-      <div className="flex flex-col gap-2 overflow-y-auto max-h-[70vh]">
+      <Input
+        type="text"
+        placeholder="Поиск предмета..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="mb-2"
+      />
+      <div className="flex flex-col gap-2 overflow-x-scroll max-h-[30vh]">
         {subjects.map((subject) => (
           <Button
             variant="outline"
@@ -28,7 +37,7 @@ function SubjectSelector() {
             key={subject.id}
           >
             {subjectSelected == subject.id && <span>✅</span>}
-            {subject.name}
+            <span className="truncate">{subject.name}</span>
           </Button>
         ))}
       </div>

@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
-import { useParams } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
 import { useQueryClient } from '@tanstack/react-query'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -14,14 +14,14 @@ import {
   quizKeys,
 } from '@/hooks/useQuiz'
 import type { Question, SubmitAnswerResponse } from '@/types/quiz'
-import { QuestionMultichoice } from './QuestionMultichoice'
-import { QuestionTrueFalse } from './QuestionTrueFalse'
-import { QuestionShortAnswer } from './QuestionShortAnswer'
-import { QuestionNumerical } from './QuestionNumerical'
-import { QuestionEssay } from './QuestionEssay'
-import { QuestionMatching } from './QuestionMatching'
-import { QuestionDescription } from './QuestionDescription'
-import { SessionSelector } from './SessionSelector'
+import { QuestionMultichoice } from '@/components/widgets/Question/QuestionMultichoice'
+import { QuestionTrueFalse } from '@/components/widgets/Question/QuestionTrueFalse'
+import { QuestionShortAnswer } from '@/components/widgets/Question/QuestionShortAnswer'
+import { QuestionNumerical } from '@/components/widgets/Question/QuestionNumerical'
+import { QuestionEssay } from '@/components/widgets/Question/QuestionEssay'
+import { QuestionMatching } from '@/components/widgets/Question/QuestionMatching'
+import { QuestionDescription } from '@/components/widgets/Question/QuestionDescription'
+import { SessionSelector } from '@/components/pages/SessionSelector/SessionSelector'
 import {
   Dialog,
   DialogContent,
@@ -45,6 +45,7 @@ function Questions() {
   const submitAnswerMutation = useSubmitAnswer()
   const finishSessionMutation = useFinishSession()
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
   
   const [showFinishDialog, setShowFinishDialog] = useState(false)
 
@@ -53,6 +54,12 @@ function Questions() {
     error &&
       axios.isAxiosError(error) &&
       error.response?.status === 409,
+  )
+
+  const is403Error = Boolean(
+    error &&
+      axios.isAxiosError(error) &&
+      error.response?.status === 403,
   )
 
   // Загружаем активные сессии только если есть 409 ошибка
@@ -384,6 +391,26 @@ function Questions() {
         onSelectSession={handleSelectSession}
         isLoading={isLoadingSessions}
       />
+    )
+  }
+
+  if (is403Error) {
+    return (
+      <div className="flex h-screen w-full justify-center items-center">
+        <Card className="max-w-md">
+          <CardHeader>
+            <CardTitle className="text-red-500">Ошибка</CardTitle>
+            <CardDescription>
+              Вы достигли максимального количества попыток для этого квиза
+            </CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <Button variant="outline" onClick={() => navigate({ to: `/quiz/${id}` })}>
+              Вернуться к квизу
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
     )
   }
 

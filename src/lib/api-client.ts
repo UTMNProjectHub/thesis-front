@@ -186,8 +186,10 @@ class ApiClient {
     return response.data
   }
 
-  async getSubjects(): Promise<Array<Subject>> {
-    const response = await this.client.get<Array<Subject>>('/subject/all')
+  async getSubjects(q?: string): Promise<Array<Subject>> {
+    const response = await this.client.get<Array<Subject>>('/subject/all', {
+      params: q ? { q } : undefined,
+    })
     return response.data
   }
 
@@ -201,15 +203,88 @@ class ApiClient {
     return response.data
   }
 
-  async getThemesBySubjectId(subjectId: number): Promise<Array<Theme>> {
+  async getThemeFiles(themeId: number): Promise<
+    Array<{
+      id: string
+      name: string
+      s3Index: string
+      userId: string | null
+    }>
+  > {
+    const response = await this.client.get<
+      Array<{
+        id: string
+        name: string
+        s3Index: string
+        userId: string | null
+      }>
+    >(`/theme/${themeId}/files`)
+    return response.data
+  }
+
+  async uploadFileToTheme(themeId: number, file: File): Promise<void> {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    await this.client.post(`/theme/${themeId}/files`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  }
+
+  async getSubjectFiles(subjectId: number): Promise<
+    Array<{
+      id: string
+      name: string
+      s3Index: string
+      userId: string | null
+    }>
+  > {
+    const response = await this.client.get<
+      Array<{
+        id: string
+        name: string
+        s3Index: string
+        userId: string | null
+      }>
+    >(`/subject/${subjectId}/files`)
+    return response.data
+  }
+
+  async uploadFileToSubject(subjectId: number, file: File): Promise<void> {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    await this.client.post(`/subject/${subjectId}/files`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  }
+
+  async getThemesBySubjectId(
+    subjectId: number,
+    q?: string,
+  ): Promise<Array<Theme>> {
     const response = await this.client.get<Array<Theme>>(
       `/subject/${subjectId}/themes`,
+      {
+        params: q ? { q } : undefined,
+      },
     )
     return response.data
   }
 
   async getQuizById(quizId: string): Promise<Quiz> {
     const response = await this.client.get<Quiz>(`/quizes/${quizId}`)
+    return response.data
+  }
+
+  async getQuizesByThemeId(themeId: number): Promise<Array<Quiz>> {
+    const response = await this.client.get<Array<Quiz>>(
+      `/theme/${themeId}/quizes`,
+    )
     return response.data
   }
 

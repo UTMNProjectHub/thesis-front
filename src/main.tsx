@@ -9,7 +9,7 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
-import Header from './components/Header'
+import Header from '@/components/widgets/Header/Header.tsx'
 
 import * as TanStackQueryProvider from './integrations/tanstack-query/root-provider.tsx'
 
@@ -17,12 +17,12 @@ import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 
 import App from './App.tsx'
-import Login from './routes/auth/Login.tsx'
-import Register from './routes/auth/Register.tsx'
-import Profile from './routes/Profile.tsx'
-import Generation from './routes/generation/Generation.tsx'
-import Quiz from './routes/quiz/Quiz.tsx'
-import Questions from './routes/quiz/questions/Questions.tsx'
+import Login from './components/pages/Auth/Login.tsx'
+import Register from './components/pages/Auth/Register.tsx'
+import Profile from './components/pages/Profile/Profile.tsx'
+import Generation from './components/pages/Generation/Generation.tsx'
+import Quiz from './components/pages/Quiz/Quiz.tsx'
+import Questions from '@/components/pages/Questions/Questions.tsx'
 
 /**
  * Root route no longer renders the global header directly.

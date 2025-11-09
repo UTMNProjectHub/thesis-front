@@ -1,7 +1,5 @@
-import ThemeSelector from './left/ThemeSelector'
-import GenerationSkeleton from './right/GenerationSkeleton'
-import SubjectSelector from './left/SubjectSelector'
-import GenerationButtons from './right/GenerationButtons'
+import ThemeSelector from '@/components/widgets/ThemeSelector/ThemeSelector'
+import SubjectSelector from '@/components/widgets/SubjectSelector/SubjectSelector'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,6 +9,8 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { useSubject } from '@/hooks/useSubject'
 import { useTheme } from '@/hooks/useTheme'
+import QuizList from '@/components/widgets/QuizList/QuizList'
+import GenerationFileSelector from '@/components/widgets/GenerationFileSelector/GenerationFileSelector'
 
 function Generation() {
   const { clearCurrent: clearCurrentSubject, current: currentSubject } =
@@ -19,7 +19,7 @@ function Generation() {
 
   return (
     <div className="flex h-full">
-      <div className="flex flex-col py-2 px-4">
+      <div className="flex flex-col py-2 px-4 max-w-[30%]">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -52,12 +52,18 @@ function Generation() {
         </Breadcrumb>
         {!currentSubject && <SubjectSelector />}
         {currentSubject && !currentTheme && <ThemeSelector />}
+        {currentSubject && currentTheme && <GenerationFileSelector />}
       </div>
 
       <Separator orientation="vertical" />
-      <div className="flex flex-col w-full py-4 px-2">
-        <GenerationSkeleton />
-        <GenerationButtons />
+      <div className="flex flex-col w-full py-4 px-2 gap-8">
+        <div>
+          <h2 className="px-4 text-xl font-semibold">Квизы: </h2>
+          <QuizList />
+        </div>
+        <div>
+          <h2 className="px-4 text-xl font-semibold">Конспекты: </h2>
+        </div>
       </div>
     </div>
   )

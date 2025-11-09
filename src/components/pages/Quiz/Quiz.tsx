@@ -3,6 +3,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from '@/components/ui/badge'
 import { useQuiz } from '@/hooks/useQuiz'
 import { Button } from '@/components/ui/button'
+import { QrCodeIcon } from 'lucide-react'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import QRCodeDialog from '@/components/dummies/QRCodeDialog'
 
 function Quiz() {
   const { id } = useParams({ strict: false })
@@ -72,7 +75,15 @@ function Quiz() {
             </div>
           </CardContent>
           <CardFooter>
-            <div className='w-full flex justify-end'>
+            <div className='w-full flex items-center gap-2 justify-end'>
+              <Dialog>
+                <DialogTrigger>
+                  <Button variant="outline">
+                    <QrCodeIcon />
+                  </Button>
+                </DialogTrigger>
+                <QRCodeDialog qrValue={window.location.href} />
+              </Dialog>
               <Link to="/quiz/$id/questions" params={{ id: id || '' }}>
                 <Button>Перейти к тестированию ➡️</Button>
               </Link>

@@ -1,11 +1,11 @@
 import { Link } from '@tanstack/react-router'
-import { Avatar, AvatarFallback } from './ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu'
 import { useLogout, useUser } from '@/hooks/useAuth'
 import { fullNameToInitials, fullNameToLetters } from '@/lib/utils'
 

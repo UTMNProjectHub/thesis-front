@@ -35,6 +35,11 @@ export function useQuizQuestions(quizId: string, sessionId?: string) {
       if (axios.isAxiosError(error) && error.response?.status === 409) {
         return false
       }
+
+      if (axios.isAxiosError(error) && error.response?.status === 403) {
+        return false
+      }
+
       return failureCount < 3
     },
   })
