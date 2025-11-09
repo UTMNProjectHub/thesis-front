@@ -1,41 +1,77 @@
 import { useState } from 'react'
-import type { Question, QuestionVariant, SubmitAnswerResponse } from '@/types/quiz'
-import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
+import type { Question, SubmitAnswerResponse } from '@/types/quiz'
+import { FieldGroup } from '@/components/ui/field'
 import { cn } from '@/lib/utils'
 
 interface QuestionMatchingProps {
   question: Question
-  variants: QuestionVariant[]
-  onSubmit: (answerIds: string[]) => void
+  variants?: never
+  onSubmit: (answerText: string) => void
   submittedResponse?: SubmitAnswerResponse
   isSubmitted: boolean
 }
 
 export function QuestionMatching({
   question,
-  variants,
   onSubmit,
   submittedResponse,
   isSubmitted,
 }: QuestionMatchingProps) {
-  // Separate keys and values for matching
-  const keys = variants.filter((v) => v.text.includes('->') === false)
-  const values = variants.filter((v) => v.text.includes('->') === false)
+  // Get left and right items from question
+  const leftItems = question.matchingLeftItems || []
+  const rightItems = question.matchingRightItems || []
 
   const [pairs, setPairs] = useState<Map<string, string>>(new Map())
+  const [selectedLeftId, setSelectedLeftId] = useState<string | null>(null)
 
-  const handlePair = (keyId: string, valueId: string) => {
+  const handleLeftClick = (leftVariantId: string) => {
     if (isSubmitted) return
+    // If already paired, remove the pair
+    if (pairs.has(leftVariantId)) {
+      setPairs((prev) => {
+        const newPairs = new Map(prev)
+        newPairs.delete(leftVariantId)
+        return newPairs
+      })
+      setSelectedLeftId(null)
+    } else {
+      setSelectedLeftId(leftVariantId)
+    }
+  }
+
+  const handleRightClick = (rightVariantId: string) => {
+    if (isSubmitted || !selectedLeftId) return
+    
+    // Check if this right item is already paired
+    const existingLeftId = Array.from(pairs.entries()).find(
+      ([_, rightId]) => rightId === rightVariantId
+    )?.[0]
+
+    if (existingLeftId) {
+      // Remove existing pair
+      setPairs((prev) => {
+        const newPairs = new Map(prev)
+        newPairs.delete(existingLeftId)
+        return newPairs
+      })
+    }
+
+    // Create new pair
     setPairs((prev) => {
       const newPairs = new Map(prev)
-      newPairs.set(keyId, valueId)
+      newPairs.set(selectedLeftId, rightVariantId)
       return newPairs
     })
+    setSelectedLeftId(null)
   }
 
   const handleSubmit = () => {
     if (pairs.size > 0 && !isSubmitted) {
-      onSubmit(Array.from(pairs.values()))
+      // Format: "leftVariantId:rightVariantId;leftVariantId:rightVariantId"
+      const answerText = Array.from(pairs.entries())
+        .map(([leftId, rightId]) => `${leftId}:${rightId}`)
+        .join(';')
+      onSubmit(answerText)
     }
   }
 
@@ -49,37 +85,78 @@ export function QuestionMatching({
         <div className="grid grid-cols-2 gap-4">
           <div>
             <h4 className="font-semibold mb-2">Ключи</h4>
-            {keys.map((key) => (
-              <div key={key.id} className="mb-2 p-2 border rounded">
-                {key.text}
-              </div>
-            ))}
+            {leftItems.map((leftItem) => {
+              const selectedRightId = pairs.get(leftItem.variantId)
+              const isPaired = selectedRightId !== undefined
+              const isCurrentlySelected = selectedLeftId === leftItem.variantId
+              return (
+                <div
+                  key={leftItem.variantId}
+                  onClick={() => handleLeftClick(leftItem.variantId)}
+                  className={cn(
+                    'mb-2 p-2 border rounded cursor-pointer transition-colors',
+                    isCurrentlySelected && 'bg-primary border-primary text-primary-foreground',
+                    isPaired && !isCurrentlySelected && 'bg-primary/10 border-primary',
+                    !isPaired && !isCurrentlySelected && !isSubmitted && 'hover:bg-gray-50',
+                    isSubmitted &&
+                      response?.pairs.find(
+                        (p) => p.key === leftItem.text && p.isRight,
+                      ) &&
+                      'bg-green-100 border-green-300',
+                    isSubmitted &&
+                      response?.pairs.find(
+                        (p) => p.key === leftItem.text && !p.isRight,
+                      ) &&
+                      'bg-red-100 border-red-300',
+                  )}
+                >
+                  {leftItem.text}
+                </div>
+              )
+            })}
           </div>
           <div>
             <h4 className="font-semibold mb-2">Значения</h4>
-            {values.map((value) => (
-              <div
-                key={value.id}
-                className={cn(
-                  'mb-2 p-2 border rounded cursor-pointer',
-                  pairs.has(value.variantId) && 'bg-primary/10',
-                  isSubmitted &&
-                    response?.pairs.find(
-                      (p) => p.value === value.text && p.isRight,
-                    ) &&
-                    'bg-green-100 border-green-300',
-                )}
-                onClick={() => {
-                  // Simplified matching - in real implementation would need better UI
-                  if (!isSubmitted) {
-                    handlePair(value.variantId, value.variantId)
-                  }
-                }}
-              >
-                {value.text}
-              </div>
-            ))}
+            {rightItems.map((rightItem) => {
+              const isPaired = Array.from(pairs.values()).includes(rightItem.variantId)
+              return (
+                <div
+                  key={rightItem.variantId}
+                  onClick={() => handleRightClick(rightItem.variantId)}
+                  className={cn(
+                    'mb-2 p-2 border rounded cursor-pointer transition-colors',
+                    isPaired && 'bg-primary/10 border-primary',
+                    !isPaired && !isSubmitted && selectedLeftId && 'hover:bg-primary/5 border-primary/50',
+                    !isPaired && !isSubmitted && !selectedLeftId && 'hover:bg-gray-50',
+                    isSubmitted &&
+                      response?.pairs.find(
+                        (p) => p.value === rightItem.text && p.isRight,
+                      ) &&
+                      'bg-green-100 border-green-300',
+                    isSubmitted &&
+                      response?.pairs.find(
+                        (p) => p.value === rightItem.text && !p.isRight,
+                      ) &&
+                      'bg-red-100 border-red-300',
+                  )}
+                >
+                  {rightItem.text}
+                </div>
+              )
+            })}
           </div>
+        </div>
+        <div className="mt-4">
+          <h4 className="font-semibold mb-2">Выбранные пары:</h4>
+          {Array.from(pairs.entries()).map(([leftId, rightId]) => {
+            const leftItem = leftItems.find((li) => li.variantId === leftId)
+            const rightItem = rightItems.find((ri) => ri.variantId === rightId)
+            return (
+              <div key={`${leftId}-${rightId}`} className="mb-2 p-2 border rounded bg-gray-50">
+                {leftItem?.text} → {rightItem?.text}
+              </div>
+            )
+          })}
         </div>
         {isSubmitted &&
           response?.pairs.map((pair, idx) => (

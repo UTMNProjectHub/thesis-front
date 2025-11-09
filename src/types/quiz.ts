@@ -5,6 +5,21 @@ export interface Quiz {
   description: string
   themeId: number | null
   questionCount: number
+  maxSessions: number
+}
+
+export interface MatchingLeftItem {
+  variantId: string
+  text: string
+  explainRight?: string
+  explainWrong?: string
+}
+
+export interface MatchingRightItem {
+  variantId: string
+  text: string
+  explainRight?: string
+  explainWrong?: string
 }
 
 export interface Question {
@@ -13,6 +28,8 @@ export interface Question {
   multiAnswer: boolean | null
   text: string
   variants?: QuestionVariant[]
+  matchingLeftItems?: MatchingLeftItem[]
+  matchingRightItems?: MatchingRightItem[]
 }
 
 export interface QuestionVariant {

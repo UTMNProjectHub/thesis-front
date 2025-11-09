@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Quiz } from '@/types/quiz'
 import apiClient from '@/lib/api-client'
 import { useTheme } from '@/hooks/useTheme'
-import QuizCard from '@/components/dummies/QuizCard'
+import QuizSmallCard from '@/components/dummies/QuizSmallCard'
 import CreateQuizCard from '@/components/dummies/CreateQuizCard'
 import { useNavigate } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
@@ -88,7 +88,7 @@ function QuizList({ className }: QuizListProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {currentTheme && <CreateQuizCard onClick={handleCreateQuiz} />}
           {quizes.map((quiz) => (
-            <QuizCard
+            <QuizSmallCard
               key={quiz.id}
               quiz={quiz}
               onOpen={() => handleOpenQuiz(quiz)}

@@ -360,9 +360,8 @@ function Questions() {
         return (
           <QuestionMatching
             question={currentQuestion}
-            variants={variants}
-            onSubmit={(answerIds) =>
-              handleAnswerSubmit(currentQuestion, answerIds)
+            onSubmit={(answerText) =>
+              handleAnswerSubmit(currentQuestion, undefined, answerText)
             }
             submittedResponse={submittedResponse}
             isSubmitted={isSubmitted}

@@ -72,6 +72,10 @@ function Quiz() {
                 <strong className="text-muted-foreground">Количество вопросов: </strong>
                 <p className="font-mono text-sm mt-1">{quiz.questionCount}</p>
               </div>
+              <div>
+                <strong className="text-muted-foreground">Максимальное количество попыток: </strong>
+                <p className="font-mono text-sm mt-1">{quiz.maxSessions > 0 ? quiz.maxSessions : 'Неограничено'}</p>
+              </div>
             </div>
           </CardContent>
           <CardFooter>
@@ -79,7 +83,7 @@ function Quiz() {
               <Dialog>
                 <DialogTrigger>
                   <Button variant="outline">
-                    <QrCodeIcon />
+                    Поделиться QR-кодом <QrCodeIcon />
                   </Button>
                 </DialogTrigger>
                 <QRCodeDialog qrValue={window.location.href} />
