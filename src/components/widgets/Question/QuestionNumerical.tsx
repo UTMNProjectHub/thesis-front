@@ -11,6 +11,7 @@ interface QuestionNumericalProps {
 }
 
 export function QuestionNumerical({
+  // @ts-ignore bro shut up
   question,
   onSubmit,
   submittedResponse,

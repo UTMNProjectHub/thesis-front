@@ -27,12 +27,16 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { DialogTrigger } from '@radix-ui/react-dialog'
 import type { ReactNode } from 'react'
 import { QuizType } from '@/models/Quiz/const'
+import { useTheme } from '@/hooks/useTheme'
 
 interface IGenerationQuizDialog {
   children: ReactNode
 }
 
 function GenerationQuizDialog(props: IGenerationQuizDialog) {
+
+  const { current: currentTheme } = useTheme()
+  
   return (
     <Dialog>
       <DialogTrigger>{props.children}</DialogTrigger>
@@ -42,6 +46,16 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
         </DialogHeader>
         <FieldSet>
           <FieldGroup>
+            <Field>
+              <FieldLabel>Название теста</FieldLabel>
+              <Input defaultValue={currentTheme?.name} type="text" placeholder="Введите название теста" />
+              <FieldError></FieldError>
+            </Field>
+            <Field>
+              <FieldLabel>Описание теста</FieldLabel>
+              <Textarea placeholder="Введите описание теста" rows={4} />
+              <FieldError></FieldError>
+            </Field>
             <div className="flex flex-row gap-2 justify-between">
               <div>
                 <Field>

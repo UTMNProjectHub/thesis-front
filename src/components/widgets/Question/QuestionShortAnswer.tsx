@@ -11,6 +11,7 @@ interface QuestionShortAnswerProps {
 }
 
 export function QuestionShortAnswer({
+  // @ts-ignore bro shut up
   question,
   onSubmit,
   submittedResponse,
