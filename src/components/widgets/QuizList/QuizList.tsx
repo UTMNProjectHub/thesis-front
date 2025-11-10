@@ -6,6 +6,17 @@ import QuizSmallCard from '@/components/dummies/QuizSmallCard'
 import CreateQuizCard from '@/components/dummies/CreateQuizCard'
 import { useNavigate } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
+import GenerationQuizDialog from '../GenerationQuizDialog/GenerationQuizDialog'
+import quizApi from '@/models/Quiz/api'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 
 interface QuizListProps {
   className?: string
@@ -15,6 +26,8 @@ function QuizList({ className }: QuizListProps) {
   const [quizes, setQuizes] = useState<Array<Quiz>>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
+  const [quizToDelete, setQuizToDelete] = useState<Quiz | null>(null)
   const { current: currentTheme } = useTheme()
 
   const navigate = useNavigate();
@@ -30,7 +43,7 @@ function QuizList({ className }: QuizListProps) {
           setLoading(false)
         })
         .catch((err) => {
-          setError(err.message || 'Ошибка загрузки квизов')
+          setError(err.message || 'Ошибка загрузки тестов')
           setLoading(false)
         })
     } else {
@@ -54,8 +67,28 @@ function QuizList({ className }: QuizListProps) {
   }
 
   const handleDeleteQuiz = (quiz: Quiz) => {
-    // Заглушка для удаления квиза
-    console.log('Delete quiz:', quiz.id)
+    setQuizToDelete(quiz)
+    setDeleteDialogOpen(true)
+  }
+
+  const handleResultView = (quiz: Quiz) => {
+    navigate({
+      to: `/quiz/${quiz.id}/results`
+    })
+  }
+
+  const confirmDeleteQuiz = () => {
+    if (!quizToDelete) return
+
+    quizApi.deleteQuiz(quizToDelete.id).then(() => {
+      setQuizes(quizes.filter((q) => q.id !== quizToDelete.id))
+      setDeleteDialogOpen(false)
+      setQuizToDelete(null)
+    }).catch((err: any) => {
+      setError(err.message || 'Ошибка удаления теста')
+      setDeleteDialogOpen(false)
+      setQuizToDelete(null)
+    })
   }
 
   if (!currentTheme) {
@@ -83,27 +116,58 @@ function QuizList({ className }: QuizListProps) {
   }
 
   return (
-    <div className={cn('w-full flex flex-col', className)}>
-      <div className="p-4 overflow-y-auto min-h-0 flex-1">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {currentTheme && <CreateQuizCard onClick={handleCreateQuiz} />}
-          {quizes.map((quiz) => (
-            <QuizSmallCard
-              key={quiz.id}
-              quiz={quiz}
-              onOpen={() => handleOpenQuiz(quiz)}
-              onEdit={() => handleEditQuiz(quiz)}
-              onDelete={() => handleDeleteQuiz(quiz)}
-            />
-          ))}
-        </div>
-        {quizes.length === 0 && (
-          <div className="flex items-center justify-center h-64 text-muted-foreground">
-            Квизы не найдены
+    <>
+      <div className={cn('w-full flex flex-col', className)}>
+        <div className="p-4 overflow-y-auto min-h-0 flex-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {currentTheme && <GenerationQuizDialog><CreateQuizCard onClick={handleCreateQuiz} /></GenerationQuizDialog>}
+            {quizes.map((quiz) => (
+              <QuizSmallCard
+                key={quiz.id}
+                quiz={quiz}
+                onResultView={() => handleResultView(quiz)}
+                onOpen={() => handleOpenQuiz(quiz)}
+                onEdit={() => handleEditQuiz(quiz)}
+                onDelete={() => handleDeleteQuiz(quiz)}
+              />
+            ))}
           </div>
-        )}
+          {quizes.length === 0 && (
+            <div className="flex items-center justify-center h-64 text-muted-foreground">
+              Тесты не найдены
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Подтверждение удаления</DialogTitle>
+            <DialogDescription>
+              Вы уверены, что хотите удалить тест "{quizToDelete?.name}"? Это действие нельзя отменить.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setDeleteDialogOpen(false)
+                setQuizToDelete(null)
+              }}
+            >
+              Отмена
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDeleteQuiz}
+            >
+              Удалить
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 

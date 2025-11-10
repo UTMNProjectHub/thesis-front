@@ -400,12 +400,12 @@ function Questions() {
           <CardHeader>
             <CardTitle className="text-red-500">Ошибка</CardTitle>
             <CardDescription>
-              Вы достигли максимального количества попыток для этого квиза
+              Вы достигли максимального количества попыток для этого теста
             </CardDescription>
           </CardHeader>
           <CardFooter>
             <Button variant="outline" onClick={() => navigate({ to: `/quiz/${id}` })}>
-              Вернуться к квизу
+              Вернуться к тесту
             </Button>
           </CardFooter>
         </Card>

@@ -55,11 +55,11 @@ function App() {
           <h1 className="text-7xl md:text-8xl font-bold text-gray-900 mb-8 leading-tight">
             Добро пожаловать в{' '}
             <span className="text-logo text-transparent bg-clip-text bg-gradient-to-r from-[#00acec] via-blue-600 to-purple-600 animate-gradient">
-              КВИЗИ
+              АССИСТЕНТУС
             </span>
           </h1>
           <p className="text-2xl md:text-3xl text-gray-700 mb-12 max-w-3xl mx-auto leading-relaxed font-light">
-            Создавайте увлекательные квизы, тестируйте знания и развивайте
+            Создавайте увлекательные тесты, проверяйте знания и развивайте
             навыки. Простой инструмент для преподавателей и студентов ТюмГУ.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -122,7 +122,7 @@ function App() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold text-gray-900 mb-4">
-              Почему выбирают КВИЗИ?
+              Почему выбирают АССИСТЕНТУС?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Мощные инструменты для современного образования
@@ -139,7 +139,7 @@ function App() {
                   <Badge variant="secondary" className="bg-blue-100 text-blue-700">
                     Легко
                   </Badge>
-                  Создание квизов
+                  Создание тестов
                 </CardTitle>
                 <CardDescription className="text-base">
                   Интуитивный интерфейс для быстрого создания вопросов и ответов.
@@ -239,7 +239,7 @@ function App() {
           </div>
           <h2 className="text-5xl font-bold mb-6">Готовы начать?</h2>
           <p className="text-2xl mb-10 max-w-2xl mx-auto opacity-90">
-            Присоединяйтесь к тысячам пользователей, которые уже используют КВИЗИ
+            Присоединяйтесь к тысячам пользователей, которые уже используют АССИСТЕНТУС
             для образования и развлечений.
           </p>
           <Link to="/auth/register">

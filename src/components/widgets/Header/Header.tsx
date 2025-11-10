@@ -17,7 +17,7 @@ export default function Header() {
     <>
       <header className="p-4 h-[8vh] flex justify-between items-center bg-[#00acec] text-white shadow-lg">
         <h1 className="text-logo">
-          <Link to="/">КВИЗИ</Link>
+          <Link to="/">АССИСТЕНТУС</Link>
         </h1>
         {userData.data ? (
           <DropdownMenu>

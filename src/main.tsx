@@ -23,6 +23,7 @@ import Profile from './components/pages/Profile/Profile.tsx'
 import Generation from './components/pages/Generation/Generation.tsx'
 import Quiz from './components/pages/Quiz/Quiz.tsx'
 import Questions from '@/components/pages/Questions/Questions.tsx'
+import Error from './components/pages/Error/Error.tsx'
 
 /**
  * Root route no longer renders the global header directly.
@@ -124,6 +125,8 @@ const router = createRouter({
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
+  defaultNotFoundComponent: () => <Error code={404} error="Страница не найдена" />,
+  defaultErrorComponent: () => <Error code={500} error="Внутренняя ошибка сервера" />
 })
 
 declare module '@tanstack/react-router' {

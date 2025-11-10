@@ -14,7 +14,7 @@ function Quiz() {
   if (isLoading) {
     return (
       <div className="flex h-screen w-full justify-center items-center">
-        <div className="text-muted-foreground">Загрузка квиза...</div>
+        <div className="text-muted-foreground">Загрузка теста...</div>
       </div>
     )
   }
@@ -39,9 +39,9 @@ function Quiz() {
       <div className="flex h-screen w-full justify-center items-center">
         <Card className="max-w-md">
           <CardHeader>
-            <CardTitle>Квиз не найден</CardTitle>
+            <CardTitle>Тест не найден</CardTitle>
             <CardDescription>
-              Квиз с указанным идентификатором не существует
+              Тест с указанным идентификатором не существует
             </CardDescription>
           </CardHeader>
         </Card>

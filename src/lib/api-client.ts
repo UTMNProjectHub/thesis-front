@@ -21,8 +21,8 @@ import type {
   SessionSubmitWithDetails,
 } from '@/types/quiz'
 
-class ApiClient {
-  private client: AxiosInstance
+export class ApiClient {
+  protected client: AxiosInstance
   private isRefreshing = false
   private failedQueue: Array<{
     resolve: (value?: any) => void

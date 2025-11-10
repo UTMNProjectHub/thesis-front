@@ -8,16 +8,17 @@ import {
   CardAction,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Play, Edit, Trash2 } from 'lucide-react'
+import { Play, Edit, Trash2, Eye } from 'lucide-react'
 
 interface QuizCardProps {
   quiz: Quiz
   onOpen?: () => void
   onEdit?: () => void
   onDelete?: () => void
+  onResultView?: () => void
 }
 
-function QuizCard({ quiz, onOpen, onEdit, onDelete }: QuizCardProps) {
+function QuizCard({ quiz, onOpen, onEdit, onDelete, onResultView }: QuizCardProps) {
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader>
@@ -34,9 +35,19 @@ function QuizCard({ quiz, onOpen, onEdit, onDelete }: QuizCardProps) {
                 variant="ghost"
                 size="sm"
                 onClick={onOpen}
-                title="Открыть квиз"
+                title="Открыть тест"
               >
                 <Play className="h-4 w-4" />
+              </Button>
+            )}
+            {onResultView && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onResultView}
+                title="Результаты"
+              >
+                <Eye className="h-4 w-4" />
               </Button>
             )}
             {onEdit && (

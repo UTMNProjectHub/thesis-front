@@ -18,7 +18,7 @@ function CreateQuizCard({ onClick, className }: CreateQuizCardProps) {
     >
       <div className="flex flex-col items-center gap-2 text-muted-foreground">
         <Plus className="h-12 w-12" />
-        <span className="text-sm font-medium">Создать новый квиз</span>
+        <span className="text-sm font-medium">Создать новый тест</span>
       </div>
     </Card>
   )
