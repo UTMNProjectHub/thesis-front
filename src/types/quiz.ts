@@ -9,14 +9,14 @@ export interface Quiz {
 }
 
 export interface MatchingLeftItem {
-  variantId: string
+  id: string
   text: string
   explainRight?: string
   explainWrong?: string
 }
 
 export interface MatchingRightItem {
-  variantId: string
+  id: string
   text: string
   explainRight?: string
   explainWrong?: string
@@ -44,7 +44,7 @@ export interface QuestionVariant {
 }
 
 export interface SubmittedVariant {
-  variantId: string
+  id: string
   variantText: string
   isRight: boolean
   explanation: string

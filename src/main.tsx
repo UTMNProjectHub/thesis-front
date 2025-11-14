@@ -24,6 +24,7 @@ import Generation from './components/pages/Generation/Generation.tsx'
 import Quiz from './components/pages/Quiz/Quiz.tsx'
 import Questions from '@/components/pages/Questions/Questions.tsx'
 import Error from './components/pages/Error/Error.tsx'
+import QuizResults from './components/pages/QuizResults/QuizResults.tsx'
 
 /**
  * Root route no longer renders the global header directly.
@@ -105,12 +106,18 @@ const quizQuestionsRoute = createRoute({
   component: Questions,
 })
 
+const quizResultsRoute = createRoute({
+  getParentRoute: () => quizRoute,
+  path: '$id/results',
+  component: QuizResults,
+})
+
 const routeTree = rootRoute.addChildren([
   headerLayoutRoute.addChildren([
     indexRoute,
     profileRoute,
     generationRoute,
-    quizRoute.addChildren([quizByIdRoute, quizQuestionsRoute]),
+    quizRoute.addChildren([quizByIdRoute, quizQuestionsRoute, quizResultsRoute]),
   ]),
   authRoute.addChildren([loginRoute, registerRoute]),
 ])

@@ -75,9 +75,10 @@ export function QuestionMatching({
     }
   }
 
-  const response = submittedResponse as
-    | { pairs: Array<{ key: string; value: string; isRight: boolean; explanation: string | null }> }
-    | undefined
+  // Типизируем response для matching вопросов
+  const response = submittedResponse && 'pairs' in submittedResponse
+    ? submittedResponse as { pairs: Array<{ key: string; value: string; isRight: boolean; explanation: string | null }> }
+    : undefined
 
   return (
     <div className="space-y-4">
@@ -86,13 +87,13 @@ export function QuestionMatching({
           <div>
             <h4 className="font-semibold mb-2">Ключи</h4>
             {leftItems.map((leftItem) => {
-              const selectedRightId = pairs.get(leftItem.variantId)
+              const selectedRightId = pairs.get(leftItem.id)
               const isPaired = selectedRightId !== undefined
-              const isCurrentlySelected = selectedLeftId === leftItem.variantId
+              const isCurrentlySelected = selectedLeftId === leftItem.id
               return (
                 <div
-                  key={leftItem.variantId}
-                  onClick={() => handleLeftClick(leftItem.variantId)}
+                  key={leftItem.id}
+                  onClick={() => handleLeftClick(leftItem.id)}
                   className={cn(
                     'mb-2 p-2 border rounded cursor-pointer transition-colors',
                     isCurrentlySelected && 'bg-primary border-primary text-primary-foreground',
@@ -118,11 +119,11 @@ export function QuestionMatching({
           <div>
             <h4 className="font-semibold mb-2">Значения</h4>
             {rightItems.map((rightItem) => {
-              const isPaired = Array.from(pairs.values()).includes(rightItem.variantId)
+              const isPaired = Array.from(pairs.values()).includes(rightItem.id)
               return (
                 <div
-                  key={rightItem.variantId}
-                  onClick={() => handleRightClick(rightItem.variantId)}
+                  key={rightItem.id}
+                  onClick={() => handleRightClick(rightItem.id)}
                   className={cn(
                     'mb-2 p-2 border rounded cursor-pointer transition-colors',
                     isPaired && 'bg-primary/10 border-primary',
@@ -149,8 +150,8 @@ export function QuestionMatching({
         <div className="mt-4">
           <h4 className="font-semibold mb-2">Выбранные пары:</h4>
           {Array.from(pairs.entries()).map(([leftId, rightId]) => {
-            const leftItem = leftItems.find((li) => li.variantId === leftId)
-            const rightItem = rightItems.find((ri) => ri.variantId === rightId)
+            const leftItem = leftItems.find((li) => li.id === leftId)
+            const rightItem = rightItems.find((ri) => ri.id === rightId)
             return (
               <div key={`${leftId}-${rightId}`} className="mb-2 p-2 border rounded bg-gray-50">
                 {leftItem?.text} → {rightItem?.text}

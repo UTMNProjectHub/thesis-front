@@ -116,7 +116,7 @@ function Questions() {
       ) {
         // Для вопросов с вариантами собираем все chosenVariants
         const submittedVariants: Array<{
-          variantId: string
+          id: string
           variantText: string
           isRight: boolean
           explanation: string
@@ -130,7 +130,7 @@ function Questions() {
             const variant = chosenVariant.variant
 
             submittedVariants.push({
-              variantId: chosenVariant.variantId,
+              id: chosenVariant.variantId,
               variantText: variant.text,
               isRight: chosenVariant.isRight,
               explanation: chosenVariant.isRight
@@ -150,8 +150,9 @@ function Questions() {
                 (v) => v.variantId === chosenId || v.id === chosenId,
               )
               if (variant) {
+                const variantId = variant.variantId || variant.id
                 submittedVariants.push({
-                  variantId: variant.variantId || variant.id,
+                  id: variantId,
                   variantText: variant.text,
                   isRight: variant.isRight,
                   explanation: variant.isRight
@@ -163,25 +164,56 @@ function Questions() {
           }
         })
 
-        if (submittedVariants.length > 0) {
-          if (question.type === 'matching') {
-            // Для matching вопросов создаем MatchingAnswerResponse
-            newSubmittedAnswers.set(questionId, {
-              question,
-              submittedAnswer: firstSubmit,
-              isRight: firstSubmit.isRight,
-              pairs: [],
-              variants: question.variants || [],
-              explanation: null,
-            } as SubmitAnswerResponse)
-          } else {
-            // Для multichoice/truefalse создаем MultichoiceAnswerResponse
-            newSubmittedAnswers.set(questionId, {
-              question,
-              submittedVariants,
-              allVariants: question.variants || [],
-            } as SubmitAnswerResponse)
+        if (question.type === 'matching') {
+          // Для matching вопросов извлекаем pairs из answer
+          const pairs: Array<{
+            key: string
+            value: string
+            isRight: boolean
+            explanation: string | null
+          }> = []
+          
+          if (firstSubmit.answer && typeof firstSubmit.answer === 'object' && 'pairs' in firstSubmit.answer) {
+            const answerPairs = (firstSubmit.answer as { pairs: Array<{ key: string; value: string; isRight: boolean }> }).pairs
+            
+            answerPairs.forEach((pair) => {
+              // Находим тексты по ID
+              const leftItem = question.matchingLeftItems?.find((li) => li.id === pair.key)
+              const rightItem = question.matchingRightItems?.find((ri) => ri.id === pair.value)
+              
+              // Получаем explanation из элементов
+              let explanation: string | null = null
+              if (pair.isRight) {
+                explanation = leftItem?.explainRight || rightItem?.explainRight || null
+              } else {
+                explanation = leftItem?.explainWrong || rightItem?.explainWrong || null
+              }
+              
+              pairs.push({
+                key: leftItem?.text || pair.key,
+                value: rightItem?.text || pair.value,
+                isRight: pair.isRight,
+                explanation,
+              })
+            })
           }
+          
+          // Для matching вопросов создаем MatchingAnswerResponse
+          newSubmittedAnswers.set(questionId, {
+            question,
+            submittedAnswer: firstSubmit,
+            isRight: firstSubmit.isRight,
+            pairs,
+            variants: question.variants || [],
+            explanation: null,
+          } as SubmitAnswerResponse)
+        } else if (submittedVariants.length > 0) {
+          // Для multichoice/truefalse создаем MultichoiceAnswerResponse
+          newSubmittedAnswers.set(questionId, {
+            question,
+            submittedVariants,
+            allVariants: question.variants || [],
+          } as SubmitAnswerResponse)
         }
       } else {
         // Для текстовых вопросов (shortanswer, essay, numerical)
@@ -228,6 +260,8 @@ function Questions() {
       quizId: id,
       sessionId: selectedSessionId,
     })
+
+    navigate({ to: `/quiz/${id}/results` })
   }
 
   const handleConfirmFinish = async () => {

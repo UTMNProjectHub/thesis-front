@@ -19,6 +19,8 @@ export function QuestionNumerical({
 }: QuestionNumericalProps) {
   const [answer, setAnswer] = useState('')
 
+  console.log(submittedResponse);
+
   // Инициализируем ответ на основе submittedResponse
   useEffect(() => {
     if (
@@ -26,7 +28,7 @@ export function QuestionNumerical({
       'submittedAnswer' in submittedResponse &&
       submittedResponse.submittedAnswer.answer
     ) {
-      setAnswer(String(submittedResponse.submittedAnswer.answer))
+      setAnswer(String(submittedResponse.submittedAnswer.answer.text))
     }
   }, [submittedResponse])
 
@@ -66,6 +68,12 @@ export function QuestionNumerical({
           </p>
           {response.explanation && (
             <p className="mt-2 text-sm">{response.explanation}</p>
+          )}
+          {submittedResponse &&
+      'submittedAnswer' in submittedResponse &&
+      submittedResponse.submittedAnswer.answer &&
+      'explanation' in submittedResponse.submittedAnswer.answer && (
+            <p className="mt-2 text-sm">{submittedResponse.submittedAnswer.answer.explanation}</p>
           )}
         </div>
       )}

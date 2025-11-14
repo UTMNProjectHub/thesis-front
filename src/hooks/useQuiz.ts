@@ -8,7 +8,9 @@ export const quizKeys = {
   all: ['quiz'] as const,
   quiz: (id: string) => [...quizKeys.all, id] as const,
   questions: (id: string) => [...quizKeys.all, id, 'questions'] as const,
-  activeSessions: (id: string) => [...quizKeys.all, id, 'activeSessions'] as const,
+  activeSessions: (id: string) =>
+    [...quizKeys.all, id, 'activeSessions'] as const,
+  sessions: (id: string) => [...quizKeys.all, id, 'sessions'],
   sessionSubmits: (quizId: string, sessionId: string) =>
     [...quizKeys.all, quizId, 'sessions', sessionId, 'submits'] as const,
 }
@@ -58,6 +60,15 @@ export function useActiveSessions(
         ? options.enabled
         : !!quizId && apiClient.isAuthenticated(),
     staleTime: 0, // Всегда получаем свежие данные
+  })
+}
+
+export function useSessions(quizId: string, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: quizKeys.sessions(quizId),
+    queryFn: () => apiClient.getAllSessions(quizId),
+    enabled: options?.enabled && !!quizId && apiClient.isAuthenticated(),
+    staleTime: 5 * 60 * 1000,
   })
 }
 
@@ -119,4 +130,3 @@ export function useFinishSession() {
     },
   })
 }
-

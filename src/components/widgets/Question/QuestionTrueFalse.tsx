@@ -25,13 +25,14 @@ export function QuestionTrueFalse({
     if (submittedResponse && 'submittedVariants' in submittedResponse) {
       const firstVariant = submittedResponse.submittedVariants[0]
       if (firstVariant) {
-        // Находим вариант по variantId
+        // Находим вариант по id
         const variant = variants.find(
           (variant) =>
-            variant.id === firstVariant.variantId,
+            variant.variantId === firstVariant.id ||
+            variant.id === firstVariant.id,
         )
         if (variant) {
-          setSelectedId(variant.variantId)
+          setSelectedId(variant.id)
         }
       }
     }
@@ -49,7 +50,7 @@ export function QuestionTrueFalse({
   }
 
   const response = submittedResponse as
-    | { submittedVariants: Array<{ variantId: string; isRight: boolean; explanation: string }> }
+    | { submittedVariants: Array<{ id: string; isRight: boolean; explanation: string }> }
     | undefined
 
   return (
@@ -58,7 +59,10 @@ export function QuestionTrueFalse({
         {variants.map((variant) => {
           const isSelected = selectedId === variant.id
           const submitted = response?.submittedVariants.find(
-            (v) => v.variantId === variant.id,
+            (v) => 
+              v.id === variant.variantId ||
+              v.id === variant.id ||
+              variant.id === v.id,
           )
           const isCorrect = submitted?.isRight ?? false
 

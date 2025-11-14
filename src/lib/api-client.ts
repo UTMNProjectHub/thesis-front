@@ -321,6 +321,13 @@ export class ApiClient {
     return response.data
   }
 
+  async getAllSessions(quizId: string): Promise<Array<Session>> {
+    const response = await this.client.get<Array<Session>>(
+      `/quizes/${quizId}/sessions/all`,
+    )
+    return response.data
+  }
+
   async getSessionSubmits(
     quizId: string,
     sessionId: string,
