@@ -4,6 +4,13 @@ export interface ProfileResponse {
   full_name: string
   avatar_url: string | null
   date_created: string | null
+  roles: Array<{
+    id: number
+    title: string
+    slug: string
+    description: string | null
+    date_created: string | null
+  }>
 }
 
 export interface UpdateProfileRequest {

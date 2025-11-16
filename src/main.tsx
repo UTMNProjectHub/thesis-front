@@ -6,6 +6,7 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
+  useSearch,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
@@ -25,6 +26,9 @@ import Quiz from './components/pages/Quiz/Quiz.tsx'
 import Questions from '@/components/pages/Questions/Questions.tsx'
 import Error from './components/pages/Error/Error.tsx'
 import QuizResults from './components/pages/QuizResults/QuizResults.tsx'
+import QuizResultsTeacher from './components/pages/QuizResults/QuizResultsTeacher.tsx'
+import QuizEdit from './components/pages/QuizEdit/QuizEdit.tsx'
+import QuestionEdit from './components/pages/QuestionEdit/QuestionEdit.tsx'
 
 /**
  * Root route no longer renders the global header directly.
@@ -109,15 +113,46 @@ const quizQuestionsRoute = createRoute({
 const quizResultsRoute = createRoute({
   getParentRoute: () => quizRoute,
   path: '$id/results',
-  component: QuizResults,
+  validateSearch: (search) => {
+    return {
+      isTeacher: search.isTeacher
+    }
+  },
+  component: () => {
+    const search = useSearch({ strict: false })
+    return search.isTeacher ? <QuizResultsTeacher /> : <QuizResults />
+  },
 })
+
+const quizEditRoute = createRoute({
+  getParentRoute: () => quizRoute,
+  path: '$id/edit',
+  component: QuizEdit,
+})
+
+const questionEditRoute = createRoute({
+  getParentRoute: () => quizRoute,
+  path: '$quizId/question/$questionId/edit',
+  component: QuestionEdit,
+})
+
+// const quizResultsTeacherRoute = createRoute({
+//   getParentRoute: () => quizRoute,
+//   path: '$id/results?isTeacher=true',
+//   validateSearch: (search) => {
+//     return {
+//       isTeacher: search.isTeacher === 'true',
+//     }
+//   },
+//   component: QuizResultsTeacher,
+// })
 
 const routeTree = rootRoute.addChildren([
   headerLayoutRoute.addChildren([
     indexRoute,
     profileRoute,
     generationRoute,
-    quizRoute.addChildren([quizByIdRoute, quizQuestionsRoute, quizResultsRoute]),
+    quizRoute.addChildren([quizByIdRoute, quizQuestionsRoute, quizResultsRoute, quizEditRoute, questionEditRoute]),
   ]),
   authRoute.addChildren([loginRoute, registerRoute]),
 ])

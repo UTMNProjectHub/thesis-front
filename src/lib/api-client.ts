@@ -12,13 +12,18 @@ import type {
   UpdateProfileRequest,
 } from '@/types/profile'
 import type { Subject, Theme } from '@/types/subject'
-import type {
-  Quiz,
-  Question,
-  SubmitAnswerRequest,
-  SubmitAnswerResponse,
-  Session,
-  SessionSubmitWithDetails,
+import {
+  type Quiz,
+  type Question,
+  type SubmitAnswerRequest,
+  type SubmitAnswerResponse,
+  type Session,
+  type SessionSubmitWithDetails,
+  type QuizUserSession,
+  type UpdateQuizRequest,
+  type UpdateQuestionRequest,
+  type UpdateQuestionVariant,
+  type QuestionVariant,
 } from '@/types/quiz'
 
 export class ApiClient {
@@ -340,6 +345,43 @@ export class ApiClient {
 
   async finishSession(quizId: string, sessionId: string): Promise<void> {
     await this.client.post(`/quizes/${quizId}/sessions/${sessionId}/finish`)
+  }
+
+  async getQuizUsersSessions(quizId: string) {
+    const response = await this.client.get<Array<QuizUserSession>>(
+      `/quizes/${quizId}/sessions/users`,
+    )
+    return response.data
+  }
+
+  async updateQuiz(quizId: string, data: UpdateQuizRequest): Promise<Quiz> {
+    const response = await this.client.put<Quiz>(`/quizes/${quizId}`, data)
+    return response.data
+  }
+
+  async getQuestion(questionId: string): Promise<Question & { variants: QuestionVariant[] }> {
+    const response = await this.client.get<Question & { variants: QuestionVariant[] }>(
+      `/questions/${questionId}`,
+    )
+    return response.data
+  }
+
+  async updateQuestion(
+    questionId: string,
+    data: UpdateQuestionRequest,
+  ): Promise<Question> {
+    const response = await this.client.put<Question>(
+      `/questions/${questionId}`,
+      data,
+    )
+    return response.data
+  }
+
+  async updateQuestionVariants(
+    questionId: string,
+    variants: Array<UpdateQuestionVariant>,
+  ): Promise<void> {
+    await this.client.put(`/questions/${questionId}/variants`, { variants })
   }
 }
 

@@ -62,8 +62,9 @@ function QuizList({ className }: QuizListProps) {
   }
 
   const handleEditQuiz = (quiz: Quiz) => {
-    // Заглушка для редактирования квиза
-    console.log('Edit quiz:', quiz.id)
+    navigate({
+      to: `/quiz/${quiz.id}/edit`
+    })
   }
 
   const handleDeleteQuiz = (quiz: Quiz) => {
@@ -73,7 +74,10 @@ function QuizList({ className }: QuizListProps) {
 
   const handleResultView = (quiz: Quiz) => {
     navigate({
-      to: `/quiz/${quiz.id}/results`
+      to: `/quiz/${quiz.id}/results`,
+      search: {
+        isTeacher: true
+      }
     })
   }
 

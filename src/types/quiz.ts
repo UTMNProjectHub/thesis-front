@@ -141,3 +141,37 @@ export interface Session {
   sessionSubmits?: any[]
 }
 
+export interface QuizUserSession {
+  userId: string;
+  fullName: string;
+  email: string;
+  sessions: Array<{
+    id: string;
+    timeStart: Date;
+    timeEnd: Date | null;
+    percentSolved: number;
+    percentRight: number;
+  }>;
+}
+
+export interface UpdateQuizRequest {
+  name?: string
+  description?: string
+  type?: string
+  maxSessions?: number
+  themeId?: number | null
+}
+
+export interface UpdateQuestionRequest {
+  text?: string
+  type?: string
+  multiAnswer?: boolean | null
+}
+
+export interface UpdateQuestionVariant {
+  text: string
+  explainRight: string
+  explainWrong: string
+  isRight: boolean
+}
+

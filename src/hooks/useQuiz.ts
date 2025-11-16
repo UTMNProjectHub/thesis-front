@@ -1,12 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import apiClient from '@/lib/api-client'
-import type { SubmitAnswerRequest } from '@/types/quiz'
+import type {
+  SubmitAnswerRequest,
+  UpdateQuizRequest,
+  UpdateQuestionRequest,
+  UpdateQuestionVariant,
+} from '@/types/quiz'
 import axios from 'axios'
+import { useUser } from './useAuth'
 
 // Query keys
 export const quizKeys = {
   all: ['quiz'] as const,
   quiz: (id: string) => [...quizKeys.all, id] as const,
+  usersSessions: (id: string) => [...quizKeys.all, id, 'usersSessions'] as const,
   questions: (id: string) => [...quizKeys.all, id, 'questions'] as const,
   activeSessions: (id: string) =>
     [...quizKeys.all, id, 'activeSessions'] as const,
@@ -90,6 +97,15 @@ export function useSessionSubmits(
   })
 }
 
+export function useQuizUsersSessions(quizId: string) {
+  return useQuery({
+    queryKey: quizKeys.usersSessions(quizId),
+    queryFn: () => apiClient.getQuizUsersSessions(quizId),
+    enabled: !!quizId && apiClient.isAuthenticated() && useUser().data?.roles.some((role) => role.slug === 'teacher'),
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
 // Хук для отправки ответа на вопрос
 export function useSubmitAnswer() {
   const queryClient = useQueryClient()
@@ -127,6 +143,77 @@ export function useFinishSession() {
     }) => apiClient.finishSession(quizId, sessionId),
     onError: (error) => {
       console.error('Finish session error:', error)
+    },
+  })
+}
+
+// Хук для обновления квиза
+export function useUpdateQuiz() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      quizId,
+      data,
+    }: {
+      quizId: string
+      data: UpdateQuizRequest
+    }) => apiClient.updateQuiz(quizId, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: quizKeys.quiz(variables.quizId),
+      })
+    },
+    onError: (error) => {
+      console.error('Update quiz error:', error)
+    },
+  })
+}
+
+// Хук для обновления вопроса
+export function useUpdateQuestion() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      questionId,
+      data,
+    }: {
+      questionId: string
+      data: UpdateQuestionRequest
+    }) => apiClient.updateQuestion(questionId, data),
+    onSuccess: () => {
+      // Инвалидируем все вопросы, так как мы не знаем quizId
+      queryClient.invalidateQueries({
+        queryKey: quizKeys.all,
+      })
+    },
+    onError: (error) => {
+      console.error('Update question error:', error)
+    },
+  })
+}
+
+// Хук для обновления вариантов ответа вопроса
+export function useUpdateQuestionVariants() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      questionId,
+      variants,
+    }: {
+      questionId: string
+      variants: Array<UpdateQuestionVariant>
+    }) => apiClient.updateQuestionVariants(questionId, variants),
+    onSuccess: () => {
+      // Инвалидируем все вопросы
+      queryClient.invalidateQueries({
+        queryKey: quizKeys.all,
+      })
+    },
+    onError: (error) => {
+      console.error('Update question variants error:', error)
     },
   })
 }

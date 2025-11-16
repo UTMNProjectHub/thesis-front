@@ -1,10 +1,15 @@
 interface SessionStatsProps {
   solvedPercent: number
   rightPercent: number
+  compact?: boolean
 }
 
-export function SessionStats({ solvedPercent, rightPercent }: SessionStatsProps) {
-  const size = 120
+export function SessionStats({
+  solvedPercent,
+  rightPercent,
+  compact = false,
+}: SessionStatsProps) {
+  const size = compact ? 50 : 120
   const strokeWidth = 10
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
@@ -13,15 +18,11 @@ export function SessionStats({ solvedPercent, rightPercent }: SessionStatsProps)
   const rightOffset = circumference - (rightPercent / 100) * circumference
 
   return (
-    <div className="flex gap-8 items-center justify-center">
+    <div className="flex gap-8 items-center justify-center h-fit">
       {/* Solved Percentage */}
       <div className="flex flex-col items-center">
         <div className="relative" style={{ width: size, height: size }}>
-          <svg
-            width={size}
-            height={size}
-            className="transform -rotate-90"
-          >
+          <svg width={size} height={size} className="transform -rotate-90">
             {/* Background circle */}
             <circle
               cx={size / 2}
@@ -48,21 +49,24 @@ export function SessionStats({ solvedPercent, rightPercent }: SessionStatsProps)
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
-              <div className="text-2xl font-bold">{Math.round(solvedPercent)}%</div>
-              <div className="text-xs text-muted-foreground">Решено</div>
+              <div className={`${compact ? 'text-xs' : 'text-2xl'} font-bold`}>
+                {Math.round(solvedPercent)}%
+              </div>
+              {!compact && (
+                <div className={'text-sm text-muted-foreground'}>Решено</div>
+              )}
             </div>
           </div>
         </div>
+        {compact && (
+          <div className={'text-sm text-muted-foreground'}>Решено</div>
+        )}
       </div>
 
       {/* Right Percentage */}
       <div className="flex flex-col items-center">
         <div className="relative" style={{ width: size, height: size }}>
-          <svg
-            width={size}
-            height={size}
-            className="transform -rotate-90"
-          >
+          <svg width={size} height={size} className="transform -rotate-90">
             {/* Background circle */}
             <circle
               cx={size / 2}
@@ -95,13 +99,19 @@ export function SessionStats({ solvedPercent, rightPercent }: SessionStatsProps)
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
-              <div className="text-2xl font-bold">{Math.round(rightPercent)}%</div>
-              <div className="text-xs text-muted-foreground">Правильно</div>
+              <div className={`${compact ? 'text-xs' : 'text-2xl'} font-bold`}>
+                {Math.round(rightPercent)}%
+              </div>
+              {!compact && (
+                <div className={'text-sm text-muted-foreground'}>Правильно</div>
+              )}
             </div>
           </div>
         </div>
+        {compact && (
+          <div className={'text-sm text-muted-foreground'}>Правильно</div>
+        )}
       </div>
     </div>
   )
 }
-
