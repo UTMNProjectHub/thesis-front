@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { z } from 'zod'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import type { MatchingConfig } from '@/types/quiz'
 import {
   Card,
   CardContent,
@@ -34,6 +35,7 @@ import apiClient from '@/lib/api-client'
 import {
   useUpdateQuestion,
   useUpdateQuestionVariants,
+  useUpdateQuestionMatchingConfig,
 } from '@/hooks/useQuiz'
 import { Separator } from '@/components/ui/separator'
 
@@ -59,6 +61,10 @@ function QuestionEdit() {
   const queryClient = useQueryClient()
   const updateQuestionMutation = useUpdateQuestion()
   const updateVariantsMutation = useUpdateQuestionVariants()
+  const updateMatchingConfigMutation = useUpdateQuestionMatchingConfig()
+  
+  // Состояние для matching конфигурации
+  const [matchingConfig, setMatchingConfig] = useState<MatchingConfig | null>(null)
 
   const { data: questionData, isLoading, error } = useQuery({
     queryKey: ['question', questionId, 'edit'],
@@ -92,8 +98,9 @@ function QuestionEdit() {
   const questionType = watch('type')
   const needsVariants =
     questionType === 'multichoice' ||
-    questionType === 'truefalse' ||
-    questionType === 'matching'
+    questionType === 'truefalse'
+  const isMatching = questionType === 'matching'
+  const isNumerical = questionType === 'numerical'
 
   // Заполняем форму данными вопроса когда они загружаются
   useEffect(() => {
@@ -110,6 +117,18 @@ function QuestionEdit() {
         })) || [],
       }
       reset(formData)
+      
+      // Загружаем matching конфигурацию, если она есть
+      if (questionData.matchingConfig) {
+        setMatchingConfig(questionData.matchingConfig)
+      } else if (questionData.type === 'matching') {
+        // Инициализируем пустую конфигурацию для нового matching вопроса
+        setMatchingConfig({
+          leftItems: [],
+          rightItems: [],
+          correctPairs: [],
+        })
+      }
     }
   }, [questionData, reset])
 
@@ -127,8 +146,24 @@ function QuestionEdit() {
         },
       })
 
-      // Обновляем варианты, если они есть
+      // Обновляем варианты для multichoice и truefalse
       if (needsVariants && data.variants && data.variants.length > 0) {
+        await updateVariantsMutation.mutateAsync({
+          questionId,
+          variants: data.variants,
+        })
+      }
+      
+      // Обновляем matching конфигурацию
+      if (isMatching && matchingConfig) {
+        await updateMatchingConfigMutation.mutateAsync({
+          questionId,
+          matchingConfig,
+        })
+      }
+      
+      // Обновляем numerical вариант
+      if (isNumerical && data.variants && data.variants.length > 0) {
         await updateVariantsMutation.mutateAsync({
           questionId,
           variants: data.variants,
@@ -259,6 +294,319 @@ function QuestionEdit() {
                     </Field>
                   )}
 
+                  {/* UI для редактирования numerical вопросов */}
+                  {isNumerical && (
+                    <>
+                      <Separator className="my-4" />
+                      <div className="space-y-4">
+                        <FieldLabel>Правильный числовой ответ</FieldLabel>
+                        {fields.length === 0 && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              append({
+                                text: '',
+                                explainRight: '',
+                                explainWrong: '',
+                                isRight: true,
+                              })
+                            }
+                          >
+                            Добавить правильный ответ
+                          </Button>
+                        )}
+                        {fields.map((field, index) => (
+                          <Card key={field.id} className="p-4">
+                            <div className="space-y-4">
+                              <Field>
+                                <FieldLabel>Числовое значение</FieldLabel>
+                                <Input
+                                  {...register(`variants.${index}.text`)}
+                                  placeholder="Например: 42"
+                                  type="number"
+                                  step="any"
+                                />
+                                {errors.variants?.[index]?.text && (
+                                  <FieldError>
+                                    {errors.variants[index]?.text?.message}
+                                  </FieldError>
+                                )}
+                              </Field>
+
+                              <Field>
+                                <FieldLabel>Объяснение для правильного ответа</FieldLabel>
+                                <Textarea
+                                  {...register(`variants.${index}.explainRight`)}
+                                  placeholder="Введите объяснение"
+                                  rows={2}
+                                />
+                                {errors.variants?.[index]?.explainRight && (
+                                  <FieldError>
+                                    {errors.variants[index]?.explainRight?.message}
+                                  </FieldError>
+                                )}
+                              </Field>
+
+                              <Field>
+                                <FieldLabel>Объяснение для неправильного ответа</FieldLabel>
+                                <Textarea
+                                  {...register(`variants.${index}.explainWrong`)}
+                                  placeholder="Введите объяснение"
+                                  rows={2}
+                                />
+                                {errors.variants?.[index]?.explainWrong && (
+                                  <FieldError>
+                                    {errors.variants[index]?.explainWrong?.message}
+                                  </FieldError>
+                                )}
+                              </Field>
+                            </div>
+                          </Card>
+                        ))}
+                      </div>
+                    </>
+                  )}
+
+                  {/* UI для редактирования matching вопросов */}
+                  {isMatching && matchingConfig && (
+                    <>
+                      <Separator className="my-4" />
+                      <div className="space-y-4">
+                        <FieldLabel>Элементы соответствия</FieldLabel>
+                        
+                        {/* Левые элементы */}
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <FieldLabel>Левые элементы (ключи)</FieldLabel>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newId = crypto.randomUUID()
+                                setMatchingConfig({
+                                  ...matchingConfig,
+                                  leftItems: [
+                                    ...matchingConfig.leftItems,
+                                    { id: newId, text: '' },
+                                  ],
+                                })
+                              }}
+                            >
+                              Добавить левый элемент
+                            </Button>
+                          </div>
+                          {matchingConfig.leftItems.map((item, index) => (
+                            <Card key={item.id} className="p-4">
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <FieldLabel>Элемент {index + 1}</FieldLabel>
+                                  <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => {
+                                      const newConfig = { ...matchingConfig }
+                                      newConfig.leftItems = newConfig.leftItems.filter((_, i) => i !== index)
+                                      // Удаляем связанные пары
+                                      newConfig.correctPairs = newConfig.correctPairs.filter(
+                                        (pair) => pair.leftVariantId !== item.id
+                                      )
+                                      setMatchingConfig(newConfig)
+                                    }}
+                                  >
+                                    Удалить
+                                  </Button>
+                                </div>
+                                <Input
+                                  value={item.text}
+                                  onChange={(e) => {
+                                    const newConfig = { ...matchingConfig }
+                                    newConfig.leftItems[index].text = e.target.value
+                                    setMatchingConfig(newConfig)
+                                  }}
+                                  placeholder="Текст элемента"
+                                />
+                              </div>
+                            </Card>
+                          ))}
+                        </div>
+
+                        {/* Правые элементы */}
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <FieldLabel>Правые элементы (значения)</FieldLabel>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newId = crypto.randomUUID()
+                                setMatchingConfig({
+                                  ...matchingConfig,
+                                  rightItems: [
+                                    ...matchingConfig.rightItems,
+                                    { id: newId, text: '' },
+                                  ],
+                                })
+                              }}
+                            >
+                              Добавить правый элемент
+                            </Button>
+                          </div>
+                          {matchingConfig.rightItems.map((item, index) => (
+                            <Card key={item.id} className="p-4">
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <FieldLabel>Элемент {index + 1}</FieldLabel>
+                                  <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => {
+                                      const newConfig = { ...matchingConfig }
+                                      newConfig.rightItems = newConfig.rightItems.filter((_, i) => i !== index)
+                                      // Удаляем связанные пары
+                                      newConfig.correctPairs = newConfig.correctPairs.filter(
+                                        (pair) => pair.rightVariantId !== item.id
+                                      )
+                                      setMatchingConfig(newConfig)
+                                    }}
+                                  >
+                                    Удалить
+                                  </Button>
+                                </div>
+                                <Input
+                                  value={item.text}
+                                  onChange={(e) => {
+                                    const newConfig = { ...matchingConfig }
+                                    newConfig.rightItems[index].text = e.target.value
+                                    setMatchingConfig(newConfig)
+                                  }}
+                                  placeholder="Текст элемента"
+                                />
+                              </div>
+                            </Card>
+                          ))}
+                        </div>
+
+                        {/* Правильные пары */}
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <FieldLabel>Правильные пары соответствия</FieldLabel>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                if (matchingConfig.leftItems.length > 0 && matchingConfig.rightItems.length > 0) {
+                                  setMatchingConfig({
+                                    ...matchingConfig,
+                                    correctPairs: [
+                                      ...matchingConfig.correctPairs,
+                                      {
+                                        leftVariantId: matchingConfig.leftItems[0].id,
+                                        rightVariantId: matchingConfig.rightItems[0].id,
+                                        explainRight: '',
+                                        explainWrong: '',
+                                      },
+                                    ],
+                                  })
+                                }
+                              }}
+                              disabled={matchingConfig.leftItems.length === 0 || matchingConfig.rightItems.length === 0}
+                            >
+                              Добавить пару
+                            </Button>
+                          </div>
+                          {matchingConfig.correctPairs.map((pair, index) => {
+                            return (
+                              <Card key={index} className="p-4">
+                                <div className="space-y-2">
+                                  <div className="flex items-center justify-between">
+                                    <FieldLabel>Пара {index + 1}</FieldLabel>
+                                    <Button
+                                      type="button"
+                                      variant="destructive"
+                                      size="sm"
+                                      onClick={() => {
+                                        const newConfig = { ...matchingConfig }
+                                        newConfig.correctPairs = newConfig.correctPairs.filter((_, i) => i !== index)
+                                        setMatchingConfig(newConfig)
+                                      }}
+                                    >
+                                      Удалить
+                                    </Button>
+                                  </div>
+                                  <Select
+                                    value={pair.leftVariantId}
+                                    onValueChange={(value) => {
+                                      const newConfig = { ...matchingConfig }
+                                      newConfig.correctPairs[index].leftVariantId = value
+                                      setMatchingConfig(newConfig)
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Выберите левый элемент" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {matchingConfig.leftItems.map((item) => (
+                                        <SelectItem key={item.id} value={item.id}>
+                                          {item.text || `Элемент ${matchingConfig.leftItems.indexOf(item) + 1}`}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Select
+                                    value={pair.rightVariantId}
+                                    onValueChange={(value) => {
+                                      const newConfig = { ...matchingConfig }
+                                      newConfig.correctPairs[index].rightVariantId = value
+                                      setMatchingConfig(newConfig)
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Выберите правый элемент" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {matchingConfig.rightItems.map((item) => (
+                                        <SelectItem key={item.id} value={item.id}>
+                                          {item.text || `Элемент ${matchingConfig.rightItems.indexOf(item) + 1}`}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Textarea
+                                    value={pair.explainRight || ''}
+                                    onChange={(e) => {
+                                      const newConfig = { ...matchingConfig }
+                                      newConfig.correctPairs[index].explainRight = e.target.value
+                                      setMatchingConfig(newConfig)
+                                    }}
+                                    placeholder="Объяснение для правильного ответа"
+                                    rows={2}
+                                  />
+                                  <Textarea
+                                    value={pair.explainWrong || ''}
+                                    onChange={(e) => {
+                                      const newConfig = { ...matchingConfig }
+                                      newConfig.correctPairs[index].explainWrong = e.target.value
+                                      setMatchingConfig(newConfig)
+                                    }}
+                                    placeholder="Объяснение для неправильного ответа"
+                                    rows={2}
+                                  />
+                                </div>
+                              </Card>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
                   {needsVariants && (
                     <>
                       <Separator className="my-4" />
@@ -384,11 +732,13 @@ function QuestionEdit() {
                 onClick={handleSubmit(onSubmit)}
                 disabled={
                   updateQuestionMutation.isPending ||
-                  updateVariantsMutation.isPending
+                  updateVariantsMutation.isPending ||
+                  updateMatchingConfigMutation.isPending
                 }
               >
                 {updateQuestionMutation.isPending ||
-                updateVariantsMutation.isPending
+                updateVariantsMutation.isPending ||
+                updateMatchingConfigMutation.isPending
                   ? 'Сохранение...'
                   : 'Сохранить'}
               </Button>

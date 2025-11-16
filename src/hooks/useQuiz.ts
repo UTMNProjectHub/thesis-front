@@ -5,6 +5,7 @@ import type {
   UpdateQuizRequest,
   UpdateQuestionRequest,
   UpdateQuestionVariant,
+  MatchingConfig,
 } from '@/types/quiz'
 import axios from 'axios'
 import { useUser } from './useAuth'
@@ -214,6 +215,30 @@ export function useUpdateQuestionVariants() {
     },
     onError: (error) => {
       console.error('Update question variants error:', error)
+    },
+  })
+}
+
+// Хук для обновления matching конфигурации
+export function useUpdateQuestionMatchingConfig() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      questionId,
+      matchingConfig,
+    }: {
+      questionId: string
+      matchingConfig: MatchingConfig
+    }) => apiClient.updateQuestionMatchingConfig(questionId, matchingConfig),
+    onSuccess: () => {
+      // Инвалидируем все вопросы
+      queryClient.invalidateQueries({
+        queryKey: quizKeys.all,
+      })
+    },
+    onError: (error) => {
+      console.error('Update question matching config error:', error)
     },
   })
 }

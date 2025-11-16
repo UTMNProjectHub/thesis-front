@@ -11,15 +11,22 @@ export interface Quiz {
 export interface MatchingLeftItem {
   id: string
   text: string
-  explainRight?: string
-  explainWrong?: string
 }
 
 export interface MatchingRightItem {
   id: string
   text: string
-  explainRight?: string
-  explainWrong?: string
+}
+
+export interface MatchingConfig {
+  leftItems: MatchingLeftItem[]
+  rightItems: MatchingRightItem[]
+  correctPairs: Array<{
+    leftVariantId: string
+    rightVariantId: string
+    explainRight?: string
+    explainWrong?: string
+  }>
 }
 
 export interface Question {
@@ -30,6 +37,7 @@ export interface Question {
   variants?: QuestionVariant[]
   matchingLeftItems?: MatchingLeftItem[]
   matchingRightItems?: MatchingRightItem[]
+  matchingConfig?: MatchingConfig
 }
 
 export interface QuestionVariant {

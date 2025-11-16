@@ -80,6 +80,8 @@ export function QuestionMatching({
     ? submittedResponse as { pairs: Array<{ key: string; value: string; isRight: boolean; explanation: string | null }> }
     : undefined
 
+  console.log(submittedResponse)
+
   return (
     <div className="space-y-4">
       <FieldGroup>

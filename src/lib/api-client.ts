@@ -24,6 +24,7 @@ import {
   type UpdateQuestionRequest,
   type UpdateQuestionVariant,
   type QuestionVariant,
+  type MatchingConfig,
 } from '@/types/quiz'
 
 export class ApiClient {
@@ -359,8 +360,8 @@ export class ApiClient {
     return response.data
   }
 
-  async getQuestion(questionId: string): Promise<Question & { variants: QuestionVariant[] }> {
-    const response = await this.client.get<Question & { variants: QuestionVariant[] }>(
+  async getQuestion(questionId: string): Promise<Question & { variants: QuestionVariant[]; matchingConfig?: MatchingConfig }> {
+    const response = await this.client.get<Question & { variants: QuestionVariant[]; matchingConfig?: MatchingConfig }>(
       `/questions/${questionId}`,
     )
     return response.data
@@ -382,6 +383,13 @@ export class ApiClient {
     variants: Array<UpdateQuestionVariant>,
   ): Promise<void> {
     await this.client.put(`/questions/${questionId}/variants`, { variants })
+  }
+
+  async updateQuestionMatchingConfig(
+    questionId: string,
+    matchingConfig: MatchingConfig,
+  ): Promise<void> {
+    await this.client.put(`/questions/${questionId}/matching-config`, { matchingConfig })
   }
 }
 

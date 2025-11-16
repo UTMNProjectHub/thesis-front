@@ -126,7 +126,7 @@ function QuizResultView({
           ) {
             const answerPairs = (
               firstSubmit.answer as {
-                pairs: Array<{ key: string; value: string; isRight: boolean }>
+                pairs: Array<{ key: string; value: string; isRight: boolean; explanation: string | null }>
               }
             ).pairs
 
@@ -139,21 +139,11 @@ function QuizResultView({
                 (ri) => ri.id === pair.value,
               )
 
-              // Получаем explanation из элементов
-              let explanation: string | null = null
-              if (pair.isRight) {
-                explanation =
-                  leftItem?.explainRight || rightItem?.explainRight || null
-              } else {
-                explanation =
-                  leftItem?.explainWrong || rightItem?.explainWrong || null
-              }
-
               pairs.push({
                 key: leftItem?.text || pair.key,
                 value: rightItem?.text || pair.value,
                 isRight: pair.isRight,
-                explanation,
+                explanation: pair.explanation,
               })
             })
           }

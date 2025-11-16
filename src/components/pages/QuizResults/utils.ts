@@ -84,14 +84,10 @@ export function transformApiQuestionToQuestion(apiQuestion: ApiQuestion): Questi
         matchingLeftItems = qv.matchingConfig.leftItems.map((item) => ({
           id: item.id,
           text: item.text,
-          explainRight: item.explainRight,
-          explainWrong: item.explainWrong,
         }))
         matchingRightItems = qv.matchingConfig.rightItems.map((item) => ({
           id: item.id,
           text: item.text,
-          explainRight: item.explainRight,
-          explainWrong: item.explainWrong,
         }))
       }
 
@@ -196,21 +192,13 @@ export function transformApiSubmitToSubmitAnswerResponse(
             (cp) =>
               cp.leftVariantId === pair.key && cp.rightVariantId === pair.value,
           )
-          explanation =
-            correctPair?.explainRight ||
-            leftItem?.explainRight ||
-            rightItem?.explainRight ||
-            null
+          explanation = correctPair?.explainRight || null
         } else {
           // Для неправильных пар находим правильную пару для этого leftItem
           const correctPairForLeft = matchingConfig?.correctPairs.find(
             (cp) => cp.leftVariantId === pair.key,
           )
-          explanation =
-            correctPairForLeft?.explainWrong ||
-            leftItem?.explainWrong ||
-            rightItem?.explainWrong ||
-            null
+          explanation = correctPairForLeft?.explainWrong || null
         }
 
         pairs.push({
