@@ -1,10 +1,12 @@
 import type {
   MatchingLeftItem,
   MatchingRightItem,
+  MultichoiceAnswerResponse,
   Question,
   QuestionVariant,
   SubmitAnswerResponse,
   SubmittedAnswer,
+  SubmittedVariant,
 } from '@/types/quiz'
 
 // Типы для данных из API
@@ -222,12 +224,7 @@ export function transformApiSubmitToSubmitAnswerResponse(
 
   // Обработка multichoice и truefalse вопросов
   if (question.type === 'multichoice' || question.type === 'truefalse') {
-    const submittedVariants: Array<{
-      variantId: string
-      variantText: string
-      isRight: boolean
-      explanation: string
-    }> = []
+    const submittedVariants: Array<SubmittedVariant> = []
 
     if (apiSubmit.chosenVariant && question.variants) {
       const chosenVariant = apiSubmit.chosenVariant
@@ -245,7 +242,7 @@ export function transformApiSubmitToSubmitAnswerResponse(
 
         if (questionVariant) {
           submittedVariants.push({
-            variantId: questionVariant.variantId || questionVariant.id,
+            id: questionVariant.variantId || questionVariant.id,
             variantText: variant.text,
             isRight: chosenVariant.isRight,
             explanation: chosenVariant.isRight
@@ -261,7 +258,7 @@ export function transformApiSubmitToSubmitAnswerResponse(
       )
       if (variant) {
         submittedVariants.push({
-          variantId: variant.variantId || variant.id,
+          id: variant.variantId || variant.id,
           variantText: variant.text,
           isRight: variant.isRight,
           explanation: variant.isRight
@@ -275,8 +272,8 @@ export function transformApiSubmitToSubmitAnswerResponse(
       return {
         question,
         submittedVariants,
-        allVariants: question.variants || [],
-      } as SubmitAnswerResponse
+        allVariants: question.variants ?? [],
+      } as MultichoiceAnswerResponse
     }
   }
 

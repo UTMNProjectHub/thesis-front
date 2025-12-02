@@ -14,7 +14,6 @@ import type {
 } from '@/types/quiz'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Select } from '@/components/ui/select'
 import { SessionStats } from '@/components/widgets/QuizSessionStats/SessionStats'
 
 interface IQuizResultViewProps {
