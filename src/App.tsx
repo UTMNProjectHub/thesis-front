@@ -1,14 +1,14 @@
 import { Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import {
-  Zap,
-  Brain,
   BarChart3,
-  Sparkles,
-  Rocket,
-  Users,
-  TrendingUp,
+  Brain,
   CheckCircle2,
+  Rocket,
+  Sparkles,
+  TrendingUp,
+  Users,
+  Zap,
 } from 'lucide-react'
 
 import { useUser } from './hooks/useAuth'

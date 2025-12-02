@@ -8,7 +8,7 @@ import { useTheme } from '@/hooks/useTheme'
 
 function ThemeSelector() {
   const [themes, setThemes] = useState<Array<Theme>>([])
-  const [themeSelected, setThemeSelected] = useState<Number>(0)
+  const [themeSelected, setThemeSelected] = useState<number>(0)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const { current: currentSubject } = useSubject()
   const { setCurrent } = useTheme()

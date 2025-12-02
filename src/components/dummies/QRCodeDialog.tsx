@@ -1,5 +1,5 @@
-import { DialogContent, DialogDescription, DialogHeader } from "../ui/dialog";
 import QRCode from "react-qr-code"
+import { DialogContent, DialogDescription, DialogHeader } from "../ui/dialog";
 
 interface IQRCodeDialogProps {
     description?: string

@@ -1,9 +1,9 @@
-import { useParams, Link } from '@tanstack/react-router'
+import { Link, useParams } from '@tanstack/react-router'
+import { QrCodeIcon } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useQuiz } from '@/hooks/useQuiz'
 import { Button } from '@/components/ui/button'
-import { QrCodeIcon } from 'lucide-react'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import QRCodeDialog from '@/components/dummies/QRCodeDialog'
 

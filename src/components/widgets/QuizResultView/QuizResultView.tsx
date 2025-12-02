@@ -1,11 +1,3 @@
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import type {
-  Question,
-  Session,
-  SubmitAnswerResponse,
-  SubmittedAnswer,
-} from '@/types/quiz'
 import { useMemo } from 'react'
 import { QuestionMultichoice } from '../Question/QuestionMultichoice'
 import { QuestionTrueFalse } from '../Question/QuestionTrueFalse'
@@ -14,13 +6,21 @@ import { QuestionNumerical } from '../Question/QuestionNumerical'
 import { QuestionEssay } from '../Question/QuestionEssay'
 import { QuestionMatching } from '../Question/QuestionMatching'
 import { QuestionDescription } from '../Question/QuestionDescription'
+import type {
+  Question,
+  Session,
+  SubmitAnswerResponse,
+  SubmittedAnswer,
+} from '@/types/quiz'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Select } from '@/components/ui/select'
 import { SessionStats } from '@/components/widgets/QuizSessionStats/SessionStats'
 
 interface IQuizResultViewProps {
   session: Session
-  quizQuestions: Question[]
-  sessionSubmits: SubmittedAnswer[]
+  quizQuestions: Array<Question>
+  sessionSubmits: Array<SubmittedAnswer>
 }
 
 function QuizResultView({
@@ -30,7 +30,7 @@ function QuizResultView({
   const { questions, submittedAnswers, stats } = useMemo(() => {
     if (!quizQuestions || !sessionSubmits) {
       return {
-        questions: [] as Question[],
+        questions: [] as Array<Question>,
         submittedAnswers: new Map<string, SubmitAnswerResponse>(),
         stats: { solvedPercent: 0, rightPercent: 0 },
       }

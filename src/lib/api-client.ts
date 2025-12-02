@@ -12,20 +12,7 @@ import type {
   UpdateProfileRequest,
 } from '@/types/profile'
 import type { Subject, Theme } from '@/types/subject'
-import {
-  type Quiz,
-  type Question,
-  type SubmitAnswerRequest,
-  type SubmitAnswerResponse,
-  type Session,
-  type SessionSubmitWithDetails,
-  type QuizUserSession,
-  type UpdateQuizRequest,
-  type UpdateQuestionRequest,
-  type UpdateQuestionVariant,
-  type QuestionVariant,
-  type MatchingConfig,
-} from '@/types/quiz'
+import type {MatchingConfig, Question, QuestionVariant, Quiz, QuizUserSession, Session, SessionSubmitWithDetails, SubmitAnswerRequest, SubmitAnswerResponse, UpdateQuestionRequest, UpdateQuestionVariant, UpdateQuizRequest} from '@/types/quiz';
 
 export class ApiClient {
   protected client: AxiosInstance
@@ -360,8 +347,8 @@ export class ApiClient {
     return response.data
   }
 
-  async getQuestion(questionId: string): Promise<Question & { variants: QuestionVariant[]; matchingConfig?: MatchingConfig }> {
-    const response = await this.client.get<Question & { variants: QuestionVariant[]; matchingConfig?: MatchingConfig }>(
+  async getQuestion(questionId: string): Promise<Question & { variants: Array<QuestionVariant>; matchingConfig?: MatchingConfig }> {
+    const response = await this.client.get<Question & { variants: Array<QuestionVariant>; matchingConfig?: MatchingConfig }>(
       `/questions/${questionId}`,
     )
     return response.data

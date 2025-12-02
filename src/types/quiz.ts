@@ -19,8 +19,8 @@ export interface MatchingRightItem {
 }
 
 export interface MatchingConfig {
-  leftItems: MatchingLeftItem[]
-  rightItems: MatchingRightItem[]
+  leftItems: Array<MatchingLeftItem>
+  rightItems: Array<MatchingRightItem>
   correctPairs: Array<{
     leftVariantId: string
     rightVariantId: string
@@ -34,9 +34,9 @@ export interface Question {
   type: string
   multiAnswer: boolean | null
   text: string
-  variants?: QuestionVariant[]
-  matchingLeftItems?: MatchingLeftItem[]
-  matchingRightItems?: MatchingRightItem[]
+  variants?: Array<QuestionVariant>
+  matchingLeftItems?: Array<MatchingLeftItem>
+  matchingRightItems?: Array<MatchingRightItem>
   matchingConfig?: MatchingConfig
 }
 
@@ -93,15 +93,15 @@ export interface SubmittedAnswer {
 
 export interface SubmitAnswerRequest {
   quizId: string
-  answerIds?: string[]
+  answerIds?: Array<string>
   answerText?: string
 }
 
 // Response for multichoice questions
 export interface MultichoiceAnswerResponse {
   question: Question
-  submittedVariants: SubmittedVariant[]
-  allVariants: QuestionVariant[]
+  submittedVariants: Array<SubmittedVariant>
+  allVariants: Array<QuestionVariant>
 }
 
 // Response for matching questions
@@ -109,8 +109,8 @@ export interface MatchingAnswerResponse {
   question: Question
   submittedAnswer: SubmittedAnswer
   isRight: boolean | null
-  pairs: MatchingPair[]
-  variants: QuestionVariant[]
+  pairs: Array<MatchingPair>
+  variants: Array<QuestionVariant>
   explanation?: string | null
 }
 
@@ -120,8 +120,8 @@ export interface ShortAnswerResponse {
   submittedAnswer: SubmittedAnswer
   isRight: boolean | null
   explanation: string | null
-  variants: QuestionVariant[]
-  pairs?: MatchingPair[]
+  variants: Array<QuestionVariant>
+  pairs?: Array<MatchingPair>
 }
 
 export type SubmitAnswerResponse =
@@ -146,7 +146,7 @@ export interface Session {
   timeStart: string | Date | null
   timeEnd: string | Date | null
   quiz?: Quiz
-  sessionSubmits?: any[]
+  sessionSubmits?: Array<any>
 }
 
 export interface QuizUserSession {

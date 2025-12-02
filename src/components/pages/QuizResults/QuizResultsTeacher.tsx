@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { useParams } from '@tanstack/react-router'
+import { Eye } from 'lucide-react'
+import { SessionStats } from '../../widgets/QuizSessionStats/SessionStats'
 import {
+  useQuizQuestions,
   useQuizUsersSessions,
   useSessionSubmits,
-  useQuizQuestions,
 } from '@/hooks/useQuiz'
-import { useParams } from '@tanstack/react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -15,8 +17,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import QuizResultView from '@/components/widgets/QuizResultView/QuizResultView'
-import { Eye } from 'lucide-react'
-import { SessionStats } from '../../widgets/QuizSessionStats/SessionStats'
 
 function QuizResultsTeacher() {
   const { id: quizId } = useParams({ strict: false })

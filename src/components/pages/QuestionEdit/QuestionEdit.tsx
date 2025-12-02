@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
 import { z } from 'zod'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useFieldArray, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { MatchingConfig } from '@/types/quiz'
@@ -34,8 +34,8 @@ import { Checkbox } from '@/components/ui/checkbox'
 import apiClient from '@/lib/api-client'
 import {
   useUpdateQuestion,
-  useUpdateQuestionVariants,
   useUpdateQuestionMatchingConfig,
+  useUpdateQuestionVariants,
 } from '@/hooks/useQuiz'
 import { Separator } from '@/components/ui/separator'
 

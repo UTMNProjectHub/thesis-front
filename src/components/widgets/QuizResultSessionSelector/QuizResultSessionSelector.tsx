@@ -1,3 +1,5 @@
+import { useMemo, useState } from 'react'
+import type { Session } from '@/types/quiz'
 import {
   Select,
   SelectContent,
@@ -5,11 +7,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { Session } from '@/types/quiz'
-import { useMemo, useState } from 'react'
 
 interface IQuizResultSessionSelectorProps {
-  sessions: Session[]
+  sessions: Array<Session>
   selected: Session | null
   setSelected: (session: Session | null) => void
 }

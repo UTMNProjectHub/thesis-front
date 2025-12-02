@@ -1,9 +1,9 @@
+import type { Session } from '@/types/quiz'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import type { Session } from '@/types/quiz'
 
 interface SessionSelectorProps {
-  sessions: Session[]
+  sessions: Array<Session>
   onSelectSession: (sessionId: string) => void
   isLoading?: boolean
 }

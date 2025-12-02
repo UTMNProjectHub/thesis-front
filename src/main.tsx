@@ -10,7 +10,6 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
-import Header from '@/components/widgets/Header/Header.tsx'
 
 import * as TanStackQueryProvider from './integrations/tanstack-query/root-provider.tsx'
 
@@ -23,12 +22,13 @@ import Register from './components/pages/Auth/Register.tsx'
 import Profile from './components/pages/Profile/Profile.tsx'
 import Generation from './components/pages/Generation/Generation.tsx'
 import Quiz from './components/pages/Quiz/Quiz.tsx'
-import Questions from '@/components/pages/Questions/Questions.tsx'
 import Error from './components/pages/Error/Error.tsx'
 import QuizResults from './components/pages/QuizResults/QuizResults.tsx'
 import QuizResultsTeacher from './components/pages/QuizResults/QuizResultsTeacher.tsx'
 import QuizEdit from './components/pages/QuizEdit/QuizEdit.tsx'
 import QuestionEdit from './components/pages/QuestionEdit/QuestionEdit.tsx'
+import Questions from '@/components/pages/Questions/Questions.tsx'
+import Header from '@/components/widgets/Header/Header.tsx'
 
 /**
  * Root route no longer renders the global header directly.

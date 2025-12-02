@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import GenerationQuizDialog from '../GenerationQuizDialog/GenerationQuizDialog'
 import type { Quiz } from '@/types/quiz'
 import apiClient from '@/lib/api-client'
 import { useTheme } from '@/hooks/useTheme'
 import QuizSmallCard from '@/components/dummies/QuizSmallCard'
 import CreateQuizCard from '@/components/dummies/CreateQuizCard'
-import { useNavigate } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
-import GenerationQuizDialog from '../GenerationQuizDialog/GenerationQuizDialog'
 import quizApi from '@/models/Quiz/api'
 import {
   Dialog,

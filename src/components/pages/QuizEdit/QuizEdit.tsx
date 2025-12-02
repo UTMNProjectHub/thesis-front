@@ -1,7 +1,9 @@
-import { useParams, useNavigate } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQuery } from '@tanstack/react-query'
+import { Pencil } from 'lucide-react'
 import {
   Card,
   CardContent,
@@ -28,11 +30,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useQuiz, useUpdateQuiz, useQuizQuestions } from '@/hooks/useQuiz'
+import { useQuiz, useQuizQuestions, useUpdateQuiz } from '@/hooks/useQuiz'
 import { useSubject } from '@/hooks/useSubject'
-import { useQuery } from '@tanstack/react-query'
 import apiClient from '@/lib/api-client'
-import { Pencil } from 'lucide-react'
 
 const quizEditSchema = z.object({
   name: z.string().min(1, { message: 'Название обязательно' }),

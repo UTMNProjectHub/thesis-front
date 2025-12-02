@@ -7,7 +7,7 @@ import { useSubject } from '@/hooks/useSubject'
 
 function SubjectSelector() {
   const [subjects, setSubjects] = useState<Array<Subject>>([])
-  const [subjectSelected, setSubjectSelected] = useState<Number>(0)
+  const [subjectSelected, setSubjectSelected] = useState<number>(0)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const { setCurrent } = useSubject()
 

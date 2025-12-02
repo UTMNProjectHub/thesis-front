@@ -1,8 +1,8 @@
 import type {
-  Question,
-  QuestionVariant,
   MatchingLeftItem,
   MatchingRightItem,
+  Question,
+  QuestionVariant,
   SubmitAnswerResponse,
   SubmittedAnswer,
 } from '@/types/quiz'
@@ -73,9 +73,9 @@ interface ApiSubmit {
  * Преобразует вопрос из API в формат Question
  */
 export function transformApiQuestionToQuestion(apiQuestion: ApiQuestion): Question {
-  const variants: QuestionVariant[] = []
-  let matchingLeftItems: MatchingLeftItem[] | undefined
-  let matchingRightItems: MatchingRightItem[] | undefined
+  const variants: Array<QuestionVariant> = []
+  let matchingLeftItems: Array<MatchingLeftItem> | undefined
+  let matchingRightItems: Array<MatchingRightItem> | undefined
 
   if (apiQuestion.questionsVariants) {
     apiQuestion.questionsVariants.forEach((qv) => {

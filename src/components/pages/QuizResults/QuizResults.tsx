@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { useParams } from '@tanstack/react-router'
+import { SessionStats } from '../../widgets/QuizSessionStats/SessionStats'
+import type { Question, Session, SubmitAnswerResponse } from '@/types/quiz'
 import {
   useQuizQuestions,
-  useSessions,
   useSessionSubmits,
+  useSessions,
 } from '@/hooks/useQuiz'
-import { useParams } from '@tanstack/react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -14,8 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { SessionStats } from '../../widgets/QuizSessionStats/SessionStats'
-import type { Question, Session, SubmitAnswerResponse } from '@/types/quiz'
 import { QuestionMultichoice } from '@/components/widgets/Question/QuestionMultichoice'
 import { QuestionTrueFalse } from '@/components/widgets/Question/QuestionTrueFalse'
 import { QuestionShortAnswer } from '@/components/widgets/Question/QuestionShortAnswer'

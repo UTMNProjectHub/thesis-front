@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { BookOpen, File, FolderOpen, Upload } from 'lucide-react'
 import apiClient from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,7 +14,6 @@ import {
 import { useTheme } from '@/hooks/useTheme'
 import { useSubject } from '@/hooks/useSubject'
 import { cn } from '@/lib/utils'
-import { File, Upload, FolderOpen, BookOpen } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 interface FileItem {
@@ -26,8 +26,8 @@ interface FileItem {
 
 interface GenerationFileSelectorProps {
   className?: string
-  selectedFiles?: string[]
-  onSelectionChange?: (selectedFileIds: string[]) => void
+  selectedFiles?: Array<string>
+  onSelectionChange?: (selectedFileIds: Array<string>) => void
 }
 
 function GenerationFileSelector({
@@ -47,10 +47,10 @@ function GenerationFileSelector({
   const { current: currentSubject } = useSubject()
 
   // Инициализируем состояние только при первом рендере
-  const [localSelectedFiles, setLocalSelectedFiles] = useState<string[]>(() => selectedFiles)
+  const [localSelectedFiles, setLocalSelectedFiles] = useState<Array<string>>(() => selectedFiles)
   
   // Используем ref для отслеживания предыдущего значения selectedFiles
-  const prevSelectedFilesRef = useRef<string[]>(selectedFiles)
+  const prevSelectedFilesRef = useRef<Array<string>>(selectedFiles)
 
   useEffect(() => {
     if (currentTheme) {

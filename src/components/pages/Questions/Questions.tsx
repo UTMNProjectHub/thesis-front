@@ -1,19 +1,20 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { useQueryClient } from '@tanstack/react-query'
+import axios from 'axios'
+import type { Question, SubmitAnswerResponse } from '@/types/quiz'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import {
-  useQuizQuestions,
-  useSubmitAnswer,
-  useActiveSessions,
-  useSessionSubmits,
-  useFinishSession,
   quizKeys,
+  useActiveSessions,
+  useFinishSession,
+  useQuizQuestions,
+  useSessionSubmits,
+  useSubmitAnswer,
 } from '@/hooks/useQuiz'
-import type { Question, SubmitAnswerResponse } from '@/types/quiz'
 import { QuestionMultichoice } from '@/components/widgets/Question/QuestionMultichoice'
 import { QuestionTrueFalse } from '@/components/widgets/Question/QuestionTrueFalse'
 import { QuestionShortAnswer } from '@/components/widgets/Question/QuestionShortAnswer'
@@ -25,12 +26,11 @@ import { SessionSelector } from '@/components/pages/SessionSelector/SessionSelec
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog'
-import axios from 'axios'
 
 function Questions() {
   const { id } = useParams({ strict: false })
@@ -174,26 +174,18 @@ function Questions() {
           }> = []
           
           if (firstSubmit.answer && typeof firstSubmit.answer === 'object' && 'pairs' in firstSubmit.answer) {
-            const answerPairs = (firstSubmit.answer as { pairs: Array<{ key: string; value: string; isRight: boolean }> }).pairs
+            const answerPairs = (firstSubmit.answer as { pairs: Array<{ key: string; value: string; isRight: boolean; explanation: string | null }> }).pairs
             
             answerPairs.forEach((pair) => {
               // Находим тексты по ID
               const leftItem = question.matchingLeftItems?.find((li) => li.id === pair.key)
               const rightItem = question.matchingRightItems?.find((ri) => ri.id === pair.value)
               
-              // Получаем explanation из элементов
-              let explanation: string | null = null
-              if (pair.isRight) {
-                explanation = leftItem?.explainRight || rightItem?.explainRight || null
-              } else {
-                explanation = leftItem?.explainWrong || rightItem?.explainWrong || null
-              }
-              
               pairs.push({
                 key: leftItem?.text || pair.key,
                 value: rightItem?.text || pair.value,
                 isRight: pair.isRight,
-                explanation,
+                explanation: pair.explanation,
               })
             })
           }
@@ -276,7 +268,7 @@ function Questions() {
 
   const handleAnswerSubmit = async (
     question: Question,
-    answerIds?: string[],
+    answerIds?: Array<string>,
     answerText?: string,
   ) => {
     if (!id || !questions) return

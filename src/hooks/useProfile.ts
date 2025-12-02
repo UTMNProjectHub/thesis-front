@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { ChangePasswordRequest, UpdateProfileRequest } from '@/types/profile'
 import apiClient from '@/lib/api-client'
-import type { UpdateProfileRequest, ChangePasswordRequest } from '@/types/profile'
 
 // Query keys
 export const profileKeys = {

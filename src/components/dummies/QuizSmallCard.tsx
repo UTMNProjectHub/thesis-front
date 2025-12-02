@@ -1,14 +1,14 @@
+import { Edit, Eye, Play, Trash2 } from 'lucide-react'
 import type { Quiz } from '@/types/quiz'
 import {
   Card,
+  CardAction,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardAction,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Play, Edit, Trash2, Eye } from 'lucide-react'
 
 interface QuizCardProps {
   quiz: Quiz
