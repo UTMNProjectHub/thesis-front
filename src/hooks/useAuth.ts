@@ -17,7 +17,7 @@ export function useLogin() {
     mutationFn: ({ email, password }: LoginRequest) =>
       apiClient.login(email, password),
     onSuccess: (data: AuthResponse) => {
-      queryClient.setQueryData(authKeys.user(), { data: data })
+      queryClient.setQueryData(authKeys.user(), data)
       navigate({ to: '/' })
     },
     onError: (error) => {
@@ -33,8 +33,7 @@ export function useRegister() {
   return useMutation({
     mutationFn: (userData: RegisterRequest) => apiClient.register(userData),
     onSuccess: (data: AuthResponse) => {
-      console.log(data)
-      queryClient.setQueryData(authKeys.user(), { data: data })
+      queryClient.setQueryData(authKeys.user(), data)
       navigate({ to: '/' })
     },
     onError: (error) => {
