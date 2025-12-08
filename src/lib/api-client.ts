@@ -378,6 +378,28 @@ export class ApiClient {
   ): Promise<void> {
     await this.client.put(`/questions/${questionId}/matching-config`, { matchingConfig })
   }
+
+  async generateQuiz(data: {
+    files: Array<string>
+    difficulty: 'easy' | 'medium' | 'hard'
+    question_count: number
+    question_types: Array<
+      | 'multichoice'
+      | 'essay'
+      | 'matching'
+      | 'truefalse'
+      | 'shortanswer'
+      | 'numerical'
+    >
+    additional_requirements?: string
+  }): Promise<{ success: boolean; message: string; quizId: string }> {
+    const response = await this.client.post<{
+      success: boolean
+      message: string
+      quizId: string
+    }>('/generation/quiz', data)
+    return response.data
+  }
 }
 
 export const apiClient = new ApiClient()

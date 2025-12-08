@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog'
 import { useTheme } from '@/hooks/useTheme'
 import { useSubject } from '@/hooks/useSubject'
+import { useGenerationFiles } from '@/hooks/useGenerationFiles'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 
@@ -26,15 +27,9 @@ interface FileItem {
 
 interface GenerationFileSelectorProps {
   className?: string
-  selectedFiles?: Array<string>
-  onSelectionChange?: (selectedFileIds: Array<string>) => void
 }
 
-function GenerationFileSelector({
-  className,
-  selectedFiles = [],
-  onSelectionChange,
-}: GenerationFileSelectorProps) {
+function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
   const [files, setFiles] = useState<Array<FileItem>>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
@@ -45,12 +40,7 @@ function GenerationFileSelector({
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { current: currentTheme } = useTheme()
   const { current: currentSubject } = useSubject()
-
-  // Инициализируем состояние только при первом рендере
-  const [localSelectedFiles, setLocalSelectedFiles] = useState<Array<string>>(() => selectedFiles)
-  
-  // Используем ref для отслеживания предыдущего значения selectedFiles
-  const prevSelectedFilesRef = useRef<Array<string>>(selectedFiles)
+  const { selectedFiles, setSelectedFiles } = useGenerationFiles()
 
   useEffect(() => {
     if (currentTheme) {
@@ -85,10 +75,11 @@ function GenerationFileSelector({
           const allFiles = [...themeFilesWithType, ...subjectFilesWithType]
           setFiles(allFiles)
           
-          // Выбираем все файлы по умолчанию
+          // Выбираем все файлы по умолчанию, если еще ничего не выбрано
           const allFileIds = allFiles.map((file) => file.id)
-          setLocalSelectedFiles(allFileIds)
-          onSelectionChange?.(allFileIds)
+          if (selectedFiles.length === 0) {
+            setSelectedFiles(allFileIds)
+          }
           setLoading(false)
         } catch (err: any) {
           setError(err.message || 'Ошибка загрузки файлов')
@@ -99,34 +90,21 @@ function GenerationFileSelector({
       loadFiles()
     } else {
       setFiles([])
-      setLocalSelectedFiles([])
-      onSelectionChange?.([])
+      setSelectedFiles([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTheme, currentSubject])
-  
-  useEffect(() => {
-    // Сравниваем массивы по содержимому, чтобы избежать бесконечных обновлений
-    const prev = [...prevSelectedFilesRef.current].sort().join(',')
-    const current = [...selectedFiles].sort().join(',')
-    
-    if (prev !== current) {
-      prevSelectedFilesRef.current = [...selectedFiles]
-      setLocalSelectedFiles([...selectedFiles])
-    }
-  }, [selectedFiles])
 
   const filteredFiles = files.filter((file) =>
     file.name.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
   const handleToggleFile = (fileId: string) => {
-    const newSelection = localSelectedFiles.includes(fileId)
-      ? localSelectedFiles.filter((id) => id !== fileId)
-      : [...localSelectedFiles, fileId]
+    const newSelection = selectedFiles.includes(fileId)
+      ? selectedFiles.filter((id) => id !== fileId)
+      : [...selectedFiles, fileId]
 
-    setLocalSelectedFiles(newSelection)
-    onSelectionChange?.(newSelection)
+    setSelectedFiles(newSelection)
   }
 
   const handleUploadClick = () => {
@@ -174,8 +152,7 @@ function GenerationFileSelector({
         const allFiles = [...themeFilesWithType, ...subjectFilesWithType]
         setFiles(allFiles)
         const allFileIds = allFiles.map((f) => f.id)
-        setLocalSelectedFiles(allFileIds)
-        onSelectionChange?.(allFileIds)
+        setSelectedFiles(allFileIds)
       }
     } catch (err: any) {
       setError(err.message || 'Ошибка загрузки файла')
@@ -328,7 +305,7 @@ function GenerationFileSelector({
           filteredFiles.map((file) => (
             <Button
               key={file.id}
-              variant={localSelectedFiles.includes(file.id) ? 'default' : 'outline'}
+              variant={selectedFiles.includes(file.id) ? 'default' : 'outline'}
               onClick={() => handleToggleFile(file.id)}
               className="justify-start"
             >
@@ -340,16 +317,16 @@ function GenerationFileSelector({
               >
                 {file.type === 'theme' ? 'тематический' : 'предметный'}
               </Badge>
-              {localSelectedFiles.includes(file.id) && (
+              {selectedFiles.includes(file.id) && (
                 <span className="ml-auto">✓</span>
               )}
             </Button>
           ))
         )}
       </div>
-      {localSelectedFiles.length > 0 && (
+      {selectedFiles.length > 0 && (
         <div className="mt-2 text-sm text-muted-foreground">
-          Выбрано файлов: {localSelectedFiles.length}
+          Выбрано файлов: {selectedFiles.length}
         </div>
       )}
     </div>
