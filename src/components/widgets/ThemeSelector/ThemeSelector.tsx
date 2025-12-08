@@ -5,37 +5,55 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useSubject } from '@/hooks/useSubject'
 import { useTheme } from '@/hooks/useTheme'
+import { CirclePlus } from 'lucide-react'
+import CreateThemeDialog from './CreateThemeDialog'
 
 function ThemeSelector() {
   const [themes, setThemes] = useState<Array<Theme>>([])
   const [themeSelected, setThemeSelected] = useState<number>(0)
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const { current: currentSubject } = useSubject()
   const { setCurrent } = useTheme()
 
-  useEffect(() => {
+  const loadThemes = () => {
     if (currentSubject) {
       apiClient
         .getThemesBySubjectId(
-          currentSubject?.id,
+          currentSubject.id,
           searchQuery || undefined,
         )
         .then((data) => {
           setThemes(data)
         })
     }
+  }
+
+  useEffect(() => {
+    loadThemes()
   }, [currentSubject, searchQuery])
 
   return (
     <div className="flex flex-col">
       <h2 className="text-lg mb-2">Пожалуйста, выберите тему:</h2>
-      <Input
-        type="text"
-        placeholder="Поиск темы..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="mb-2"
-      />
+      <div className='flex flex-row gap-1.5'>
+        <Input
+          type="text"
+          placeholder="Поиск темы..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="mb-2"
+        />
+        <Button
+          variant={'outline'}
+          className="!border-gray-200"
+          onClick={() => setIsCreateDialogOpen(true)}
+          type="button"
+          disabled={!currentSubject}
+        >
+          <CirclePlus />
+        </Button>
+      </div>
       <div className="flex flex-col gap-2 overflow-y-auto max-h-[70vh]">
         {themes.map((theme) => (
           <Button
@@ -61,6 +79,15 @@ function ThemeSelector() {
         >
           Далее
         </Button>
+
+      {currentSubject && (
+        <CreateThemeDialog
+          open={isCreateDialogOpen}
+          onOpenChange={setIsCreateDialogOpen}
+          subjectId={currentSubject.id}
+          onSuccess={loadThemes}
+        />
+      )}
     </div>
   )
 }

@@ -186,6 +186,16 @@ export class ApiClient {
     return response.data
   }
 
+  async createSubject(data: {
+    name: string
+    shortName: string
+    yearStart: number
+    yearEnd: number
+    description?: string | null
+  }): Promise<void> {
+    await this.client.post('/subject', data)
+  }
+
   async getSubjectById(subjectId: number): Promise<Subject> {
     const response = await this.client.get<Subject>(`/subject/${subjectId}`)
     return response.data
@@ -267,6 +277,16 @@ export class ApiClient {
       },
     )
     return response.data
+  }
+
+  async createTheme(
+    subjectId: number,
+    data: {
+      name: string
+      description?: string | null
+    },
+  ): Promise<void> {
+    await this.client.post(`/subject/${subjectId}/themes`, data)
   }
 
   async getQuizById(quizId: string): Promise<Quiz> {
