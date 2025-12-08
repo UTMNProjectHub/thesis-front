@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import GenerationQuizDialog from '../GenerationQuizDialog/GenerationQuizDialog'
 import type { Quiz } from '@/types/quiz'
@@ -32,7 +32,7 @@ function QuizList({ className }: QuizListProps) {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const loadQuizes = useCallback(() => {
     if (currentTheme) {
       setLoading(true)
       setError(null)
@@ -49,6 +49,10 @@ function QuizList({ className }: QuizListProps) {
     } else {
       setQuizes([])
     }
+  }, [currentTheme])
+
+  useEffect(() => {
+    loadQuizes()
   }, [currentTheme])
 
   const handleCreateQuiz = () => {
@@ -124,7 +128,11 @@ function QuizList({ className }: QuizListProps) {
       <div className={cn('w-full flex flex-col', className)}>
         <div className="p-4 overflow-y-auto min-h-0 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {currentTheme && <GenerationQuizDialog><CreateQuizCard onClick={handleCreateQuiz} /></GenerationQuizDialog>}
+            {currentTheme && (
+              <GenerationQuizDialog onSuccess={loadQuizes}>
+                <CreateQuizCard onClick={handleCreateQuiz} />
+              </GenerationQuizDialog>
+            )}
             {quizes.map((quiz) => (
               <QuizSmallCard
                 key={quiz.id}
