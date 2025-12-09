@@ -12,7 +12,20 @@ import type {
   UpdateProfileRequest,
 } from '@/types/profile'
 import type { Subject, Theme } from '@/types/subject'
-import type {MatchingConfig, Question, QuestionVariant, Quiz, QuizUserSession, Session, SessionSubmitWithDetails, SubmitAnswerRequest, SubmitAnswerResponse, UpdateQuestionRequest, UpdateQuestionVariant, UpdateQuizRequest} from '@/types/quiz';
+import type {
+  MatchingConfig,
+  Question,
+  QuestionVariant,
+  Quiz,
+  QuizUserSession,
+  Session,
+  SessionSubmitWithDetails,
+  SubmitAnswerRequest,
+  SubmitAnswerResponse,
+  UpdateQuestionRequest,
+  UpdateQuestionVariant,
+  UpdateQuizRequest,
+} from '@/types/quiz'
 
 export class ApiClient {
   protected client: AxiosInstance
@@ -54,7 +67,8 @@ export class ApiClient {
         }
 
         const isAuthEndpoint =
-          originalRequest.url === '/login' || originalRequest.url === '/register'
+          originalRequest.url === '/login' ||
+          originalRequest.url === '/register'
 
         if (
           error.response?.status === 401 &&
@@ -367,10 +381,20 @@ export class ApiClient {
     return response.data
   }
 
-  async getQuestion(questionId: string): Promise<Question & { variants: Array<QuestionVariant>; matchingConfig?: MatchingConfig }> {
-    const response = await this.client.get<Question & { variants: Array<QuestionVariant>; matchingConfig?: MatchingConfig }>(
-      `/questions/${questionId}`,
-    )
+  async getQuestion(
+    questionId: string,
+  ): Promise<
+    Question & {
+      variants: Array<QuestionVariant>
+      matchingConfig?: MatchingConfig
+    }
+  > {
+    const response = await this.client.get<
+      Question & {
+        variants: Array<QuestionVariant>
+        matchingConfig?: MatchingConfig
+      }
+    >(`/questions/${questionId}`)
     return response.data
   }
 
@@ -396,11 +420,14 @@ export class ApiClient {
     questionId: string,
     matchingConfig: MatchingConfig,
   ): Promise<void> {
-    await this.client.put(`/questions/${questionId}/matching-config`, { matchingConfig })
+    await this.client.put(`/questions/${questionId}/matching-config`, {
+      matchingConfig,
+    })
   }
 
   async generateQuiz(data: {
     files: Array<string>
+    themeId: number
     difficulty: 'easy' | 'medium' | 'hard'
     question_count: number
     question_types: Array<

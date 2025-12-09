@@ -34,6 +34,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { useWebSocket } from '@/hooks/useWebSocket'
 import { useGenerationFiles } from '@/hooks/useGenerationFiles'
 import apiClient from '@/lib/api-client'
+import { useTheme } from '@/hooks/useTheme'
 
 const QUESTION_TYPES = [
   { value: 'multichoice', label: 'Множественный выбор' },
@@ -78,6 +79,7 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
   const [quizId, setQuizId] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const { selectedFiles } = useGenerationFiles()
+  const { current } = useTheme()
   const [isOpen, setIsOpen] = useState(false)
 
   const {
@@ -97,7 +99,7 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
 
   const generationMutation = useMutation({
     mutationFn: (data: QuizGenerationForm & { files: Array<string> }) =>
-      apiClient.generateQuiz(data),
+      apiClient.generateQuiz({ ...data, themeId: current!.id as number }),
     onSuccess: (
       response: { success: boolean; message: string; quizId: string },
     ) => {
