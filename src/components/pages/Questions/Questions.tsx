@@ -248,7 +248,7 @@ function Questions() {
     : false
 
   const handleFinishQuiz = async () => {
-    if (!id || !selectedSessionId) return
+    if (!id || (!selectedSessionId && !returnedSessionId)) return;
 
     if (!allQuestionsAnswered) {
       setShowFinishDialog(true)
@@ -258,7 +258,7 @@ function Questions() {
     // Если все вопросы отвечены, сразу завершаем
     await finishSessionMutation.mutateAsync({
       quizId: id,
-      sessionId: selectedSessionId,
+      sessionId: selectedSessionId || returnedSessionId || '',
     })
 
     navigate({ to: `/quiz/${id}/results` })
