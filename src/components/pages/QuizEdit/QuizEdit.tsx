@@ -47,7 +47,7 @@ function QuizEdit() {
   const { id } = useParams({ strict: false })
   const navigate = useNavigate()
   const { data: quiz, isLoading, error } = useQuiz(id || '')
-  const { data: questions, isLoading: questionsLoading } = useQuizQuestions(id || '', undefined)
+  const { data: questions, isLoading: questionsLoading } = useQuizQuestions(id || '', undefined, true);
   const updateQuizMutation = useUpdateQuiz()
   const { current: currentSubject } = useSubject()
 

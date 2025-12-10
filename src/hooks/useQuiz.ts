@@ -34,11 +34,11 @@ export function useQuiz(quizId: string) {
 }
 
 // Хук для получения вопросов квиза
-export function useQuizQuestions(quizId: string, sessionId?: string) {
+export function useQuizQuestions(quizId: string, sessionId?: string, view?: boolean) {
   return useQuery({
-    queryKey: [...quizKeys.questions(quizId), sessionId],
+    queryKey: [...quizKeys.questions(quizId), sessionId, view],
     queryFn: () => apiClient.getQuizQuestions(quizId, sessionId),
-    enabled: !!quizId && apiClient.isAuthenticated(),
+    enabled: !!quizId && apiClient.isAuthenticated() && (view === undefined || view === true),
     staleTime: 5 * 60 * 1000, // 5 минут
     retry: (failureCount, error) => {
       // Не повторяем запрос при 409 ошибке

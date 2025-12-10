@@ -318,6 +318,7 @@ export class ApiClient {
   async getQuizQuestions(
     quizId: string,
     sessionId?: string,
+    view?: boolean,
   ): Promise<Array<Question>> {
     const headers: Record<string, string> = {}
     if (sessionId) {
@@ -325,7 +326,7 @@ export class ApiClient {
     }
     const response = await this.client.get<Array<Question>>(
       `/quizes/${quizId}/questions`,
-      { headers },
+      { headers, params: view ? { view: true } : undefined },
     )
     return response.data
   }
