@@ -328,12 +328,21 @@ export class ApiClient {
       `/quizes/${quizId}/questions`,
       { headers, params: view ? { view: true } : undefined },
     )
-    // Извлекаем sessionId из заголовка ответа, если он есть
-    // Axios нормализует заголовки, поэтому проверяем оба варианта
-    const returnedSessionId = (response.headers['x-session-id'] || response.headers['X-Session-Id']) as string | undefined
-    return {
-      questions: response.data,
-      sessionId: returnedSessionId,
+
+
+    // @ts-expect-error TODO: fix this
+    if (response.data.sessionId) {
+      return {
+        // @ts-expect-error TODO: fix this
+        questions: response.data.questions,
+        // @ts-expect-error TODO: fix this
+        sessionId: response.data.sessionId,
+      }
+    } else {
+      return {
+        questions: response.data,
+        sessionId: undefined,
+      }
     }
   }
 
@@ -452,6 +461,19 @@ export class ApiClient {
       message: string
       quizId: string
     }>('/generation/quiz', data)
+    return response.data
+  }
+
+  async generateSummary(data: {
+    files: Array<string>
+    themeId: number
+    additional_requirements?: string
+  }): Promise<{ success: boolean; message: string; summaryId: string }> {
+    const response = await this.client.post<{
+      success: boolean
+      message: string
+      summaryId: string
+    }>('/generation/summary', data)
     return response.data
   }
 }

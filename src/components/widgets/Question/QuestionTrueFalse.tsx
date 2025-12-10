@@ -9,6 +9,7 @@ interface QuestionTrueFalseProps {
   onSubmit: (answerIds: Array<string>) => void
   submittedResponse?: SubmitAnswerResponse
   isSubmitted: boolean
+  isSubmitting?: boolean
 }
 
 export function QuestionTrueFalse({
@@ -17,6 +18,7 @@ export function QuestionTrueFalse({
   onSubmit,
   submittedResponse,
   isSubmitted,
+  isSubmitting = false,
 }: QuestionTrueFalseProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
@@ -102,10 +104,10 @@ export function QuestionTrueFalse({
       {!isSubmitted && (
         <button
           onClick={handleSubmit}
-          disabled={!selectedId}
+          disabled={!selectedId || isSubmitting}
           className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Отправить ответ
+          {isSubmitting ? 'Отправка...' : 'Отправить ответ'}
         </button>
       )}
     </div>

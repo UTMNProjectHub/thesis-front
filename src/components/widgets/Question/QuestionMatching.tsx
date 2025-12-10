@@ -9,6 +9,7 @@ interface QuestionMatchingProps {
   onSubmit: (answerText: string) => void
   submittedResponse?: SubmitAnswerResponse
   isSubmitted: boolean
+  isSubmitting?: boolean
 }
 
 export function QuestionMatching({
@@ -16,6 +17,7 @@ export function QuestionMatching({
   onSubmit,
   submittedResponse,
   isSubmitted,
+  isSubmitting = false,
 }: QuestionMatchingProps) {
   // Get left and right items from question
   const leftItems = question.matchingLeftItems || []
@@ -184,10 +186,10 @@ export function QuestionMatching({
       {!isSubmitted && (
         <button
           onClick={handleSubmit}
-          disabled={pairs.size === 0}
+          disabled={pairs.size === 0 || isSubmitting}
           className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Отправить ответ
+          {isSubmitting ? 'Отправка...' : 'Отправить ответ'}
         </button>
       )}
     </div>

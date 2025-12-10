@@ -8,6 +8,7 @@ interface QuestionShortAnswerProps {
   onSubmit: (answerText: string) => void
   submittedResponse?: SubmitAnswerResponse
   isSubmitted: boolean
+  isSubmitting?: boolean
 }
 
 export function QuestionShortAnswer({
@@ -16,6 +17,7 @@ export function QuestionShortAnswer({
   onSubmit,
   submittedResponse,
   isSubmitted,
+  isSubmitting = false,
 }: QuestionShortAnswerProps) {
   const [answer, setAnswer] = useState('')
 
@@ -72,10 +74,10 @@ export function QuestionShortAnswer({
       {!isSubmitted && (
         <button
           onClick={handleSubmit}
-          disabled={!answer.trim()}
+          disabled={!answer.trim() || isSubmitting}
           className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Отправить ответ
+          {isSubmitting ? 'Отправка...' : 'Отправить ответ'}
         </button>
       )}
     </div>

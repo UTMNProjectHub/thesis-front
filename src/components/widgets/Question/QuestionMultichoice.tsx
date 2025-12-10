@@ -9,6 +9,7 @@ interface QuestionMultichoiceProps {
   onSubmit: (answerIds: Array<string>) => void
   submittedResponse?: SubmitAnswerResponse
   isSubmitted: boolean
+  isSubmitting?: boolean
 }
 
 export function QuestionMultichoice({
@@ -17,6 +18,7 @@ export function QuestionMultichoice({
   onSubmit,
   submittedResponse,
   isSubmitted,
+  isSubmitting = false,
 }: QuestionMultichoiceProps) {
   const isMultiAnswer = question.multiAnswer === true
   const [selectedIds, setSelectedIds] = useState<Array<string>>([])
@@ -122,10 +124,10 @@ export function QuestionMultichoice({
       {!isSubmitted && (
         <button
           onClick={handleSubmit}
-          disabled={selectedIds.length === 0}
+          disabled={selectedIds.length === 0 || isSubmitting}
           className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Отправить ответ
+          {isSubmitting ? 'Отправка...' : 'Отправить ответ'}
         </button>
       )}
     </div>

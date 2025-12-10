@@ -248,7 +248,7 @@ function Questions() {
     : false
 
   const handleFinishQuiz = async () => {
-    if (!id || (!selectedSessionId && !returnedSessionId)) return;
+    if (!id || !selectedSessionId) return;
 
     if (!allQuestionsAnswered) {
       setShowFinishDialog(true)
@@ -303,11 +303,11 @@ function Questions() {
           }
           return q
         })
-        // Update React Query cache
-        queryClient.setQueryData(
-          [...quizKeys.questions(id || ''), selectedSessionId, undefined],
-          { questions: updatedQuestions, sessionId: selectedSessionId }
-        )
+        // // Update React Query cache
+        // queryClient.setQueryData(
+        //   [...quizKeys.questions(id || ''), selectedSessionId, undefined],
+        //   { questions: updatedQuestions, sessionId: selectedSessionId }
+        // )
       }
 
       setSubmittedAnswers((prev) => {
@@ -335,6 +335,8 @@ function Questions() {
             ? submittedResponse.variants
             : []
 
+    const isSubmitting = submitAnswerMutation.isPending
+
     switch (currentQuestion.type) {
       case 'multichoice':
         return (
@@ -346,6 +348,7 @@ function Questions() {
             }
             submittedResponse={submittedResponse}
             isSubmitted={isSubmitted}
+            isSubmitting={isSubmitting}
           />
         )
       case 'truefalse':
@@ -358,6 +361,7 @@ function Questions() {
             }
             submittedResponse={submittedResponse}
             isSubmitted={isSubmitted}
+            isSubmitting={isSubmitting}
           />
         )
       case 'shortanswer':
@@ -369,6 +373,7 @@ function Questions() {
             }
             submittedResponse={submittedResponse}
             isSubmitted={isSubmitted}
+            isSubmitting={isSubmitting}
           />
         )
       case 'numerical':
@@ -380,6 +385,7 @@ function Questions() {
             }
             submittedResponse={submittedResponse}
             isSubmitted={isSubmitted}
+            isSubmitting={isSubmitting}
           />
         )
       case 'essay':
@@ -391,6 +397,7 @@ function Questions() {
             }
             submittedResponse={submittedResponse}
             isSubmitted={isSubmitted}
+            isSubmitting={isSubmitting}
           />
         )
       case 'matching':
@@ -402,6 +409,7 @@ function Questions() {
             }
             submittedResponse={submittedResponse}
             isSubmitted={isSubmitted}
+            isSubmitting={isSubmitting}
           />
         )
       case 'description':
