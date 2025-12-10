@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
-import { useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import type { Question, SubmitAnswerResponse } from '@/types/quiz'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -8,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import {
-  quizKeys,
   useActiveSessions,
   useFinishSession,
   useQuizQuestions,
@@ -54,7 +52,6 @@ function Questions() {
   }, [returnedSessionId, selectedSessionId])
   const submitAnswerMutation = useSubmitAnswer()
   const finishSessionMutation = useFinishSession()
-  const queryClient = useQueryClient()
   const navigate = useNavigate()
   
   const [showFinishDialog, setShowFinishDialog] = useState(false)
@@ -292,23 +289,23 @@ function Questions() {
       })
 
       // Update question with variants from response if available
-      if (questions) {
-        const updatedQuestions = questions.map((q) => {
-          if (q.id === question.id) {
-            if ('allVariants' in response && response.allVariants.length > 0) {
-              return { ...q, variants: response.allVariants }
-            } else if ('variants' in response && response.variants.length > 0) {
-              return { ...q, variants: response.variants }
-            }
-          }
-          return q
-        })
-        // // Update React Query cache
-        // queryClient.setQueryData(
-        //   [...quizKeys.questions(id || ''), selectedSessionId, undefined],
-        //   { questions: updatedQuestions, sessionId: selectedSessionId }
-        // )
-      }
+      // if (questions) {
+      //   const updatedQuestions = questions.map((q) => {
+      //     if (q.id === question.id) {
+      //       if ('allVariants' in response && response.allVariants.length > 0) {
+      //         return { ...q, variants: response.allVariants }
+      //       } else if ('variants' in response && response.variants.length > 0) {
+      //         return { ...q, variants: response.variants }
+      //       }
+      //     }
+      //     return q
+      //   })
+      //   // // Update React Query cache
+      //   // queryClient.setQueryData(
+      //   //   [...quizKeys.questions(id || ''), selectedSessionId, undefined],
+      //   //   { questions: updatedQuestions, sessionId: selectedSessionId }
+      //   // )
+      // }
 
       setSubmittedAnswers((prev) => {
         const newMap = new Map(prev)
