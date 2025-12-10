@@ -29,10 +29,11 @@ function QuizResultsTeacher() {
 
   const { data: sessionSubmits, isLoading: sessionSubmitsLoading } =
     useSessionSubmits(quizId || '', selectedSessionId || '')
-  const { data: quizQuestions, isLoading: questionsLoading } = useQuizQuestions(
+  const { data: quizQuestionsData, isLoading: questionsLoading } = useQuizQuestions(
     quizId || '',
     selectedSessionId || '',
   )
+  const quizQuestions = quizQuestionsData?.questions
 
   const handleViewSession = (userId: string, sessionId: string) => {
     setSelectedUserId(userId)

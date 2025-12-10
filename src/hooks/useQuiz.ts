@@ -37,7 +37,10 @@ export function useQuiz(quizId: string) {
 export function useQuizQuestions(quizId: string, sessionId?: string, view?: boolean) {
   return useQuery({
     queryKey: [...quizKeys.questions(quizId), sessionId, view],
-    queryFn: () => apiClient.getQuizQuestions(quizId, sessionId),
+    queryFn: async () => {
+      const result = await apiClient.getQuizQuestions(quizId, sessionId, view)
+      return result
+    },
     enabled: !!quizId && apiClient.isAuthenticated() && (view === undefined || view === true),
     staleTime: 5 * 60 * 1000, // 5 минут
     retry: (failureCount, error) => {
@@ -109,8 +112,6 @@ export function useQuizUsersSessions(quizId: string) {
 
 // Хук для отправки ответа на вопрос
 export function useSubmitAnswer() {
-  const queryClient = useQueryClient()
-
   return useMutation({
     mutationFn: ({
       questionId,
@@ -119,13 +120,6 @@ export function useSubmitAnswer() {
       questionId: string
       data: SubmitAnswerRequest
     }) => apiClient.submitQuestionAnswer(questionId, data),
-    onSuccess: (_, variables) => {
-      // Инвалидируем кэш вопросов для обновления состояния
-      const quizId = variables.data.quizId
-      queryClient.invalidateQueries({
-        queryKey: quizKeys.questions(quizId),
-      })
-    },
     onError: (error) => {
       console.error('Submit answer error:', error)
     },

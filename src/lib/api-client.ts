@@ -319,7 +319,7 @@ export class ApiClient {
     quizId: string,
     sessionId?: string,
     view?: boolean,
-  ): Promise<Array<Question>> {
+  ): Promise<{ questions: Array<Question>; sessionId?: string }> {
     const headers: Record<string, string> = {}
     if (sessionId) {
       headers['X-Active-Session'] = sessionId
@@ -328,7 +328,13 @@ export class ApiClient {
       `/quizes/${quizId}/questions`,
       { headers, params: view ? { view: true } : undefined },
     )
-    return response.data
+    // Извлекаем sessionId из заголовка ответа, если он есть
+    // Axios нормализует заголовки, поэтому проверяем оба варианта
+    const returnedSessionId = (response.headers['x-session-id'] || response.headers['X-Session-Id']) as string | undefined
+    return {
+      questions: response.data,
+      sessionId: returnedSessionId,
+    }
   }
 
   async submitQuestionAnswer(

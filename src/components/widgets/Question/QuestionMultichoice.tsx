@@ -26,11 +26,11 @@ export function QuestionMultichoice({
     if (submittedResponse && 'submittedVariants' in submittedResponse) {
       const selectedVariantIds = submittedResponse.submittedVariants
         .map((v) => {
-          // Находим вариант по id
+          // Находим вариант по variantId
           const variant = variants.find(
             (variant) =>
-              variant.variantId === v.id || 
-              variant.id === v.id,
+              variant.variantId === v.variantId || 
+              variant.id === v.variantId,
           )
           return variant?.id
         })
@@ -60,7 +60,7 @@ export function QuestionMultichoice({
   }
 
   const response = submittedResponse as
-    | { submittedVariants: Array<{ id: string; isRight: boolean; explanation: string }> }
+    | { submittedVariants: Array<{ variantId: string; isRight: boolean; explanation: string }> }
     | undefined
 
   return (
@@ -70,9 +70,8 @@ export function QuestionMultichoice({
           const isSelected = selectedIds.includes(variant.id)
           const submitted = response?.submittedVariants.find(
             (v) => 
-              v.id === variant.variantId || 
-              v.id === variant.id ||
-              variant.id === v.id
+              v.variantId === variant.variantId || 
+              v.variantId === variant.id
           )
           const isCorrect = submitted?.isRight ?? false
 

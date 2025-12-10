@@ -38,11 +38,11 @@ function ThemeSelector() {
       <h2 className="text-lg mb-2">Пожалуйста, выберите тему:</h2>
       <div className='flex flex-row gap-1.5'>
         <Input
-          type="text"
-          placeholder="Поиск темы..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="mb-2"
+        type="text"
+        placeholder="Поиск темы..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="mb-2"
         />
         <Button
           variant={'outline'}

@@ -38,10 +38,20 @@ function Questions() {
     undefined,
   )
   const {
-    data: questions,
+    data: questionsData,
     isLoading,
     error,
   } = useQuizQuestions(id || '', selectedSessionId)
+  
+  const questions = questionsData?.questions
+  const returnedSessionId = questionsData?.sessionId
+
+  // Автоматически устанавливаем sessionId при первом получении вопросов
+  useEffect(() => {
+    if (returnedSessionId && !selectedSessionId) {
+      setSelectedSessionId(returnedSessionId)
+    }
+  }, [returnedSessionId, selectedSessionId])
   const submitAnswerMutation = useSubmitAnswer()
   const finishSessionMutation = useFinishSession()
   const queryClient = useQueryClient()
@@ -116,7 +126,7 @@ function Questions() {
       ) {
         // Для вопросов с вариантами собираем все chosenVariants
         const submittedVariants: Array<{
-          id: string
+          variantId: string
           variantText: string
           isRight: boolean
           explanation: string
@@ -125,12 +135,10 @@ function Questions() {
         submits.forEach((submit) => {
           if (submit.chosenVariant) {
             const chosenVariant = submit.chosenVariant
-
-            console.log(chosenVariant)
             const variant = chosenVariant.variant
 
             submittedVariants.push({
-              id: chosenVariant.variantId,
+              variantId: chosenVariant.variantId,
               variantText: variant.text,
               isRight: chosenVariant.isRight,
               explanation: chosenVariant.isRight
@@ -150,9 +158,9 @@ function Questions() {
                 (v) => v.variantId === chosenId || v.id === chosenId,
               )
               if (variant) {
-                const variantId = variant.variantId || variant.id
+                const varId = variant.variantId || variant.id
                 submittedVariants.push({
-                  id: variantId,
+                  variantId: varId,
                   variantText: variant.text,
                   isRight: variant.isRight,
                   explanation: variant.isRight
@@ -296,7 +304,10 @@ function Questions() {
           return q
         })
         // Update React Query cache
-        queryClient.setQueryData(quizKeys.questions(id || ''), updatedQuestions)
+        queryClient.setQueryData(
+          [...quizKeys.questions(id || ''), selectedSessionId, undefined],
+          { questions: updatedQuestions, sessionId: selectedSessionId }
+        )
       }
 
       setSubmittedAnswers((prev) => {

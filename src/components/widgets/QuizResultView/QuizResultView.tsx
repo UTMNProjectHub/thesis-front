@@ -60,7 +60,7 @@ function QuizResultView({
       ) {
         // Для вопросов с вариантами собираем все chosenVariants
         const submittedVariants: Array<{
-          id: string
+          variantId: string
           variantText: string
           isRight: boolean
           explanation: string
@@ -73,7 +73,7 @@ function QuizResultView({
 
             if (variant) {
               submittedVariants.push({
-                id: chosenVariant.variantId,
+                variantId: chosenVariant.variantId,
                 variantText: variant.text,
                 isRight: chosenVariant.isRight,
                 explanation: chosenVariant.isRight
@@ -95,9 +95,9 @@ function QuizResultView({
                 (v) => v.variantId === chosenId || v.id === chosenId,
               )
               if (variant) {
-                const variantId = variant.variantId || variant.id
+                const varId = variant.variantId || variant.id
                 submittedVariants.push({
-                  id: variantId,
+                  variantId: varId,
                   variantText: variant.text,
                   isRight: variant.isRight,
                   explanation: variant.isRight

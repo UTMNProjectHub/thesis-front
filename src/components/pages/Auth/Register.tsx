@@ -51,7 +51,8 @@ function Register() {
 
   function onSubmit(values: RegisterForm) {
     registerMutation.mutate({
-      ...values,
+      email: values.email,
+      password: values.password,
       full_name:
         `${values.lastName} ${values.firstName} ${values.middleName || ''}`.trim(),
     })

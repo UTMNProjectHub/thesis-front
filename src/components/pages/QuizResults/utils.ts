@@ -242,7 +242,7 @@ export function transformApiSubmitToSubmitAnswerResponse(
 
         if (questionVariant) {
           submittedVariants.push({
-            id: questionVariant.variantId || questionVariant.id,
+            variantId: questionVariant.variantId || questionVariant.id,
             variantText: variant.text,
             isRight: chosenVariant.isRight,
             explanation: chosenVariant.isRight
@@ -258,7 +258,7 @@ export function transformApiSubmitToSubmitAnswerResponse(
       )
       if (variant) {
         submittedVariants.push({
-          id: variant.variantId || variant.id,
+          variantId: variant.variantId || variant.id,
           variantText: variant.text,
           isRight: variant.isRight,
           explanation: variant.isRight

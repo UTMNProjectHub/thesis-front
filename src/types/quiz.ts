@@ -52,7 +52,7 @@ export interface QuestionVariant {
 }
 
 export interface SubmittedVariant {
-  id: string
+  variantId: string
   variantText: string
   isRight: boolean
   explanation: string
