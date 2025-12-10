@@ -24,6 +24,7 @@ import { useWebSocket } from '@/hooks/useWebSocket'
 import { useGenerationFiles } from '@/hooks/useGenerationFiles'
 import apiClient from '@/lib/api-client'
 import { useTheme } from '@/hooks/useTheme'
+import { useSubject } from '@/hooks/useSubject'
 
 interface IGenerationSummaryDialog {
   children: ReactNode
@@ -40,7 +41,8 @@ function GenerationSummaryDialog(props: IGenerationSummaryDialog) {
   const [summaryId, setSummaryId] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const { selectedFiles } = useGenerationFiles()
-  const { current } = useTheme()
+  const { current: currentTheme } = useTheme()
+  const { current: currentSubject } = useSubject()
   const [isOpen, setIsOpen] = useState(false)
 
   const {
@@ -55,7 +57,7 @@ function GenerationSummaryDialog(props: IGenerationSummaryDialog) {
 
   const generationMutation = useMutation({
     mutationFn: (data: SummaryGenerationForm & { files: Array<string> }) =>
-      apiClient.generateSummary({ ...data, themeId: current!.id as number }),
+      apiClient.generateSummary({ ...data, themeId: currentTheme!.id as number, subjectId: currentSubject!.id as number }),
     onSuccess: (
       response: { success: boolean; message: string; summaryId: string },
     ) => {

@@ -26,6 +26,7 @@ import type {
   UpdateQuestionVariant,
   UpdateQuizRequest,
 } from '@/types/quiz'
+import type { Summary } from '@/types/summary'
 
 export class ApiClient {
   protected client: AxiosInstance
@@ -315,6 +316,13 @@ export class ApiClient {
     return response.data
   }
 
+  async getSummariesByThemeId(themeId: number): Promise<Array<Summary>> {
+    const response = await this.client.get<Array<Summary>>(
+      `/theme/${themeId}/summaries`,
+    )
+    return response.data
+  }
+
   async getQuizQuestions(
     quizId: string,
     sessionId?: string,
@@ -466,6 +474,7 @@ export class ApiClient {
 
   async generateSummary(data: {
     files: Array<string>
+    subjectId: number
     themeId: number
     additional_requirements?: string
   }): Promise<{ success: boolean; message: string; summaryId: string }> {

@@ -11,6 +11,7 @@ import { useSubject } from '@/hooks/useSubject'
 import { useTheme } from '@/hooks/useTheme'
 import QuizList from '@/components/widgets/QuizList/QuizList'
 import GenerationFileSelector from '@/components/widgets/GenerationFileSelector/GenerationFileSelector'
+import SummaryList from '@/components/widgets/SummaryList/SummaryList'
 
 function Generation() {
   const { clearCurrent: clearCurrentSubject, current: currentSubject } =
@@ -63,6 +64,7 @@ function Generation() {
         </div>
         <div>
           <h2 className="px-4 text-xl font-semibold">Конспекты: </h2>
+          <SummaryList />
         </div>
       </div>
     </div>
