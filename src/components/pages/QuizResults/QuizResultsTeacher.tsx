@@ -32,8 +32,9 @@ function QuizResultsTeacher() {
   const { data: quizQuestionsData, isLoading: questionsLoading } = useQuizQuestions(
     quizId || '',
     selectedSessionId || '',
+    true
   )
-  const quizQuestions = quizQuestionsData?.questions
+  const quizQuestions = quizQuestionsData
 
   const handleViewSession = (userId: string, sessionId: string) => {
     setSelectedUserId(userId)

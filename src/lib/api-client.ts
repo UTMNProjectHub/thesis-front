@@ -327,7 +327,7 @@ export class ApiClient {
     quizId: string,
     sessionId?: string,
     view?: boolean,
-  ): Promise<{ questions: Array<Question>; sessionId?: string }> {
+  ): Promise<Array<Question>> {
     const headers: Record<string, string> = {}
     if (sessionId) {
       headers['X-Active-Session'] = sessionId
@@ -335,23 +335,9 @@ export class ApiClient {
     const response = await this.client.get<Array<Question>>(
       `/quizes/${quizId}/questions`,
       { headers, params: view ? { view: true } : undefined },
-    )
+    );
 
-
-    // @ts-expect-error TODO: fix this
-    if (response.data.sessionId) {
-      return {
-        // @ts-expect-error TODO: fix this
-        questions: response.data.questions,
-        // @ts-expect-error TODO: fix this
-        sessionId: response.data.sessionId,
-      }
-    } else {
-      return {
-        questions: response.data,
-        sessionId: undefined,
-      }
-    }
+    return response.data
   }
 
   async submitQuestionAnswer(
@@ -393,21 +379,12 @@ export class ApiClient {
     await this.client.post(`/quizes/${quizId}/sessions/${sessionId}/finish`)
   }
 
-  async getQuizUsersSessions(quizId: string) {
-    const response = await this.client.get<Array<QuizUserSession>>(
-      `/quizes/${quizId}/sessions/users`,
-    )
-    return response.data
-  }
-
   async updateQuiz(quizId: string, data: UpdateQuizRequest): Promise<Quiz> {
     const response = await this.client.put<Quiz>(`/quizes/${quizId}`, data)
     return response.data
   }
 
-  async getQuestion(
-    questionId: string,
-  ): Promise<
+  async getQuestion(questionId: string): Promise<
     Question & {
       variants: Array<QuestionVariant>
       matchingConfig?: MatchingConfig

@@ -41,22 +41,8 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
   const { current: currentTheme } = useTheme()
   const { current: currentSubject } = useSubject()
   const { selectedFiles, setSelectedFiles, clearSelectedFiles } = useGenerationFiles()
-  const prevThemeRef = useRef<number | null>(null)
-  const prevSubjectRef = useRef<number | null>(null)
 
   useEffect(() => {
-    // Сбрасываем выбранные файлы при изменении темы или предмета
-    const themeChanged = prevThemeRef.current !== null && prevThemeRef.current !== currentTheme?.id
-    const subjectChanged = prevSubjectRef.current !== null && prevSubjectRef.current !== currentSubject?.id
-    
-    if (themeChanged || subjectChanged) {
-      clearSelectedFiles()
-    }
-
-    // Обновляем refs
-    prevThemeRef.current = currentTheme?.id ?? null
-    prevSubjectRef.current = currentSubject?.id ?? null
-
     if (currentTheme) {
       setLoading(true)
       setError(null)

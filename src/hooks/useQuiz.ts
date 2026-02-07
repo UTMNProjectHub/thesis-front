@@ -9,12 +9,14 @@ import type {
   UpdateQuizRequest,
 } from '@/types/quiz'
 import apiClient from '@/lib/api-client'
+import sessionApi from '@/models/Session/api'
 
 // Query keys
 export const quizKeys = {
   all: ['quiz'] as const,
   quiz: (id: string) => [...quizKeys.all, id] as const,
-  usersSessions: (id: string) => [...quizKeys.all, id, 'usersSessions'] as const,
+  usersSessions: (id: string) =>
+    [...quizKeys.all, id, 'usersSessions'] as const,
   questions: (id: string) => [...quizKeys.all, id, 'questions'] as const,
   activeSessions: (id: string) =>
     [...quizKeys.all, id, 'activeSessions'] as const,
@@ -34,14 +36,21 @@ export function useQuiz(quizId: string) {
 }
 
 // Хук для получения вопросов квиза
-export function useQuizQuestions(quizId: string, sessionId?: string, view?: boolean) {
+export function useQuizQuestions(
+  quizId: string,
+  sessionId?: string,
+  view?: boolean,
+) {
   return useQuery({
     queryKey: [...quizKeys.questions(quizId), sessionId, view],
     queryFn: async () => {
       const result = await apiClient.getQuizQuestions(quizId, sessionId, view)
       return result
     },
-    enabled: !!quizId && apiClient.isAuthenticated() && (view === undefined || view === true),
+    enabled:
+      !!quizId &&
+      apiClient.isAuthenticated() &&
+      (view === undefined || view === true),
     staleTime: 5 * 60 * 1000, // 5 минут
     retry: (failureCount, error) => {
       // Не повторяем запрос при 409 ошибке
@@ -77,7 +86,7 @@ export function useActiveSessions(
 export function useSessions(quizId: string, options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: quizKeys.sessions(quizId),
-    queryFn: () => apiClient.getAllSessions(quizId),
+    queryFn: () => sessionApi.getQuizSessions(quizId),
     enabled: options?.enabled && !!quizId && apiClient.isAuthenticated(),
     staleTime: 5 * 60 * 1000,
   })
@@ -101,11 +110,24 @@ export function useSessionSubmits(
   })
 }
 
+export function useQuizSession(quizId: string) {
+  return useMutation({
+    mutationFn: ({ quizId }: { quizId: string }) =>
+      sessionApi.createNewQuizSession(quizId),
+    onError: (error) => {
+      console.error('Error creating new session')
+    },
+  })
+}
+
 export function useQuizUsersSessions(quizId: string) {
   return useQuery({
     queryKey: quizKeys.usersSessions(quizId),
-    queryFn: () => apiClient.getQuizUsersSessions(quizId),
-    enabled: !!quizId && apiClient.isAuthenticated() && useUser().data?.roles.some((role) => role.slug === 'teacher'),
+    queryFn: () => sessionApi.getQuizUsersSessions(quizId),
+    enabled:
+      !!quizId &&
+      apiClient.isAuthenticated() &&
+      useUser().data?.roles.some((role) => role.slug === 'teacher'),
     staleTime: 5 * 60 * 1000,
   })
 }

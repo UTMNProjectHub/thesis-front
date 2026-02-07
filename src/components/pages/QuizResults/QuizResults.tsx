@@ -19,11 +19,10 @@ function QuizResults() {
 
   const { data: sessionSubmits } =
     useSessionSubmits(id || '', selectedSession?.id || '')
-  const { data: quizQuestionsData } = useQuizQuestions(
+  const { data: quizQuestions } = useQuizQuestions(
     id || '',
     selectedSession?.id || '',
   )
-  const quizQuestions = quizQuestionsData?.questions
 
   if (!sessions) {
     return <div>Loading...</div>
