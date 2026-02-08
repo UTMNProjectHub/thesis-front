@@ -149,17 +149,19 @@ export interface Session {
   sessionSubmits?: Array<any>
 }
 
+export interface QuizUserSessionItem {
+  id: string;
+  timeStart: Date;
+  timeEnd: Date | null;
+  percentSolved: number;
+  percentRight: number;
+}
+
 export interface QuizUserSession {
   userId: string;
   fullName: string;
   email: string;
-  sessions: Array<{
-    id: string;
-    timeStart: Date;
-    timeEnd: Date | null;
-    percentSolved: number;
-    percentRight: number;
-  }>;
+  sessions: QuizUserSessionItem[];
 }
 
 export interface UpdateQuizRequest {
