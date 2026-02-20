@@ -1,10 +1,10 @@
 import { DialogTrigger } from '@radix-ui/react-dialog'
-import type { ReactNode } from 'react'
-import { useState, useCallback } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { useCallback, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
+import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -99,7 +99,7 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
 
   const generationMutation = useMutation({
     mutationFn: (data: QuizGenerationForm & { files: Array<string> }) =>
-      apiClient.generateQuiz({ ...data, themeId: current!.id as number }),
+      apiClient.generateQuiz({ ...data, themeId: current!.id }),
     onSuccess: (
       response: { success: boolean; message: string; quizId: string },
     ) => {

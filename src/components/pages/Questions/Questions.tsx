@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import axios from 'axios'
+import { useQuizSession } from './hooks/useQuizSession'
+import { useQuizAnswers } from './hooks/useQuizAnswers'
+import { useQuizFinish } from './hooks/useQuizFinish'
+import { QuestionsSidebar } from './components/QuestionsSidebar'
+import { QuestionRenderer } from './components/QuestionRenderer'
+import { FinishQuizDialog } from './components/FinishQuizDialog'
 import {
   Card,
   CardContent,
@@ -12,12 +18,6 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { useQuizQuestions } from '@/hooks/useQuiz'
 import { SessionSelector } from '@/components/pages/SessionSelector/SessionSelector'
-import { useQuizSession } from './hooks/useQuizSession'
-import { useQuizAnswers } from './hooks/useQuizAnswers'
-import { useQuizFinish } from './hooks/useQuizFinish'
-import { QuestionsSidebar } from './components/QuestionsSidebar'
-import { QuestionRenderer } from './components/QuestionRenderer'
-import { FinishQuizDialog } from './components/FinishQuizDialog'
 
 function Questions() {
   const { id } = useParams({ strict: false })

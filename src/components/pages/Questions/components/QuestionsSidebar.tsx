@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 
 interface QuestionsSidebarProps {
-  questions: Question[]
+  questions: Array<Question>
   currentIndex: number
   submittedAnswers: Map<string, SubmitAnswerResponse>
   answeredCount: number

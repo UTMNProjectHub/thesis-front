@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import GenerationSummaryDialog from '../GenerationSummaryDialog/GenerationSummaryDialog'
 import type { Summary } from '@/types/summary'

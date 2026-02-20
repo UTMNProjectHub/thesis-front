@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
+import { buildSubmittedAnswers } from '../utils/buildSubmittedAnswers'
 import type { Question, SubmitAnswerResponse } from '@/types/quiz'
 import { useSessionSubmits, useSubmitAnswer } from '@/hooks/useQuiz'
-import { buildSubmittedAnswers } from '../utils/buildSubmittedAnswers'
 
 export function useQuizAnswers(
   quizId: string,
   sessionId?: string,
-  questions?: Question[],
+  questions?: Array<Question>,
 ) {
   const { data: sessionSubmits } = useSessionSubmits(quizId, sessionId)
   const submitMutation = useSubmitAnswer()

@@ -1,7 +1,7 @@
 import type {
   Question,
-  SubmitAnswerResponse,
   SessionSubmitWithDetails,
+  SubmitAnswerResponse,
 } from '@/types/quiz'
 
 /**
@@ -10,13 +10,13 @@ import type {
  * в зависимости от типа вопроса (multichoice, matching, shortanswer и т.д.).
  */
 export function buildSubmittedAnswers(
-  sessionSubmits: SessionSubmitWithDetails[],
-  questions: Question[],
+  sessionSubmits: Array<SessionSubmitWithDetails>,
+  questions: Array<Question>,
 ): Map<string, SubmitAnswerResponse> {
   const result = new Map<string, SubmitAnswerResponse>()
 
   // Группируем submits по questionId
-  const submitsByQuestion = new Map<string, SessionSubmitWithDetails[]>()
+  const submitsByQuestion = new Map<string, Array<SessionSubmitWithDetails>>()
   sessionSubmits.forEach((submit) => {
     const existing = submitsByQuestion.get(submit.questionId) || []
     existing.push(submit)
@@ -70,7 +70,7 @@ export function buildSubmittedAnswers(
 }
 
 function buildSubmittedVariants(
-  submits: SessionSubmitWithDetails[],
+  submits: Array<SessionSubmitWithDetails>,
   question: Question,
 ) {
   const submittedVariants: Array<{

@@ -161,7 +161,7 @@ export interface QuizUserSession {
   userId: string;
   fullName: string;
   email: string;
-  sessions: QuizUserSessionItem[];
+  sessions: Array<QuizUserSessionItem>;
 }
 
 export interface UpdateQuizRequest {

@@ -1,9 +1,5 @@
+import type {QuizUserSession, Session, SessionSubmitWithDetails} from '@/types/quiz';
 import { ApiClient } from '@/lib/api-client'
-import {
-  type SessionSubmitWithDetails,
-  type Session,
-  type QuizUserSession,
-} from '@/types/quiz'
 
 class SessionApi extends ApiClient {
   constructor() {
@@ -11,7 +7,7 @@ class SessionApi extends ApiClient {
   }
 
   async getQuizSessions(quizId: string) {
-    const response = await this.client.get<Session[]>(
+    const response = await this.client.get<Array<Session>>(
       `/quizes/${quizId}/sessions`,
     )
 
@@ -19,7 +15,7 @@ class SessionApi extends ApiClient {
   }
 
   async getQuizActiveSessions(quizId: string) {
-    const response = await this.client.get<Session[]>(
+    const response = await this.client.get<Array<Session>>(
       `/quizes/${quizId}/sessions/active`,
     )
 
@@ -27,7 +23,7 @@ class SessionApi extends ApiClient {
   }
 
   async getQuizUsersSessions(quizId: string) {
-    const response = await this.client.get<QuizUserSession[]>(
+    const response = await this.client.get<Array<QuizUserSession>>(
       `/quizes/${quizId}/sessions/users`,
     )
 

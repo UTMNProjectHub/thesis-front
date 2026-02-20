@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
+import { CirclePlus } from 'lucide-react'
+import CreateThemeDialog from './CreateThemeDialog'
 import type { Theme } from '@/types/subject'
 import apiClient from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useSubject } from '@/hooks/useSubject'
 import { useTheme } from '@/hooks/useTheme'
-import { CirclePlus } from 'lucide-react'
-import CreateThemeDialog from './CreateThemeDialog'
 
 function ThemeSelector() {
   const [themes, setThemes] = useState<Array<Theme>>([])

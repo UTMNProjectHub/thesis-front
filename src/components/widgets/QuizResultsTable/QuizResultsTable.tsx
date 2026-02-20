@@ -1,3 +1,13 @@
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getExpandedRowModel,
+  useReactTable,
+} from '@tanstack/react-table'
+import { Ellipsis, Eye } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import type { QuizUserSession, QuizUserSessionItem } from '@/types/quiz'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -14,20 +24,10 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import {
-  useQuizUsersSessions,
   useQuizQuestions,
+  useQuizUsersSessions,
   useSessionSubmits,
 } from '@/hooks/useQuiz'
-import type { QuizUserSession, QuizUserSessionItem } from '@/types/quiz'
-import {
-  useReactTable,
-  createColumnHelper,
-  getCoreRowModel,
-  flexRender,
-  getExpandedRowModel,
-} from '@tanstack/react-table'
-import { Eye, Ellipsis } from 'lucide-react'
-import { useMemo, useState } from 'react'
 import { SessionStats } from '@/components/widgets/QuizSessionStats/SessionStats'
 import QuizResultView from '@/components/widgets/QuizResultView/QuizResultView'
 

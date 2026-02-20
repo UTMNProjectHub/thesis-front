@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
+import { PlusCircle } from 'lucide-react'
+import CreateSubjectDialog from './CreateSubjectDialog'
 import type { Subject } from '@/types/subject'
 import apiClient from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useSubject } from '@/hooks/useSubject'
-import { PlusCircle } from 'lucide-react'
-import CreateSubjectDialog from './CreateSubjectDialog'
 
 function SubjectSelector() {
   const [subjects, setSubjects] = useState<Array<Subject>>([])
