@@ -90,14 +90,16 @@ function QuizResultsTable({ quizId }: QuizResultsTableProps) {
         id: 'sessionResult',
         header: 'Результаты',
         cell: (props) => {
-          const canExpand = props.row.getCanExpand()
           const data = props.row.original
-          if (isUserSession(data)) return <Button
-          variant={'outline'}
-          onClick={props.row.getToggleExpandedHandler()}
-        >
-          <Ellipsis />
-        </Button>
+          if (isUserSession(data))
+            return (
+              <Button
+                variant={'outline'}
+                onClick={props.row.getToggleExpandedHandler()}
+              >
+                <Ellipsis />
+              </Button>
+            )
           const parent = props.row.getParentRow()
           const parentData = parent?.original
           const userId =

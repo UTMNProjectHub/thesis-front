@@ -127,6 +127,7 @@ export function useQuizUsersSessions(quizId: string) {
     enabled:
       !!quizId &&
       apiClient.isAuthenticated() &&
+      useUser().data?.roles &&
       useUser().data?.roles.some((role) => role.slug === 'teacher'),
     staleTime: 5 * 60 * 1000,
   })
