@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import axios from 'axios'
 import { useQuizSession } from './hooks/useQuizSession'

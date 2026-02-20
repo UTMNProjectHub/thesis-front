@@ -110,11 +110,11 @@ export function useSessionSubmits(
   })
 }
 
-export function useQuizSession(quizId: string) {
+export function useQuizSession(_quizId: string) {
   return useMutation({
     mutationFn: ({ quizId }: { quizId: string }) =>
       sessionApi.createNewQuizSession(quizId),
-    onError: (error) => {
+    onError: () => {
       console.error('Error creating new session')
     },
   })

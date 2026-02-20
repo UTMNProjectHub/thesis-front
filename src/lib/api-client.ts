@@ -17,7 +17,6 @@ import type {
   Question,
   QuestionVariant,
   Quiz,
-  QuizUserSession,
   Session,
   SessionSubmitWithDetails,
   SubmitAnswerRequest,

@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useQuiz, useQuizQuestions, useUpdateQuiz } from '@/hooks/useQuiz'
+import type { Question } from '@/types/quiz'
 import { useSubject } from '@/hooks/useSubject'
 import apiClient from '@/lib/api-client'
 
@@ -48,7 +49,7 @@ function QuizEdit() {
   const navigate = useNavigate()
   const { data: quiz, isLoading, error } = useQuiz(id || '')
   const { data: questionsData, isLoading: questionsLoading } = useQuizQuestions(id || '', undefined, true);
-  const questions = questionsData?.questions;
+  const questions = questionsData;
   const updateQuizMutation = useUpdateQuiz()
   const { current: currentSubject } = useSubject()
 
@@ -278,7 +279,7 @@ function QuizEdit() {
               </div>
             ) : questions && questions.length > 0 ? (
               <div className="space-y-4">
-                {questions.map((question, index) => (
+                {questions.map((question: Question, index: number) => (
                   <Card key={question.id} className="hover:shadow-md transition-shadow">
                     <CardHeader>
                       <div className="flex items-start justify-between">

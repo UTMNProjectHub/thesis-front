@@ -40,7 +40,7 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { current: currentTheme } = useTheme()
   const { current: currentSubject } = useSubject()
-  const { selectedFiles, setSelectedFiles, clearSelectedFiles } = useGenerationFiles()
+  const { selectedFiles, setSelectedFiles } = useGenerationFiles()
 
   useEffect(() => {
     if (currentTheme) {
