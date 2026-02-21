@@ -7,7 +7,7 @@ import type {
   SubmitAnswerResponse,
   SubmittedAnswer,
   SubmittedVariant,
-} from '@/types/quiz'
+} from '@/models/Quiz'
 
 // Типы для данных из API
 interface ApiQuestion {

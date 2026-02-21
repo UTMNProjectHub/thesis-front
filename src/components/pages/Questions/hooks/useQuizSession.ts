@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useActiveSessions } from '@/hooks/useQuiz'
-import sessionApi from '@/models/Session/api'
+import { createNewQuizSession } from '@/models/Session'
 
 export function useQuizSession(quizId: string) {
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined)
@@ -14,8 +14,7 @@ export function useQuizSession(quizId: string) {
     if (createStartedRef.current) return // locking
 
     createStartedRef.current = true
-    sessionApi
-      .createNewQuizSession(quizId)
+    createNewQuizSession(quizId)
       .then((session) => setSelectedId(session.id))
       .catch((err) =>
         setError(err.response.data ?? 'Возникла неизвестная ошибка'),

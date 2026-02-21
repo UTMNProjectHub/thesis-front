@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { Session } from '@/types/quiz'
+import type { Session } from '@/models/Session'
 import {
   Select,
   SelectContent,

@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import GenerationSummaryDialog from '../GenerationSummaryDialog/GenerationSummaryDialog'
-import type { Summary } from '@/types/summary'
-import apiClient from '@/lib/api-client'
+import type { Summary } from '@/models/Summary'
+import { deleteSummary, getSummariesByThemeId  } from '@/models/Summary'
 import { useTheme } from '@/hooks/useTheme'
 import SummarySmallCard from '@/components/dummies/SummarySmallCard'
 import CreateSummaryCard from '@/components/dummies/СreateSummaryCard'
 import { cn } from '@/lib/utils'
-import summaryApi from '@/models/Summary/api'
 import {
   Dialog,
   DialogContent,
@@ -36,8 +35,7 @@ function SummaryList({ className }: SummaryListProps) {
     if (currentTheme) {
       setLoading(true)
       setError(null)
-      apiClient
-        .getSummariesByThemeId(currentTheme.id)
+      getSummariesByThemeId(currentTheme.id)
         .then((data) => {
           setSummaries(data)
           setLoading(false)
@@ -79,7 +77,7 @@ function SummaryList({ className }: SummaryListProps) {
   const confirmDeleteSummary = () => {
     if (!summaryToDelete) return
 
-    summaryApi.deleteSummary(summaryToDelete.id).then(() => {
+    deleteSummary(summaryToDelete.id).then(() => {
       setSummaries(summaries.filter((s) => s.id !== summaryToDelete.id))
       setDeleteDialogOpen(false)
       setSummaryToDelete(null)

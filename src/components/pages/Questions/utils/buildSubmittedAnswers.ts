@@ -1,8 +1,8 @@
 import type {
   Question,
-  SessionSubmitWithDetails,
   SubmitAnswerResponse,
-} from '@/types/quiz'
+} from '@/models/Quiz'
+import type { SessionSubmitWithDetails } from '@/models/Session'
 
 /**
  * SessionSubmitWithDetails[], Question[] -> Map<questionId, SubmitAnswerResponse>

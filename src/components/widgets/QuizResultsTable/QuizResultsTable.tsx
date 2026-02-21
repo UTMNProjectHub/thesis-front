@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-table'
 import { Ellipsis, Eye } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import type { QuizUserSession, QuizUserSessionItem } from '@/types/quiz'
+import type { QuizUserSession, QuizUserSessionItem } from '@/models/Session'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

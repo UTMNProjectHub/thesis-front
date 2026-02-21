@@ -1,5 +1,5 @@
 import { Edit, Eye, Play, Trash2 } from 'lucide-react'
-import type { Quiz } from '@/types/quiz'
+import type { Quiz } from '@/models/Quiz'
 import {
   Card,
   CardAction,

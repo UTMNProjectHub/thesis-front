@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Subject } from '@/types/subject'
+import type { Subject } from '@/models/Subject'
 
 interface SubjectState {
   current: Subject | null

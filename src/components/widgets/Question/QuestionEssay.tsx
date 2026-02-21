@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { Question, SubmitAnswerResponse } from '@/types/quiz'
+import type { Question, SubmitAnswerResponse } from '@/models/Quiz'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { cn } from '@/lib/utils'
 

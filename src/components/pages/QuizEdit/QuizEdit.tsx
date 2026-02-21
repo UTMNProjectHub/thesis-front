@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
 import { Pencil } from 'lucide-react'
+import type { Question } from '@/models/Quiz'
 import {
   Card,
   CardContent,
@@ -31,9 +32,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useQuiz, useQuizQuestions, useUpdateQuiz } from '@/hooks/useQuiz'
-import type { Question } from '@/types/quiz'
 import { useSubject } from '@/hooks/useSubject'
-import apiClient from '@/lib/api-client'
+import { getThemesBySubjectId } from '@/models/Subject'
 
 const quizEditSchema = z.object({
   name: z.string().min(1, { message: 'Название обязательно' }),
@@ -58,7 +58,7 @@ function QuizEdit() {
     queryKey: ['themes', currentSubject?.id],
     queryFn: () => {
       if (!currentSubject?.id) return []
-      return apiClient.getThemesBySubjectId(currentSubject.id)
+      return getThemesBySubjectId(currentSubject.id)
     },
     enabled: !!currentSubject?.id,
   })

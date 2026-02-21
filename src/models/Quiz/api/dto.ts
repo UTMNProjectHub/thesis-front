@@ -136,34 +136,6 @@ export interface SessionSubmit {
   submit: SubmittedAnswer
 }
 
-// Тип для submit из эндпоинта /sessions/:sessionId/submits
-export type SessionSubmitWithDetails = SubmittedAnswer
-
-export interface Session {
-  id: string
-  quizId: string
-  userId: string
-  timeStart: string | Date | null
-  timeEnd: string | Date | null
-  quiz?: Quiz
-  sessionSubmits?: Array<any>
-}
-
-export interface QuizUserSessionItem {
-  id: string;
-  timeStart: Date;
-  timeEnd: Date | null;
-  percentSolved: number;
-  percentRight: number;
-}
-
-export interface QuizUserSession {
-  userId: string;
-  fullName: string;
-  email: string;
-  sessions: Array<QuizUserSessionItem>;
-}
-
 export interface UpdateQuizRequest {
   name?: string
   description?: string
@@ -184,4 +156,3 @@ export interface UpdateQuestionVariant {
   explainWrong: string
   isRight: boolean
 }
-

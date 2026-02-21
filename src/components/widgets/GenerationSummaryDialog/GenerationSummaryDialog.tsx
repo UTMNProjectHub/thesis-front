@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
+import type { GenerateSummaryResponse } from '@/models/Generation'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -22,7 +23,7 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { useWebSocket } from '@/hooks/useWebSocket'
 import { useGenerationFiles } from '@/hooks/useGenerationFiles'
-import apiClient from '@/lib/api-client'
+import { generateSummary } from '@/models/Generation'
 import { useTheme } from '@/hooks/useTheme'
 import { useSubject } from '@/hooks/useSubject'
 
@@ -57,10 +58,8 @@ function GenerationSummaryDialog(props: IGenerationSummaryDialog) {
 
   const generationMutation = useMutation({
     mutationFn: (data: SummaryGenerationForm & { files: Array<string> }) =>
-      apiClient.generateSummary({ ...data, themeId: currentTheme!.id, subjectId: currentSubject!.id }),
-    onSuccess: (
-      response: { success: boolean; message: string; summaryId: string },
-    ) => {
+      generateSummary({ ...data, themeId: currentTheme!.id, subjectId: currentSubject!.id }),
+    onSuccess: (response: GenerateSummaryResponse) => {
       if (response.success) {
         setSummaryId(response.summaryId)
         setIsGenerating(true)

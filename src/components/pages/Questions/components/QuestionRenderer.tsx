@@ -1,4 +1,4 @@
-import type { Question, SubmitAnswerResponse } from '@/types/quiz'
+import type { Question, SubmitAnswerResponse } from '@/models/Quiz'
 import { QuestionMultichoice } from '@/components/widgets/Question/QuestionMultichoice'
 import { QuestionTrueFalse } from '@/components/widgets/Question/QuestionTrueFalse'
 import { QuestionShortAnswer } from '@/components/widgets/Question/QuestionShortAnswer'

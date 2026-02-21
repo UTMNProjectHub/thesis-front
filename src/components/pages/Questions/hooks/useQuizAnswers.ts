@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { buildSubmittedAnswers } from '../utils/buildSubmittedAnswers'
-import type { Question, SubmitAnswerResponse } from '@/types/quiz'
+import type { Question, SubmitAnswerResponse } from '@/models/Quiz'
 import { useSessionSubmits, useSubmitAnswer } from '@/hooks/useQuiz'
 
 export function useQuizAnswers(

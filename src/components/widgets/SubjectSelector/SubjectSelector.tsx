@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { PlusCircle } from 'lucide-react'
 import CreateSubjectDialog from './CreateSubjectDialog'
-import type { Subject } from '@/types/subject'
-import apiClient from '@/lib/api-client'
+import type { Subject } from '@/models/Subject'
+import { getSubjects } from '@/models/Subject'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useSubject } from '@/hooks/useSubject'
@@ -15,7 +15,7 @@ function SubjectSelector() {
   const { setCurrent } = useSubject()
 
   const loadSubjects = () => {
-    apiClient.getSubjects(searchQuery || undefined).then((data) => {
+    getSubjects(searchQuery || undefined).then((data) => {
       setSubjects(data)
     })
   }

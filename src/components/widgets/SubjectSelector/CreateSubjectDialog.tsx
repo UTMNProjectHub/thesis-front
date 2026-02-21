@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import apiClient from '@/lib/api-client'
+import { createSubject } from '@/models/Subject'
 
 interface CreateSubjectDialogProps {
   open: boolean
@@ -59,7 +59,7 @@ function CreateSubjectDialog({
     setIsLoading(true)
 
     try {
-      await apiClient.createSubject({
+      await createSubject({
         name: name.trim(),
         shortName: shortName.trim(),
         yearStart: startYear,

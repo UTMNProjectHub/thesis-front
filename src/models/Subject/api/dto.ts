@@ -11,3 +11,10 @@ export interface Theme {
   description: string
   subjectId: number
 }
+
+export interface SubjectFile {
+  id: string
+  name: string
+  s3Index: string
+  userId: string | null
+}

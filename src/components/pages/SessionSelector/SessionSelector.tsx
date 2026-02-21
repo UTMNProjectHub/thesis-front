@@ -1,4 +1,4 @@
-import type { Session } from '@/types/quiz'
+import type { Session } from '@/models/Session'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 

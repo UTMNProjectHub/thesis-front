@@ -1,5 +1,5 @@
 import { Edit, Eye, Trash2 } from 'lucide-react'
-import type { Summary } from '@/types/summary'
+import type { Summary } from '@/models/Summary'
 import {
   Card,
   CardAction,

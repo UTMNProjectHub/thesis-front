@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { BookOpen, File, FolderOpen, Upload } from 'lucide-react'
-import apiClient from '@/lib/api-client'
+import { getThemeFiles, uploadFileToTheme } from '@/models/Theme'
+import { getSubjectFiles, uploadFileToSubject } from '@/models/Subject'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -50,7 +51,7 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
       const loadFiles = async () => {
         try {
           // Загружаем файлы темы
-          const themeFiles = await apiClient.getThemeFiles(currentTheme.id)
+          const themeFiles = await getThemeFiles(currentTheme.id)
           const themeFilesWithType = themeFiles.map((file) => ({
             ...file,
             type: 'theme' as const,
@@ -60,7 +61,7 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
           let subjectFilesWithType: Array<FileItem> = []
           if (currentSubject) {
             try {
-              const subjectFiles = await apiClient.getSubjectFiles(currentSubject.id)
+              const subjectFiles = await getSubjectFiles(currentSubject.id)
               subjectFilesWithType = subjectFiles.map((file) => ({
                 ...file,
                 type: 'subject' as const,
@@ -123,14 +124,14 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
 
     try {
       if (selectedUploadTarget === 'theme' && currentTheme) {
-        await apiClient.uploadFileToTheme(currentTheme.id, file)
+        await uploadFileToTheme(currentTheme.id, file)
       } else if (selectedUploadTarget === 'subject' && currentSubject) {
-        await apiClient.uploadFileToSubject(currentSubject.id, file)
+        await uploadFileToSubject(currentSubject.id, file)
       }
 
       // Перезагружаем все файлы после загрузки
       if (currentTheme) {
-        const themeFiles = await apiClient.getThemeFiles(currentTheme.id)
+        const themeFiles = await getThemeFiles(currentTheme.id)
         const themeFilesWithType = themeFiles.map((file) => ({
           ...file,
           type: 'theme' as const,
@@ -139,7 +140,7 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
         let subjectFilesWithType: Array<FileItem> = []
         if (currentSubject) {
           try {
-            const subjectFiles = await apiClient.getSubjectFiles(currentSubject.id)
+            const subjectFiles = await getSubjectFiles(currentSubject.id)
             subjectFilesWithType = subjectFiles.map((file) => ({
               ...file,
               type: 'subject' as const,

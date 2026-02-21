@@ -8,10 +8,10 @@ import { QuestionMatching } from '../Question/QuestionMatching'
 import { QuestionDescription } from '../Question/QuestionDescription'
 import type {
   Question,
-  Session,
   SubmitAnswerResponse,
   SubmittedAnswer,
-} from '@/types/quiz'
+} from '@/models/Quiz'
+import type { Session } from '@/models/Session'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { SessionStats } from '@/components/widgets/QuizSessionStats/SessionStats'

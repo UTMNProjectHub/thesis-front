@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import type { MatchingConfig } from '@/types/quiz'
+import type { MatchingConfig } from '@/models/Quiz'
 import {
   Card,
   CardContent,
@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
-import apiClient from '@/lib/api-client'
+import { getQuestion } from '@/models/Quiz'
 import {
   useUpdateQuestion,
   useUpdateQuestionMatchingConfig,
@@ -68,7 +68,7 @@ function QuestionEdit() {
 
   const { data: questionData, isLoading, error } = useQuery({
     queryKey: ['question', questionId, 'edit'],
-    queryFn: () => apiClient.getQuestion(questionId || ''),
+    queryFn: () => getQuestion(questionId || ''),
     enabled: !!questionId,
   })
 

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { CirclePlus } from 'lucide-react'
 import CreateThemeDialog from './CreateThemeDialog'
-import type { Theme } from '@/types/subject'
-import apiClient from '@/lib/api-client'
+import type { Theme } from '@/models/Subject'
+import { getThemesBySubjectId } from '@/models/Subject'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useSubject } from '@/hooks/useSubject'
@@ -18,8 +18,7 @@ function ThemeSelector() {
 
   const loadThemes = () => {
     if (currentSubject) {
-      apiClient
-        .getThemesBySubjectId(
+      getThemesBySubjectId(
           currentSubject.id,
           searchQuery || undefined,
         )

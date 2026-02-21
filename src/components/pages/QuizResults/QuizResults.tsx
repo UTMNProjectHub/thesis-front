@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
-import type { Session } from '@/types/quiz'
+import type { Session } from '@/models/Session'
 import {
   useQuizQuestions,
   useSessionSubmits,

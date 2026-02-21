@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Theme } from '@/types/subject'
+import type { Theme } from '@/models/Subject'
 
 interface ThemeState {
   current: Theme | null

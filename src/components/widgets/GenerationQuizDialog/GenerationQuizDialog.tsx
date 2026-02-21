@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
+import type { GenerateQuizResponse } from '@/models/Generation'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -33,7 +34,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useWebSocket } from '@/hooks/useWebSocket'
 import { useGenerationFiles } from '@/hooks/useGenerationFiles'
-import apiClient from '@/lib/api-client'
+import { generateQuiz } from '@/models/Generation'
 import { useTheme } from '@/hooks/useTheme'
 
 const QUESTION_TYPES = [
@@ -99,10 +100,8 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
 
   const generationMutation = useMutation({
     mutationFn: (data: QuizGenerationForm & { files: Array<string> }) =>
-      apiClient.generateQuiz({ ...data, themeId: current!.id }),
-    onSuccess: (
-      response: { success: boolean; message: string; quizId: string },
-    ) => {
+      generateQuiz({ ...data, themeId: current!.id }),
+    onSuccess: (response: GenerateQuizResponse) => {
       if (response.success) {
         setQuizId(response.quizId)
         setIsGenerating(true)

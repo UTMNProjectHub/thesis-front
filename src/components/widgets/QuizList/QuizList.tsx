@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import GenerationQuizDialog from '../GenerationQuizDialog/GenerationQuizDialog'
-import type { Quiz } from '@/types/quiz'
-import apiClient from '@/lib/api-client'
+import type { Quiz } from '@/models/Quiz'
+import { deleteQuiz, getQuizesByThemeId  } from '@/models/Quiz'
 import { useTheme } from '@/hooks/useTheme'
 import QuizSmallCard from '@/components/dummies/QuizSmallCard'
 import CreateQuizCard from '@/components/dummies/CreateQuizCard'
 import { cn } from '@/lib/utils'
-import quizApi from '@/models/Quiz/api'
 import {
   Dialog,
   DialogContent,
@@ -36,8 +35,7 @@ function QuizList({ className }: QuizListProps) {
     if (currentTheme) {
       setLoading(true)
       setError(null)
-      apiClient
-        .getQuizesByThemeId(currentTheme.id)
+      getQuizesByThemeId(currentTheme.id)
         .then((data) => {
           setQuizes(data)
           setLoading(false)
@@ -88,7 +86,7 @@ function QuizList({ className }: QuizListProps) {
   const confirmDeleteQuiz = () => {
     if (!quizToDelete) return
 
-    quizApi.deleteQuiz(quizToDelete.id).then(() => {
+    deleteQuiz(quizToDelete.id).then(() => {
       setQuizes(quizes.filter((q) => q.id !== quizToDelete.id))
       setDeleteDialogOpen(false)
       setQuizToDelete(null)

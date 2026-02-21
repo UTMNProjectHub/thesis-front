@@ -1,4 +1,4 @@
-import type { Question, SubmitAnswerResponse } from '@/types/quiz'
+import type { Question, SubmitAnswerResponse } from '@/models/Quiz'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 
