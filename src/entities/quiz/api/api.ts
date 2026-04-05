@@ -53,6 +53,18 @@ export const updateQuiz = async (quizId: string, data: UpdateQuizRequest): Promi
   return response.data
 }
 
+export const getQuestionVariants = async (
+  questionId: string,
+  sessionId?: string,
+): Promise<Array<{ id: string; text: string }> | { leftItems: Array<{ id: string; text: string }>; rightItems: Array<{ id: string; text: string }> }> => {
+  const headers: Record<string, string> = {}
+  if (sessionId) {
+    headers['X-Active-Session'] = sessionId
+  }
+  const response = await apiClient.client.get(`/questions/${questionId}/variants`, { headers })
+  return response.data
+}
+
 export const getQuestion = async (
   questionId: string,
 ): Promise<Question & { variants: Array<QuestionVariant>; matchingConfig?: MatchingConfig }> => {

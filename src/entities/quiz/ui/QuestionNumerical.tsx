@@ -44,6 +44,8 @@ export function QuestionNumerical({
     | { isRight: boolean | null; explanation: string | null }
     | undefined
 
+  console.log(submittedResponse);
+
   return (
     <div className="space-y-4">
       <Field>
@@ -74,8 +76,8 @@ export function QuestionNumerical({
           {submittedResponse &&
       'submittedAnswer' in submittedResponse &&
       submittedResponse.submittedAnswer.answer &&
-      'explanation' in submittedResponse.submittedAnswer.answer && (
-            <p className="mt-2 text-sm">{submittedResponse.submittedAnswer.answer.explanation}</p>
+      'explanation' in submittedResponse.submittedAnswer && (
+            <p className="mt-2 text-sm">{submittedResponse.submittedAnswer.explanation}</p>
           )}
         </div>
       )}

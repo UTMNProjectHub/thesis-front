@@ -40,11 +40,13 @@ export function QuestionsSidebar({
           const isAnswered = submittedAnswers.has(question.id)
           const response = submittedAnswers.get(question.id)
 
+          console.log(response);
+
           const isCorrect =
-            response &&
+            response && (response.isRight === true ||
             ('submittedVariants' in response
               ? response.submittedVariants.every((v) => v.isRight)
-              : false)
+              : false))
 
           return (
             <button

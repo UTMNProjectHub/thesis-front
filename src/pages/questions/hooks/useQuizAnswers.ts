@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { buildSubmittedAnswers } from '../utils/buildSubmittedAnswers'
-import type { Question, SubmitAnswerResponse } from '@/entities/quiz'
+import type { AnswerPair, Question, SubmitAnswerResponse } from '@/entities/quiz'
 import { useSessionSubmits } from '@/entities/session'
 import { useSubmitAnswer } from '@/entities/quiz'
 
@@ -24,13 +24,14 @@ export function useQuizAnswers(
     question: Question,
     answerIds?: Array<string>,
     answerText?: string,
+    answerPairs?: Array<AnswerPair>,
   ) => {
     if (!quizId || !questions) return
 
     try {
       const response = await submitMutation.mutateAsync({
         questionId: question.id,
-        data: { quizId, answerIds, answerText },
+        data: { quizId, answerIds, answerText, answerPairs },
       })
 
       setSubmitted((prev) => {

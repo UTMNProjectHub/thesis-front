@@ -9,4 +9,6 @@ export const quizKeys = {
   sessions: (id: string) => [...quizKeys.all, id, 'sessions'],
   sessionSubmits: (quizId: string, sessionId: string) =>
     [...quizKeys.all, quizId, 'sessions', sessionId, 'submits'] as const,
+  questionVariants: (questionId: string, sessionId?: string) =>
+    [...quizKeys.all, 'questionVariants', questionId, sessionId] as const,
 }

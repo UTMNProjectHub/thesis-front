@@ -29,25 +29,23 @@ export function buildSubmittedAnswers(
 
     const firstSubmit = submits[0]
 
-    if (
-      question.type === 'multichoice' ||
-      question.type === 'truefalse' ||
-      question.type === 'matching'
-    ) {
+    if (question.type === 'matching') {
+      const pairsGraded = submits
+        .filter((s) => s.answerLeft != null)
+        .map((s) => ({
+          leftMatching: s.answerLeft!,
+          rightMatching: s.answerRight ?? '',
+          isRight: s.isRight ?? false,
+        }))
+
+      result.set(questionId, {
+        question,
+        isRight: pairsGraded.length > 0 && pairsGraded.every((p) => p.isRight),
+        pairsGraded,
+      } as SubmitAnswerResponse)
+    } else if (question.type === 'multichoice' || question.type === 'truefalse') {
       const submittedVariants = buildSubmittedVariants(submits, question)
-
-      if (question.type === 'matching') {
-        const pairs = buildMatchingPairs(firstSubmit, question)
-
-        result.set(questionId, {
-          question,
-          submittedAnswer: firstSubmit,
-          isRight: firstSubmit.isRight,
-          pairs,
-          variants: question.variants || [],
-          explanation: null,
-        } as SubmitAnswerResponse)
-      } else if (submittedVariants.length > 0) {
+      if (submittedVariants.length > 0) {
         result.set(questionId, {
           question,
           submittedVariants,
@@ -121,51 +119,4 @@ function buildSubmittedVariants(
   })
 
   return submittedVariants
-}
-
-function buildMatchingPairs(
-  submit: SessionSubmitWithDetails,
-  question: Question,
-) {
-  const pairs: Array<{
-    key: string
-    value: string
-    isRight: boolean
-    explanation: string | null
-  }> = []
-
-  if (
-    submit.answer &&
-    typeof submit.answer === 'object' &&
-    'pairs' in submit.answer
-  ) {
-    const answerPairs = (
-      submit.answer as {
-        pairs: Array<{
-          key: string
-          value: string
-          isRight: boolean
-          explanation: string | null
-        }>
-      }
-    ).pairs
-
-    answerPairs.forEach((pair) => {
-      const leftItem = question.matchingLeftItems?.find(
-        (li) => li.id === pair.key,
-      )
-      const rightItem = question.matchingRightItems?.find(
-        (ri) => ri.id === pair.value,
-      )
-
-      pairs.push({
-        key: leftItem?.text || pair.key,
-        value: rightItem?.text || pair.value,
-        isRight: pair.isRight,
-        explanation: pair.explanation,
-      })
-    })
-  }
-
-  return pairs
 }
