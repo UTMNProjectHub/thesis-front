@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
-import axios from 'axios'
 import { useQuizSession } from '../hooks/useQuizSession'
 import { useQuizAnswers } from '../hooks/useQuizAnswers'
 import { useQuizFinish } from '../hooks/useQuizFinish'
@@ -24,31 +23,26 @@ function Questions() {
   const navigate = useNavigate()
 
   const session = useQuizSession(id || '')
-  const { data: questions, isLoading, error } = useQuizQuestions(id || '', session.selectedId || '')
+  const { data: questions, isLoading: isLoadingQuestions } = useQuizQuestions(
+    id || '',
+    session.selectedId || '',
+  )
   const answers = useQuizAnswers(id || '', session.selectedId, questions)
   const finish = useQuizFinish(id || '', session.selectedId, answers.allAnswered, () => {
     navigate({ to: `/quiz/${id}/results` })
   })
 
   const [currentIndex, setCurrentIndex] = useState(0)
-  const currentQuestion = questions?.[currentIndex]
-  const isLastQuestion = questions ? currentIndex === questions.length - 1 : false
 
-  const is403Error = Boolean(
-    error && axios.isAxiosError(error) && error.response?.status === 403,
-  )
-
-  if (isLoading) {
+  if (session.status === 'loading') {
     return (
       <div className="flex h-screen w-full justify-center items-center">
-        <div className="text-muted-foreground">Загрузка вопросов...</div>
+        <div className="text-muted-foreground">Загрузка...</div>
       </div>
     )
   }
 
-  if (error || session.error) {
-    const errorText = session.error ?? error?.message;
-
+  if (session.status === 'error') {
     return (
       <div className="flex h-screen w-full justify-center items-center">
         <Card className="max-w-md">
@@ -56,20 +50,48 @@ function Questions() {
             <CardTitle className="text-red-500">Ошибка</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{errorText}</p>
+            <p>{session.error}</p>
           </CardContent>
         </Card>
       </div>
     )
   }
 
-  if (is403Error) {
+  if (session.status === 'max_reached') {
+    return (
+      <div className="flex h-screen w-full justify-center items-center">
+        <Card className="max-w-md">
+          <CardHeader>
+            <CardTitle>Достигнут лимит попыток</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              Вы использовали все {session.maxSessions} попытки для этого теста.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  if (session.status === 'has_active') {
+    const canCreateNew = session.maxSessions === 0 || session.totalSessions < session.maxSessions
     return (
       <SessionSelector
         sessions={session.activeSessions}
         onSelectSession={session.select}
-        isLoading={session.isLoadingSessions}
+        canCreateNew={canCreateNew}
+        onCreateNew={session.createNew}
       />
+    )
+  }
+
+  // status === 'ready'
+  if (isLoadingQuestions) {
+    return (
+      <div className="flex h-screen w-full justify-center items-center">
+        <div className="text-muted-foreground">Загрузка вопросов...</div>
+      </div>
     )
   }
 
@@ -87,6 +109,9 @@ function Questions() {
       </div>
     )
   }
+
+  const currentQuestion = questions[currentIndex]
+  const isLastQuestion = currentIndex === questions.length - 1
 
   return (
     <div className="flex h-screen w-full">
@@ -119,6 +144,7 @@ function Questions() {
                 </div>
                 <QuestionRenderer
                   question={currentQuestion}
+                  sessionId={session.selectedId}
                   submittedResponse={answers.submitted.get(currentQuestion.id)}
                   isSubmitted={answers.submitted.has(currentQuestion.id)}
                   isSubmitting={answers.isSubmitting}

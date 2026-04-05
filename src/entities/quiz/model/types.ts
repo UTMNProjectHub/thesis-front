@@ -86,20 +86,30 @@ export interface SubmittedAnswer {
   quizId: string
   questionId: string
   chosenId: string | null
+  explanation: string | null
   answer: any | null
   isRight: boolean | null
+  answerLeft?: string | null
+  answerRight?: string | null
   chosenVariant?: ChosenVariant | null
+}
+
+export interface AnswerPair {
+  leftMatching: string
+  rightMatching: string
 }
 
 export interface SubmitAnswerRequest {
   quizId: string
   answerIds?: Array<string>
   answerText?: string
+  answerPairs?: Array<AnswerPair>
 }
 
 // Response for multichoice questions
 export interface MultichoiceAnswerResponse {
   question: Question
+  isRight: boolean | null
   submittedVariants: Array<SubmittedVariant>
   allVariants: Array<QuestionVariant>
 }
@@ -107,11 +117,8 @@ export interface MultichoiceAnswerResponse {
 // Response for matching questions
 export interface MatchingAnswerResponse {
   question: Question
-  submittedAnswer: SubmittedAnswer
-  isRight: boolean | null
-  pairs: Array<MatchingPair>
-  variants: Array<QuestionVariant>
-  explanation?: string | null
+  isRight: boolean
+  pairsGraded: Array<{ leftMatching: string; rightMatching: string; isRight: boolean }>
 }
 
 // Response for shortanswer/essay/numerical questions

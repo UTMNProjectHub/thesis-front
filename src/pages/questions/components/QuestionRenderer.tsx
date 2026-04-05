@@ -1,4 +1,5 @@
-import type { Question, SubmitAnswerResponse } from '@/entities/quiz'
+import type { AnswerPair, Question, SubmitAnswerResponse } from '@/entities/quiz'
+import { useQuestionVariants } from '@/entities/quiz'
 import { QuestionMultichoice } from '@/entities/quiz/ui/QuestionMultichoice'
 import { QuestionTrueFalse } from '@/entities/quiz/ui/QuestionTrueFalse'
 import { QuestionShortAnswer } from '@/entities/quiz/ui/QuestionShortAnswer'
@@ -9,6 +10,7 @@ import { QuestionDescription } from '@/entities/quiz/ui/QuestionDescription'
 
 interface QuestionRendererProps {
   question: Question
+  sessionId?: string
   submittedResponse?: SubmitAnswerResponse
   isSubmitted: boolean
   isSubmitting: boolean
@@ -16,24 +18,34 @@ interface QuestionRendererProps {
     question: Question,
     answerIds?: Array<string>,
     answerText?: string,
+    answerPairs?: Array<AnswerPair>,
   ) => void
 }
 
 export function QuestionRenderer({
   question,
+  sessionId,
   submittedResponse,
   isSubmitted,
   isSubmitting,
   onSubmit,
 }: QuestionRendererProps) {
-  const variants =
-    question.variants && question.variants.length > 0
-      ? question.variants
-      : submittedResponse && 'allVariants' in submittedResponse
-        ? submittedResponse.allVariants
-        : submittedResponse && 'variants' in submittedResponse
-          ? submittedResponse.variants
-          : []
+  const { data: fetchedVariants } = useQuestionVariants(question.id, sessionId)
+
+  const isMatchingVariants =
+    fetchedVariants && !Array.isArray(fetchedVariants)
+
+  const variants = Array.isArray(fetchedVariants)
+    ? fetchedVariants
+    : submittedResponse && 'allVariants' in submittedResponse
+      ? submittedResponse.allVariants
+      : submittedResponse && 'variants' in submittedResponse
+        ? submittedResponse.variants
+        : (question.variants ?? [])
+
+  const matchingVariants = isMatchingVariants
+    ? (fetchedVariants as { leftItems: Array<{ id: string; text: string }>; rightItems: Array<{ id: string; text: string }> })
+    : undefined
 
   switch (question.type) {
     case 'multichoice':
@@ -92,7 +104,8 @@ export function QuestionRenderer({
       return (
         <QuestionMatching
           question={question}
-          onSubmit={(answerText) => onSubmit(question, undefined, answerText)}
+          matchingVariants={matchingVariants}
+          onSubmitPairs={(answerPairs) => onSubmit(question, undefined, undefined, answerPairs)}
           submittedResponse={submittedResponse}
           isSubmitted={isSubmitted}
           isSubmitting={isSubmitting}

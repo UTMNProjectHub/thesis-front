@@ -6,12 +6,16 @@ interface SessionSelectorProps {
   sessions: Array<Session>
   onSelectSession: (sessionId: string) => void
   isLoading?: boolean
+  canCreateNew?: boolean
+  onCreateNew?: () => void
 }
 
 export function SessionSelector({
   sessions,
   onSelectSession,
   isLoading = false,
+  canCreateNew = false,
+  onCreateNew,
 }: SessionSelectorProps) {
   const formatDate = (date: string | Date | null) => {
     if (!date) return 'Неизвестно'
@@ -29,21 +33,6 @@ export function SessionSelector({
     return (
       <div className="flex h-screen w-full justify-center items-center">
         <div className="text-muted-foreground">Загрузка сессий...</div>
-      </div>
-    )
-  }
-
-  if (sessions.length === 0) {
-    return (
-      <div className="flex h-screen w-full justify-center items-center">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>Нет активных сессий</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Активные сессии не найдены</p>
-          </CardContent>
-        </Card>
       </div>
     )
   }
@@ -71,14 +60,22 @@ export function SessionSelector({
                   onClick={() => onSelectSession(session.id)}
                   variant="default"
                 >
-                  Выбрать
+                  Продолжить
                 </Button>
               </div>
             ))}
+            {canCreateNew && onCreateNew && (
+              <Button
+                onClick={onCreateNew}
+                variant="outline"
+                className="w-full mt-2"
+              >
+                Начать новую попытку
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
     </div>
   )
 }
-

@@ -40,6 +40,8 @@ export function QuestionTrueFalse({
     }
   }, [submittedResponse, variants])
 
+  console.log(submittedResponse);
+
   const handleChange = (variantId: string) => {
     if (isSubmitted) return
     setSelectedId(variantId)

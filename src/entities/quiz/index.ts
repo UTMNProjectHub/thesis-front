@@ -1,8 +1,8 @@
 // API
 export { getQuizById, getQuizesByThemeId, getQuizQuestions, getQuestion, submitQuestionAnswer, updateQuiz, updateQuestion, updateQuestionVariants, updateQuestionMatchingConfig, deleteQuiz } from './api/api'
-export type { Quiz, Question, QuestionVariant, MatchingConfig, MatchingLeftItem, MatchingRightItem, SubmittedAnswer, SubmitAnswerRequest, SubmitAnswerResponse, SessionSubmit, UpdateQuizRequest, UpdateQuestionRequest, UpdateQuestionVariant, MultichoiceAnswerResponse, MatchingAnswerResponse, ShortAnswerResponse, SubmittedVariant, MatchingPair, Variant, ChosenVariant } from './model/types'
+export type { Quiz, Question, QuestionVariant, MatchingConfig, MatchingLeftItem, MatchingRightItem, SubmittedAnswer, SubmitAnswerRequest, SubmitAnswerResponse, SessionSubmit, UpdateQuizRequest, UpdateQuestionRequest, UpdateQuestionVariant, MultichoiceAnswerResponse, MatchingAnswerResponse, ShortAnswerResponse, SubmittedVariant, MatchingPair, Variant, ChosenVariant, AnswerPair } from './model/types'
 export { quizKeys } from './api/keys'
-export { useQuiz, useQuizQuestions } from './api/query'
+export { useQuiz, useQuizQuestions, useQuestionVariants } from './api/query'
 export { useSubmitAnswer, useUpdateQuiz, useUpdateQuestion, useUpdateQuestionVariants, useUpdateQuestionMatchingConfig } from './api/mutations'
 
 // Model

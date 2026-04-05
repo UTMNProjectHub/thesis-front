@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { getQuizById, getQuizQuestions } from './api'
+import { getQuizById, getQuizQuestions, getQuestionVariants } from './api'
 import { quizKeys } from './keys'
 import apiClient from '@/shared/api/api-client'
 
@@ -10,6 +10,15 @@ export function useQuiz(quizId: string) {
     queryFn: () => getQuizById(quizId),
     enabled: !!quizId && apiClient.isAuthenticated(),
     staleTime: 5 * 60 * 1000, // 5 минут
+  })
+}
+
+export function useQuestionVariants(questionId: string, sessionId?: string) {
+  return useQuery({
+    queryKey: quizKeys.questionVariants(questionId, sessionId),
+    queryFn: () => getQuestionVariants(questionId, sessionId),
+    enabled: !!questionId && apiClient.isAuthenticated(),
+    staleTime: 5 * 60 * 1000,
   })
 }
 
