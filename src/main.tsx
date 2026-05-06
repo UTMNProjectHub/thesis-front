@@ -30,6 +30,16 @@ import QuestionEdit from './components/pages/QuestionEdit/QuestionEdit.tsx'
 import Questions from '@/components/pages/Questions/Questions.tsx'
 import Header from '@/components/widgets/Header/Header.tsx'
 
+import AdminDashboard from './components/pages/Admin/AdminDashboard.tsx'
+import AdminUsers from './components/pages/Admin/Users.tsx'
+import AdminSubjects from './components/pages/Admin/Subjects.tsx'
+import AdminThemes from './components/pages/Admin/Themes.tsx'
+import AdminStats from './components/pages/Admin/Stats.tsx'
+import { AdminGuard } from './components/guards/AdminGuard.tsx'
+import Quizes from './components/pages/Admin/Quizes.tsx'
+import Summaries from './components/pages/Admin/Summaries.tsx'
+import AdminLayout from './components/pages/Admin/AdminLayout'
+
 /**
  * Root route no longer renders the global header directly.
  * This route is responsible for providing the outlet and global tools
@@ -136,6 +146,66 @@ const questionEditRoute = createRoute({
   component: QuestionEdit,
 })
 
+// Роут для защиты админ-панели (проверка прав)
+const adminGuardRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'admin',
+  component: AdminGuard,
+})
+
+// Лейаут админ-панели 
+const adminLayoutRoute = createRoute({
+  getParentRoute: () => adminGuardRoute,
+  id: 'adminLayout',
+  component: AdminLayout,
+})
+
+
+
+// Внутренние роуты админки
+const adminDashboardRoute = createRoute({
+  getParentRoute: () => adminLayoutRoute,
+  path: '/',
+  component: AdminDashboard,
+})
+
+const adminUsersRoute = createRoute({
+  getParentRoute: () => adminLayoutRoute,
+  path: 'users',
+  component: AdminUsers,
+})
+
+const adminSubjectsRoute = createRoute({
+  getParentRoute: () => adminLayoutRoute,
+  path: 'subjects',
+  component: AdminSubjects,
+})
+
+const adminThemesRoute = createRoute({
+  getParentRoute: () => adminLayoutRoute,
+  path: 'themes',
+  component: AdminThemes,
+})
+
+const adminStatsRoute = createRoute({
+  getParentRoute: () => adminLayoutRoute,
+  path: 'stats',
+  component: AdminStats,
+})
+
+const adminQuizesRoute = createRoute({
+  getParentRoute: () => adminLayoutRoute,
+  path: 'quizes',
+  component: Quizes,
+})
+
+const adminSummariesRoute = createRoute({
+  getParentRoute: () => adminLayoutRoute,
+  path: 'summaries',
+  component: Summaries,
+})
+
+
 // const quizResultsTeacherRoute = createRoute({
 //   getParentRoute: () => quizRoute,
 //   path: '$id/results?isTeacher=true',
@@ -155,6 +225,17 @@ const routeTree = rootRoute.addChildren([
     quizRoute.addChildren([quizByIdRoute, quizQuestionsRoute, quizResultsRoute, quizEditRoute, questionEditRoute]),
   ]),
   authRoute.addChildren([loginRoute, registerRoute]),
+  adminGuardRoute.addChildren([
+    adminLayoutRoute.addChildren([
+      adminDashboardRoute,
+      adminUsersRoute,
+      adminSubjectsRoute,
+      adminThemesRoute,
+      adminStatsRoute,
+      adminQuizesRoute,
+      adminSummariesRoute,
+    ]),
+  ]),
 ])
 
 const TanStackQueryProviderContext = TanStackQueryProvider.getContext()
@@ -188,6 +269,9 @@ if (rootElement && !rootElement.innerHTML) {
     </StrictMode>,
   )
 }
+
+
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

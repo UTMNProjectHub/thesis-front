@@ -21,10 +21,10 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
 import {
-  useChangePassword,
   useProfile,
   useUpdateProfile,
-} from '@/hooks/useProfile'
+  useChangePassword,
+} from '@/models/Profile'
 
 // Схемы валидации
 const updateProfileSchema = z.object({
@@ -52,16 +52,34 @@ const tabs = [
   {
     name: 'Информация',
     value: 'info',
-    content: InfoTab,
+    content: InfoTab,  // ← здесь используется InfoTab
     icon: IdCard,
   },
   {
     name: 'Изменить настройки аккаунта',
     value: 'settings',
-    content: SettingsTab,
+    content: SettingsTab,  // ← здесь SettingsTab
     icon: Cog,
   },
 ]
+
+const getRoleName = (slug: string): string => {
+  const roles: Record<string, string> = {
+    'admin': 'Администратор',
+    'teacher': 'Преподаватель',
+    'student': 'Студент',
+  }
+  return roles[slug] || slug
+}
+
+const getRoleColor = (slug: string): string => {
+  const colors: Record<string, string> = {
+    'admin': 'bg-red-100 text-red-800 border-red-200',
+    'teacher': 'bg-blue-100 text-blue-800 border-blue-200',
+    'student': 'bg-green-100 text-green-800 border-green-200',
+  }
+  return colors[slug] || 'bg-gray-100 text-gray-800 border-gray-200'
+}
 
 function InfoTab() {
   const { data: profile, isLoading } = useProfile()
@@ -73,34 +91,55 @@ function InfoTab() {
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-xl">
-        Добро пожаловать, {profile?.full_name.split(' ')[1]}
+        Добро пожаловать, {profile?.full_name?.split(' ')[1] || 'Пользователь'}
       </h2>
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Информация о профиле</h2>
-        <div className="space-y-3">
-          <div>
-            <strong>ID:</strong> {profile?.id}
+        
+        {profile?.avatar_url && (
+          <div className="mb-4 flex justify-center">
+            <img
+              src={profile.avatar_url}
+              alt="Аватар"
+              className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
+            />
           </div>
-          <div>
-            <strong>Email:</strong> {profile?.email}
-          </div>
-          <div>
-            <strong>Полное имя:</strong> {profile?.full_name}
-          </div>
-          <div>
-            <strong>Дата создания:</strong>{' '}
-            {profile?.date_created || 'Не указана'}
-          </div>
-          {profile?.avatar_url && (
-            <div>
-              <strong>Аватар:</strong>
-              <img
-                src={profile.avatar_url}
-                alt="Аватар"
-                className="w-16 h-16 rounded-full mt-2"
-              />
+        )}
+
+        {profile?.roles && profile.roles.length > 0 && (
+          <div className="mb-4">
+            <strong className="block mb-2">Роли:</strong>
+            <div className="flex flex-wrap gap-2">
+              {profile.roles.map((role) => (
+                <span
+                  key={role.id}
+                  className={`px-3 py-1 rounded-full text-sm font-medium border ${getRoleColor(role.slug)}`}
+                >
+                  {getRoleName(role.slug)}
+                </span>
+              ))}
             </div>
-          )}
+          </div>
+        )}
+
+        <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <strong>ID:</strong> {profile?.id}
+            </div>
+            <div>
+              <strong>Email:</strong> {profile?.email}
+            </div>
+            <div>
+              <strong>Полное имя:</strong> {profile?.full_name}
+            </div>
+            <div>
+              <strong>Дата создания:</strong>{' '}
+              {profile?.date_created 
+                ? new Date(profile.date_created).toLocaleDateString('ru-RU') 
+                : 'Не указана'}
+            </div>
+          </div>
         </div>
       </Card>
     </div>
