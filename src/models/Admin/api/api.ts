@@ -19,7 +19,7 @@ import type {
   Summary,
   DetailedStats,
 } from './dto'
-import apiClient from '@/lib/api-client'
+import apiClient from '@/shared/lib/api-client'
 
 // ========== USERS ==========
 export const getUsers = async (): Promise<User[]> => {

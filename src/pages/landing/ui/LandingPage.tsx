@@ -97,6 +97,7 @@ function App() {
                   </Link>
                 </>
               ) : (
+                !user.data.roles?.some(role => role.slug === 'student') && (
                 <Link to="/generation">
                   <Button
                     size="lg"
@@ -106,7 +107,8 @@ function App() {
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
-              )}
+                )
+              )} 
             </div>
           </div>
           

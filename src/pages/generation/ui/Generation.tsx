@@ -12,7 +12,7 @@ import { useTheme } from '@/features/theme-selection'
 import QuizList from '@/widgets/quiz-list/QuizList'
 import GenerationFileSelector from '@/widgets/generation-file-selector/GenerationFileSelector'
 import SummaryList from '@/widgets/summary-list/SummaryList'
-import { useAuth } from '@/hooks/useAuth' 
+import { useAuth } from '@/shared/hooks/useAuth' 
 import { Shield } from 'lucide-react'
 
 function Generation() {

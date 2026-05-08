@@ -17,7 +17,7 @@ import { useSubject } from '@/features/subject-selection'
 import { useGenerationFiles } from '@/features/generation'
 import { cn } from '@/shared/lib/utils'
 import { Badge } from '@/shared/ui/badge'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/shared/hooks/useAuth'
 
 interface FileItem {
   id: string
