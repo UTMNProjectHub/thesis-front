@@ -34,6 +34,8 @@ import {
 import { useQuiz, useQuizQuestions, useUpdateQuiz } from '@/entities/quiz'
 import { useSubject } from '@/features/subject-selection'
 import { getThemesBySubjectId } from '@/entities/subject'
+import { getQuizMoodleXMLExport } from '@/entities/quiz/api/api'
+import { toast } from 'sonner'
 
 const quizEditSchema = z.object({
   name: z.string().min(1, { message: 'Название обязательно' }),
@@ -48,8 +50,12 @@ function QuizEdit() {
   const { id } = useParams({ strict: false })
   const navigate = useNavigate()
   const { data: quiz, isLoading, error } = useQuiz(id || '')
-  const { data: questionsData, isLoading: questionsLoading } = useQuizQuestions(id || '', undefined, true);
-  const questions = questionsData;
+  const { data: questionsData, isLoading: questionsLoading } = useQuizQuestions(
+    id || '',
+    undefined,
+    true,
+  )
+  const questions = questionsData
   const updateQuizMutation = useUpdateQuiz()
   const { current: currentSubject } = useSubject()
 
@@ -158,10 +164,10 @@ function QuizEdit() {
       <div className="w-full max-w-4xl px-4">
         <Card>
           <CardHeader>
-            <CardTitle className="text-3xl mb-2">Редактирование теста</CardTitle>
-            <CardDescription>
-              Измените информацию о тесте
-            </CardDescription>
+            <CardTitle className="text-3xl mb-2">
+              Редактирование теста
+            </CardTitle>
+            <CardDescription>Измените информацию о тесте</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -208,12 +214,14 @@ function QuizEdit() {
                       <FieldLabel>Тема</FieldLabel>
                       <Select
                         value={
-                          watchedThemeId !== null && watchedThemeId !== undefined
+                          watchedThemeId !== null &&
+                          watchedThemeId !== undefined
                             ? watchedThemeId.toString()
                             : undefined
                         }
                         onValueChange={(value) => {
-                          const themeId = value === 'none' ? null : parseInt(value)
+                          const themeId =
+                            value === 'none' ? null : parseInt(value)
                           setValue('themeId', themeId)
                         }}
                       >
@@ -240,6 +248,25 @@ function QuizEdit() {
           </CardContent>
           <CardFooter>
             <div className="w-full flex items-center gap-2 justify-end">
+              <Button
+                variant={'secondary'}
+                onClick={() => {
+                  getQuizMoodleXMLExport(quiz.id)
+                    .then((res) => {
+                      const blob = new Blob([res], { type: 'application/xml' })
+
+                      const url = URL.createObjectURL(blob)
+                      const link = document.createElement('a')
+                      link.href = url
+                      link.download = `${quiz.name}.xml`
+                      link.click()
+                      URL.revokeObjectURL(url)
+                    })
+                    .catch(() => toast.error('Возникла ошибка при экспорте'))
+                }}
+              >
+                Экспорт в MoodleXML
+              </Button>
               <Button
                 variant="outline"
                 onClick={() => navigate({ to: `/quiz/${id}` })}
@@ -280,7 +307,10 @@ function QuizEdit() {
             ) : questions && questions.length > 0 ? (
               <div className="space-y-4">
                 {questions.map((question: Question, index: number) => (
-                  <Card key={question.id} className="hover:shadow-md transition-shadow">
+                  <Card
+                    key={question.id}
+                    className="hover:shadow-md transition-shadow"
+                  >
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -327,4 +357,3 @@ function QuizEdit() {
 }
 
 export default QuizEdit
-

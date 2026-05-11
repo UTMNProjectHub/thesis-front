@@ -16,8 +16,18 @@ export const getQuizById = async (quizId: string): Promise<Quiz> => {
   return response.data
 }
 
-export const getQuizesByThemeId = async (themeId: number): Promise<Array<Quiz>> => {
-  const response = await apiClient.client.get<Array<Quiz>>(`/theme/${themeId}/quizes`)
+export const getQuizesByThemeId = async (
+  themeId: number,
+): Promise<Array<Quiz>> => {
+  const response = await apiClient.client.get<Array<Quiz>>(
+    `/theme/${themeId}/quizes`,
+  )
+  return response.data
+}
+
+export const getQuizMoodleXMLExport = async (quizId: string) => {
+  const response = await apiClient.client.get(`/export/${quizId}/moodlexml`)
+
   return response.data
 }
 
@@ -48,7 +58,10 @@ export const submitQuestionAnswer = async (
   return response.data
 }
 
-export const updateQuiz = async (quizId: string, data: UpdateQuizRequest): Promise<Quiz> => {
+export const updateQuiz = async (
+  quizId: string,
+  data: UpdateQuizRequest,
+): Promise<Quiz> => {
   const response = await apiClient.client.put<Quiz>(`/quizes/${quizId}`, data)
   return response.data
 }
@@ -56,20 +69,37 @@ export const updateQuiz = async (quizId: string, data: UpdateQuizRequest): Promi
 export const getQuestionVariants = async (
   questionId: string,
   sessionId?: string,
-): Promise<Array<{ id: string; text: string }> | { leftItems: Array<{ id: string; text: string }>; rightItems: Array<{ id: string; text: string }> }> => {
+): Promise<
+  | Array<{ id: string; text: string }>
+  | {
+      leftItems: Array<{ id: string; text: string }>
+      rightItems: Array<{ id: string; text: string }>
+    }
+> => {
   const headers: Record<string, string> = {}
   if (sessionId) {
     headers['X-Active-Session'] = sessionId
   }
-  const response = await apiClient.client.get(`/questions/${questionId}/variants`, { headers })
+  const response = await apiClient.client.get(
+    `/questions/${questionId}/variants`,
+    { headers },
+  )
   return response.data
 }
 
 export const getQuestion = async (
   questionId: string,
-): Promise<Question & { variants: Array<QuestionVariant>; matchingConfig?: MatchingConfig }> => {
+): Promise<
+  Question & {
+    variants: Array<QuestionVariant>
+    matchingConfig?: MatchingConfig
+  }
+> => {
   const response = await apiClient.client.get<
-    Question & { variants: Array<QuestionVariant>; matchingConfig?: MatchingConfig }
+    Question & {
+      variants: Array<QuestionVariant>
+      matchingConfig?: MatchingConfig
+    }
   >(`/questions/${questionId}`)
   return response.data
 }
@@ -78,7 +108,10 @@ export const updateQuestion = async (
   questionId: string,
   data: UpdateQuestionRequest,
 ): Promise<Question> => {
-  const response = await apiClient.client.put<Question>(`/questions/${questionId}`, data)
+  const response = await apiClient.client.put<Question>(
+    `/questions/${questionId}`,
+    data,
+  )
   return response.data
 }
 
