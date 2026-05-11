@@ -60,7 +60,7 @@ function Register() {
 
   return (
     <div className="flex mx-auto justify-center items-center h-screen">
-      <form className="w-xl" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form className="min-w-md" onSubmit={handleSubmit(onSubmit)} noValidate>
         <FieldSet>
           <FieldLegend>Регистрация</FieldLegend>
           <FieldDescription>

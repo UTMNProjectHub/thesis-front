@@ -1,6 +1,13 @@
 import { Link, useParams } from '@tanstack/react-router'
 import { QrCodeIcon } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/shared/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/shared/ui/card'
 import { Badge } from '@/shared/ui/badge'
 import { useQuiz } from '@/entities/quiz'
 import { Button } from '@/shared/ui/button'
@@ -69,17 +76,23 @@ function Quiz() {
           <CardContent>
             <div className="space-y-4">
               <div>
-                <strong className="text-muted-foreground">Количество вопросов: </strong>
+                <strong className="text-muted-foreground">
+                  Количество вопросов:{' '}
+                </strong>
                 <p className="font-mono text-sm mt-1">{quiz.questionCount}</p>
               </div>
               <div>
-                <strong className="text-muted-foreground">Максимальное количество попыток: </strong>
-                <p className="font-mono text-sm mt-1">{quiz.maxSessions > 0 ? quiz.maxSessions : 'Неограничено'}</p>
+                <strong className="text-muted-foreground">
+                  Максимальное количество попыток:{' '}
+                </strong>
+                <p className="font-mono text-sm mt-1">
+                  {quiz.maxSessions > 0 ? quiz.maxSessions : 'Неограничено'}
+                </p>
               </div>
             </div>
           </CardContent>
           <CardFooter>
-            <div className='w-full flex items-center gap-2 justify-end'>
+            <div className="w-full flex flex-wrap items-center gap-2 justify-end">
               <Dialog>
                 <DialogTrigger>
                   <Button variant="outline">
@@ -100,4 +113,3 @@ function Quiz() {
 }
 
 export default Quiz
-

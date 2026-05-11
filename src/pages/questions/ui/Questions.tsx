@@ -6,21 +6,20 @@ import { useQuizFinish } from '../hooks/useQuizFinish'
 import { QuestionsSidebar } from '../components/QuestionsSidebar'
 import { QuestionRenderer } from '../components/QuestionRenderer'
 import { FinishQuizDialog } from '../components/FinishQuizDialog'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card'
 import { Button } from '@/shared/ui/button'
 import { Badge } from '@/shared/ui/badge'
 import { Separator } from '@/shared/ui/separator'
 import { useQuizQuestions } from '@/entities/quiz'
 import { SessionSelector } from '@/pages/session-selector/ui/SessionSelector'
+import { useMediaQuery } from 'react-responsive'
+import { QuestionsMobileSelector } from '../components/QuestionsMobileSelector'
 
 function Questions() {
   const { id } = useParams({ strict: false })
   const navigate = useNavigate()
+
+  const isPortrait = useMediaQuery({ query: '(orientation: portrait)' })
 
   const session = useQuizSession(id || '')
   const { data: questions, isLoading: isLoadingQuestions } = useQuizQuestions(
@@ -28,9 +27,14 @@ function Questions() {
     session.selectedId || '',
   )
   const answers = useQuizAnswers(id || '', session.selectedId, questions)
-  const finish = useQuizFinish(id || '', session.selectedId, answers.allAnswered, () => {
-    navigate({ to: `/quiz/${id}/results` })
-  })
+  const finish = useQuizFinish(
+    id || '',
+    session.selectedId,
+    answers.allAnswered,
+    () => {
+      navigate({ to: `/quiz/${id}/results` })
+    },
+  )
 
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -75,7 +79,8 @@ function Questions() {
   }
 
   if (session.status === 'has_active') {
-    const canCreateNew = session.maxSessions === 0 || session.totalSessions < session.maxSessions
+    const canCreateNew =
+      session.maxSessions === 0 || session.totalSessions < session.maxSessions
     return (
       <SessionSelector
         sessions={session.activeSessions}
@@ -114,79 +119,92 @@ function Questions() {
   const isLastQuestion = currentIndex === questions.length - 1
 
   return (
-    <div className="flex h-screen w-full">
-      <QuestionsSidebar
-        questions={questions}
-        currentIndex={currentIndex}
-        submittedAnswers={answers.submitted}
-        answeredCount={answers.count}
-        progress={answers.progress}
-        onSelectQuestion={setCurrentIndex}
-      />
+    <div className={`flex ${isPortrait ? 'flex-col' : 'flex-row'} w-full`}>
+      {!isPortrait && (
+        <QuestionsSidebar
+          questions={questions}
+          currentIndex={currentIndex}
+          submittedAnswers={answers.submitted}
+          answeredCount={answers.count}
+          progress={answers.progress}
+          onSelectQuestion={setCurrentIndex}
+        />
+      )}
 
       <div className="flex-1 overflow-y-auto p-6">
         <div className="max-w-3xl mx-auto">
           <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-2xl">
-                    Вопрос {currentIndex + 1} из {questions.length}
-                  </CardTitle>
-                  <Badge variant="secondary">{currentQuestion.type}</Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">
-                    {currentQuestion.text}
-                  </h3>
-                </div>
-                <QuestionRenderer
-                  question={currentQuestion}
-                  sessionId={session.selectedId}
-                  submittedResponse={answers.submitted.get(currentQuestion.id)}
-                  isSubmitted={answers.submitted.has(currentQuestion.id)}
-                  isSubmitting={answers.isSubmitting}
-                  onSubmit={answers.submit}
-                />
-                <Separator />
-                <div className="flex justify-between">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-2xl">
+                  Вопрос {currentIndex + 1} из {questions.length}
+                </CardTitle>
+                <Badge variant="secondary">{currentQuestion.type}</Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-4">
+                  {currentQuestion.text}
+                </h3>
+              </div>
+              <QuestionRenderer
+                question={currentQuestion}
+                sessionId={session.selectedId}
+                submittedResponse={answers.submitted.get(currentQuestion.id)}
+                isSubmitted={answers.submitted.has(currentQuestion.id)}
+                isSubmitting={answers.isSubmitting}
+                onSubmit={answers.submit}
+              />
+              <Separator />
+              <div className="flex justify-between">
+                <Button
+                  onClick={() =>
+                    setCurrentIndex((prev) => Math.max(0, prev - 1))
+                  }
+                  disabled={currentIndex === 0}
+                  variant="outline"
+                >
+                  ← Предыдущий
+                </Button>
+                {isLastQuestion ? (
+                  <Button
+                    onClick={finish.start}
+                    disabled={finish.isPending}
+                    variant="default"
+                  >
+                    {finish.isPending
+                      ? 'Завершение...'
+                      : 'Закончить тестирование'}
+                  </Button>
+                ) : (
                   <Button
                     onClick={() =>
-                      setCurrentIndex((prev) => Math.max(0, prev - 1))
+                      setCurrentIndex((prev) =>
+                        Math.min(questions.length - 1, prev + 1),
+                      )
                     }
-                    disabled={currentIndex === 0}
                     variant="outline"
                   >
-                    ← Предыдущий
+                    Следующий →
                   </Button>
-                  {isLastQuestion ? (
-                    <Button
-                      onClick={finish.start}
-                      disabled={finish.isPending}
-                      variant="default"
-                    >
-                      {finish.isPending
-                        ? 'Завершение...'
-                        : 'Закончить тестирование'}
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() =>
-                        setCurrentIndex((prev) =>
-                          Math.min(questions.length - 1, prev + 1),
-                        )
-                      }
-                      variant="outline"
-                    >
-                      Следующий →
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
+
+      {isPortrait && (
+        <QuestionsMobileSelector
+          questions={questions}
+          currentIndex={currentIndex}
+          submittedAnswers={answers.submitted}
+          answeredCount={answers.count}
+          progress={answers.progress}
+          onSelectQuestion={setCurrentIndex}
+        />
+      )}
 
       <FinishQuizDialog
         open={finish.showDialog}
