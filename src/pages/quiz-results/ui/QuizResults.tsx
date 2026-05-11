@@ -18,7 +18,8 @@ function QuizResults() {
     useSessionSubmits(id || '', selectedSession?.id || '')
   const { data: quizQuestions } = useQuizQuestions(
     id || '',
-    selectedSession?.id || '',
+    selectedSession?.id,
+    true
   )
 
   if (!sessions) {
