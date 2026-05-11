@@ -203,7 +203,7 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
                             id={type.value}
                             checked={field.value.includes(type.value)}
                             onCheckedChange={(checked) => {
-                              const current = field.value || []
+                              const current = field.value
                               if (checked) {
                                 field.onChange([...current, type.value])
                               } else {

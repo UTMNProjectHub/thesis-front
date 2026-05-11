@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState, useMemo } from 'react'
-import { useActiveSessions, useSessions, createNewQuizSession } from '@/entities/session'
-import { useQuiz } from '@/entities/quiz'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Session } from '@/entities/session'
+import { createNewQuizSession, useActiveSessions, useSessions } from '@/entities/session'
+import { useQuiz } from '@/entities/quiz'
 
 export type SessionStatus = 'loading' | 'has_active' | 'max_reached' | 'creating' | 'ready' | 'error'
 
 export interface UseQuizSessionResult {
   status: SessionStatus
   selectedId: string | undefined
-  activeSessions: Session[]
+  activeSessions: Array<Session>
   totalSessions: number
   maxSessions: number
   error: string | undefined

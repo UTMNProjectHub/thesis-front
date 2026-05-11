@@ -16,7 +16,7 @@ interface IQuizResultSessionSelectorProps {
 
 function QuizResultSessionSelector({sessions, selected, setSelected}: IQuizResultSessionSelectorProps) {
   const selectedSession = useMemo(() => {
-    if (!sessions || sessions.length === 0) return null
+    if (sessions.length === 0) return null
     if (selected) {
       const found = sessions.find((s) => s.id === selected.id)
       if (found) {

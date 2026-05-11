@@ -1,4 +1,9 @@
-import type { AnswerPair, Question, SubmitAnswerResponse } from '@/entities/quiz'
+import type {
+  AnswerPair,
+  Question,
+  QuestionVariant,
+  SubmitAnswerResponse,
+} from '@/entities/quiz'
 import { useQuestionVariants } from '@/entities/quiz'
 import { QuestionMultichoice } from '@/entities/quiz/ui/QuestionMultichoice'
 import { QuestionTrueFalse } from '@/entities/quiz/ui/QuestionTrueFalse'
@@ -32,8 +37,7 @@ export function QuestionRenderer({
 }: QuestionRendererProps) {
   const { data: fetchedVariants } = useQuestionVariants(question.id, sessionId)
 
-  const isMatchingVariants =
-    fetchedVariants && !Array.isArray(fetchedVariants)
+  const isMatchingVariants = fetchedVariants && !Array.isArray(fetchedVariants)
 
   const variants = Array.isArray(fetchedVariants)
     ? fetchedVariants
@@ -44,7 +48,10 @@ export function QuestionRenderer({
         : (question.variants ?? [])
 
   const matchingVariants = isMatchingVariants
-    ? (fetchedVariants as { leftItems: Array<{ id: string; text: string }>; rightItems: Array<{ id: string; text: string }> })
+    ? (fetchedVariants as {
+        leftItems: Array<{ id: string; text: string }>
+        rightItems: Array<{ id: string; text: string }>
+      })
     : undefined
 
   switch (question.type) {
@@ -105,7 +112,9 @@ export function QuestionRenderer({
         <QuestionMatching
           question={question}
           matchingVariants={matchingVariants}
-          onSubmitPairs={(answerPairs) => onSubmit(question, undefined, undefined, answerPairs)}
+          onSubmitPairs={(answerPairs) =>
+            onSubmit(question, undefined, undefined, answerPairs)
+          }
           submittedResponse={submittedResponse}
           isSubmitted={isSubmitted}
           isSubmitting={isSubmitting}

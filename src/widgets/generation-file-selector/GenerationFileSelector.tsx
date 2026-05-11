@@ -93,7 +93,6 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
       setFiles([])
       setSelectedFiles([])
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTheme, currentSubject])
 
   const filteredFiles = files.filter((file) =>
@@ -246,23 +245,21 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-3 py-4">
-              {currentTheme && (
-                <Button
-                  variant="outline"
-                  className="justify-start h-auto py-4"
-                  onClick={() => handleTargetSelect('theme')}
-                >
-                  <div className="flex items-center gap-3 w-full">
-                    <FolderOpen className="h-5 w-5" />
-                    <div className="flex flex-col items-start flex-1">
-                      <span className="font-medium">Тема</span>
-                      <span className="text-sm text-muted-foreground">
-                        {currentTheme.name}
-                      </span>
-                    </div>
+              <Button
+                variant="outline"
+                className="justify-start h-auto py-4"
+                onClick={() => handleTargetSelect('theme')}
+              >
+                <div className="flex items-center gap-3 w-full">
+                  <FolderOpen className="h-5 w-5" />
+                  <div className="flex flex-col items-start flex-1">
+                    <span className="font-medium">Тема</span>
+                    <span className="text-sm text-muted-foreground">
+                      {currentTheme.name}
+                    </span>
                   </div>
-                </Button>
-              )}
+                </div>
+              </Button>
               {currentSubject && (
                 <Button
                   variant="outline"
@@ -279,11 +276,6 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
                     </div>
                   </div>
                 </Button>
-              )}
-              {!currentTheme && !currentSubject && (
-                <div className="text-center text-muted-foreground py-4">
-                  Выберите тему или предмет для загрузки файла
-                </div>
               )}
             </div>
             <DialogFooter>

@@ -27,14 +27,6 @@ function QuizResultView({
   sessionSubmits,
 }: IQuizResultViewProps) {
   const { questions, submittedAnswers, stats } = useMemo(() => {
-    if (!quizQuestions || !sessionSubmits) {
-      return {
-        questions: [] as Array<Question>,
-        submittedAnswers: new Map<string, SubmitAnswerResponse>(),
-        stats: { solvedPercent: 0, rightPercent: 0 },
-      }
-    }
-
     const submittedAnswersMap = new Map<string, SubmitAnswerResponse>()
 
     // Группируем submits по questionId для обработки множественных вариантов
@@ -71,16 +63,14 @@ function QuizResultView({
             const chosenVariant = submit.chosenVariant
             const variant = chosenVariant.variant
 
-            if (variant) {
-              submittedVariants.push({
-                variantId: chosenVariant.variantId,
-                variantText: variant.text,
-                isRight: chosenVariant.isRight,
-                explanation: chosenVariant.isRight
-                  ? variant.explainRight
-                  : variant.explainWrong,
-              })
-            }
+            submittedVariants.push({
+              variantId: chosenVariant.variantId,
+              variantText: variant.text,
+              isRight: chosenVariant.isRight,
+              explanation: chosenVariant.isRight
+                ? variant.explainRight
+                : variant.explainWrong,
+            })
           } else if (submit.chosenId) {
             // Fallback для случаев, когда chosenVariant отсутствует
             const chosenIds =
@@ -272,7 +262,7 @@ function QuizResultView({
         return (
           <QuestionMatching
             question={question}
-            onSubmit={() => {}}
+            onSubmitPairs={() => {}}
             submittedResponse={submittedResponse}
             isSubmitted={isSubmitted}
           />
@@ -284,7 +274,7 @@ function QuizResultView({
     }
   }
 
-  if (!sessionSubmits || sessionSubmits.length === 0) {
+  if (sessionSubmits.length === 0) {
     return (
       <div className="flex h-screen w-full justify-center items-center">
         <Card className="max-w-md">

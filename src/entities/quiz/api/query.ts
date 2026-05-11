@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { getQuizById, getQuizQuestions, getQuestionVariants } from './api'
+import { getQuestionVariants, getQuizById, getQuizQuestions } from './api'
 import { quizKeys } from './keys'
 import apiClient from '@/shared/api/api-client'
 

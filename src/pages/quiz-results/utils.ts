@@ -144,6 +144,7 @@ export function transformApiSubmitToSubmitAnswerResponse(
     quizId: apiSubmit.quizId,
     questionId: apiSubmit.questionId,
     chosenId: apiSubmit.chosenId,
+    explanation: null,
     answer: normalizedAnswer,
     isRight: apiSubmit.isRight,
     chosenVariant:
@@ -179,7 +180,7 @@ export function transformApiSubmitToSubmitAnswerResponse(
       // Находим matchingConfig для получения correctPairs
       const matchingConfig =
         apiQuestion?.questionsVariants?.[0]?.matchingConfig ||
-        apiSubmit.question?.questionsVariants?.[0]?.matchingConfig
+        apiSubmit.question.questionsVariants?.[0]?.matchingConfig
 
       answerPairs.forEach((pair) => {
         // Находим тексты по ID

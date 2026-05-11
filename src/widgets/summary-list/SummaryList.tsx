@@ -117,11 +117,9 @@ function SummaryList({ className }: SummaryListProps) {
       <div className={cn('w-full flex flex-col', className)}>
         <div className="p-4 overflow-y-auto min-h-0 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {currentTheme && (
-              <GenerationSummaryDialog onSuccess={loadSummaries}>
-                <CreateSummaryCard onClick={handleCreateSummary} />
-              </GenerationSummaryDialog>
-            )}
+            <GenerationSummaryDialog onSuccess={loadSummaries}>
+              <CreateSummaryCard onClick={handleCreateSummary} />
+            </GenerationSummaryDialog>
             {summaries.map((summary) => (
               <SummarySmallCard
                 key={summary.id}

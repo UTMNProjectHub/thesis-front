@@ -26,16 +26,14 @@ export function QuestionTrueFalse({
   useEffect(() => {
     if (submittedResponse && 'submittedVariants' in submittedResponse) {
       const firstVariant = submittedResponse.submittedVariants[0]
-      if (firstVariant) {
-        // Находим вариант по variantId
-        const variant = variants.find(
-          (variant) =>
-            variant.variantId === firstVariant.variantId ||
-            variant.id === firstVariant.variantId,
-        )
-        if (variant) {
-          setSelectedId(variant.id)
-        }
+      // Находим вариант по variantId
+      const found = variants.find(
+        (v) =>
+          v.variantId === firstVariant.variantId ||
+          v.id === firstVariant.variantId,
+      )
+      if (found) {
+        setSelectedId(found.id)
       }
     }
   }, [submittedResponse, variants])

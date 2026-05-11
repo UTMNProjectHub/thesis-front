@@ -126,11 +126,9 @@ function QuizList({ className }: QuizListProps) {
       <div className={cn('w-full flex flex-col', className)}>
         <div className="p-4 overflow-y-auto min-h-0 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {currentTheme && (
-              <GenerationQuizDialog onSuccess={loadQuizes}>
-                <CreateQuizCard onClick={handleCreateQuiz} />
-              </GenerationQuizDialog>
-            )}
+            <GenerationQuizDialog onSuccess={loadQuizes}>
+              <CreateQuizCard onClick={handleCreateQuiz} />
+            </GenerationQuizDialog>
             {quizes.map((quiz) => (
               <QuizSmallCard
                 key={quiz.id}

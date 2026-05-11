@@ -107,12 +107,12 @@ function QuestionEdit() {
         text: questionData.text || '',
         type: questionData.type || '',
         multiAnswer: questionData.multiAnswer || null,
-        variants: questionData.variants?.map((v) => ({
+        variants: questionData.variants.map((v) => ({
           text: v.text,
           explainRight: v.explainRight,
           explainWrong: v.explainWrong,
           isRight: v.isRight,
-        })) || [],
+        })),
       }
       reset(formData)
       
@@ -250,7 +250,7 @@ function QuestionEdit() {
                   <Field>
                     <FieldLabel>Тип вопроса</FieldLabel>
                     <Select
-                      defaultValue={questionData?.type}
+                      defaultValue={questionData.type}
                       // value={watch('type') ?? ''}
                       onValueChange={(value) => setValue('type', value)}
                     >
@@ -328,7 +328,7 @@ function QuestionEdit() {
                                 />
                                 {errors.variants?.[index]?.text && (
                                   <FieldError>
-                                    {errors.variants[index]?.text?.message}
+                                    {errors.variants[index].text.message}
                                   </FieldError>
                                 )}
                               </Field>
@@ -342,7 +342,7 @@ function QuestionEdit() {
                                 />
                                 {errors.variants?.[index]?.explainRight && (
                                   <FieldError>
-                                    {errors.variants[index]?.explainRight?.message}
+                                    {errors.variants[index].explainRight.message}
                                   </FieldError>
                                 )}
                               </Field>
@@ -356,7 +356,7 @@ function QuestionEdit() {
                                 />
                                 {errors.variants?.[index]?.explainWrong && (
                                   <FieldError>
-                                    {errors.variants[index]?.explainWrong?.message}
+                                    {errors.variants[index].explainWrong.message}
                                   </FieldError>
                                 )}
                               </Field>
@@ -651,7 +651,7 @@ function QuestionEdit() {
                                 />
                                 {errors.variants?.[index]?.text && (
                                   <FieldError>
-                                    {errors.variants[index]?.text?.message}
+                                    {errors.variants[index].text.message}
                                   </FieldError>
                                 )}
                               </Field>
@@ -665,7 +665,7 @@ function QuestionEdit() {
                                 />
                                 {errors.variants?.[index]?.explainRight && (
                                   <FieldError>
-                                    {errors.variants[index]?.explainRight?.message}
+                                    {errors.variants[index].explainRight.message}
                                   </FieldError>
                                 )}
                               </Field>
@@ -679,7 +679,7 @@ function QuestionEdit() {
                                 />
                                 {errors.variants?.[index]?.explainWrong && (
                                   <FieldError>
-                                    {errors.variants[index]?.explainWrong?.message}
+                                    {errors.variants[index].explainWrong.message}
                                   </FieldError>
                                 )}
                               </Field>
