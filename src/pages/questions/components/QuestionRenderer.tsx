@@ -1,7 +1,6 @@
 import type {
   AnswerPair,
   Question,
-  QuestionVariant,
   SubmitAnswerResponse,
 } from '@/entities/quiz'
 import { useQuestionVariants } from '@/entities/quiz'

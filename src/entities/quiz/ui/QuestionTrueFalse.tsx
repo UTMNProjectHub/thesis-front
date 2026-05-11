@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import type { Question, QuestionVariant, SubmitAnswerResponse } from '@/entities/quiz'
+import type { Question, SubmitAnswerResponse } from '@/entities/quiz'
 import { Field, FieldGroup, FieldLabel } from '@/shared/ui/field'
 import { Input } from '@/shared/ui/input'
 
 interface QuestionTrueFalseProps {
   question: Question
-  variants: Array<QuestionVariant>
+  variants: Array<{ id: string; text: string; variantId?: string }>
   onSubmit: (answerIds: Array<string>) => void
   submittedResponse?: SubmitAnswerResponse
   isSubmitted: boolean
