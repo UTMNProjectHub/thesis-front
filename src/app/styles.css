@@ -2,13 +2,12 @@
 
 @import 'tw-animate-css';
 
-@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
 .text-logo {
-  font-family: 'Dela Gothic One', 'Open Sans';
-  font-weight: 800;
+  font-family: 'Dela Gothic One', 'Open Sans', sans-serif;
+  font-weight: 400;
 }
 
 :root {
@@ -154,7 +153,8 @@
 }
 
 @keyframes gradient {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -168,7 +168,7 @@
 }
 
 .bg-grid-pattern {
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
   background-size: 50px 50px;
