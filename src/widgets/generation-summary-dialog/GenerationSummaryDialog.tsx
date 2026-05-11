@@ -1,5 +1,5 @@
 import { DialogTrigger } from '@radix-ui/react-dialog'
-import { useCallback, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -21,7 +21,7 @@ import {
   FieldSet,
 } from '@/shared/ui/field'
 import { Textarea } from '@/shared/ui/textarea'
-import { useWebSocket } from '@/shared/hooks/useWebSocket'
+import { useUserSocket } from '@/app/providers/UserSocketProvider'
 import { generateSummary, useGenerationFiles  } from '@/features/generation'
 import { useTheme } from '@/features/theme-selection'
 import { useSubject } from '@/features/subject-selection'
@@ -69,25 +69,19 @@ function GenerationSummaryDialog(props: IGenerationSummaryDialog) {
     },
   })
 
-  const handleWebSocketMessage = useCallback(
-    (data: any) => {
-      if (data.status === 'SUCCESS') {
-        setIsGenerating(false)
-        setIsOpen(false)
-        props.onSuccess?.(data.summaryId)
-      } else if (data.status === 'FAILED') {
-        setIsGenerating(false)
-        console.error('Summary generation failed:', data.error)
-      }
-    },
-    [props.onSuccess],
-  )
+  const { isConnected, lastMessage } = useUserSocket()
 
-  const { isConnected } = useWebSocket({
-    topic: summaryId ? `summary.${summaryId}.generation` : null,
-    enabled: isGenerating && !!summaryId,
-    onMessage: handleWebSocketMessage,
-  })
+  useEffect(() => {
+    if (!isGenerating || !summaryId || !lastMessage) return
+    if (lastMessage.summaryId !== summaryId) return
+    if (lastMessage.status === 'SUCCESS') {
+      setIsGenerating(false)
+      setIsOpen(false)
+      props.onSuccess?.(lastMessage.summaryId)
+    } else if (lastMessage.status === 'FAILED') {
+      setIsGenerating(false)
+    }
+  }, [lastMessage, summaryId, isGenerating])
 
   const onSubmit = async (data: SummaryGenerationForm) => {
     if (selectedFiles.length === 0) {

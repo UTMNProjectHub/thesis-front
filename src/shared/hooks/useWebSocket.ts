@@ -16,6 +16,12 @@ export function useWebSocket({
   const [isConnected, setIsConnected] = useState(false)
   const [lastMessage, setLastMessage] = useState<any>(null)
   const wsRef = useRef<WebSocket | null>(null)
+  const onMessageRef = useRef(onMessage)
+  const onErrorRef = useRef(onError)
+
+  // Keep refs current without triggering reconnects
+  useEffect(() => { onMessageRef.current = onMessage }, [onMessage])
+  useEffect(() => { onErrorRef.current = onError }, [onError])
 
   useEffect(() => {
     if (!enabled || !topic) {
@@ -24,7 +30,7 @@ export function useWebSocket({
 
     const wsBaseUrl = import.meta.env.VITE_WS_URL
     let wsUrl: string
-    
+
     if (wsBaseUrl) {
       wsUrl = `${wsBaseUrl}/ws?topic=${encodeURIComponent(topic)}`
     } else { // фолбек на текущий хост
@@ -32,7 +38,7 @@ export function useWebSocket({
       const host = window.location.hostname
       wsUrl = `${protocol}//${host}:3001/ws?topic=${encodeURIComponent(topic)}`
     }
-    
+
     console.log('🔌 Connecting to WebSocket:', wsUrl)
 
     const ws = new WebSocket(wsUrl)
@@ -46,7 +52,7 @@ export function useWebSocket({
       try {
         const data = JSON.parse(event.data)
         setLastMessage(data)
-        onMessage?.(data)
+        onMessageRef.current?.(data)
       } catch (error) {
         console.error('Error parsing WebSocket message:', error)
       }
@@ -54,7 +60,7 @@ export function useWebSocket({
 
     ws.onerror = (error) => {
       console.error('❌ WebSocket error:', error)
-      onError?.(error)
+      onErrorRef.current?.(error)
     }
 
     ws.onclose = (event) => {
@@ -71,7 +77,7 @@ export function useWebSocket({
       ws.close()
       wsRef.current = null
     }
-  }, [topic, enabled, onMessage, onError])
+  }, [topic, enabled])
 
   return {
     isConnected,

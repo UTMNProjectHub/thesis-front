@@ -1,5 +1,5 @@
 import { DialogTrigger } from '@radix-ui/react-dialog'
-import { useCallback, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -32,7 +32,7 @@ import {
 } from '@/shared/ui/select'
 import { Textarea } from '@/shared/ui/textarea'
 import { Checkbox } from '@/shared/ui/checkbox'
-import { useWebSocket } from '@/shared/hooks/useWebSocket'
+import { useUserSocket } from '@/app/providers/UserSocketProvider'
 import { generateQuiz, useGenerationFiles  } from '@/features/generation'
 import { useTheme } from '@/features/theme-selection'
 
@@ -111,25 +111,19 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
     },
   })
 
-  const handleWebSocketMessage = useCallback(
-    (data: any) => {
-      if (data.status === 'SUCCESS') {
-        setIsGenerating(false)
-        setIsOpen(false)
-        props.onSuccess?.(data.quizId)
-      } else if (data.status === 'FAILED') {
-        setIsGenerating(false)
-        console.error('Quiz generation failed:', data.error)
-      }
-    },
-    [props.onSuccess],
-  )
+  const { isConnected, lastMessage } = useUserSocket()
 
-  const { isConnected } = useWebSocket({
-    topic: quizId ? `quiz.${quizId}.generation` : null,
-    enabled: isGenerating && !!quizId,
-    onMessage: handleWebSocketMessage,
-  })
+  useEffect(() => {
+    if (!isGenerating || !quizId || !lastMessage) return
+    if (lastMessage.quizId !== quizId) return
+    if (lastMessage.status === 'SUCCESS') {
+      setIsGenerating(false)
+      setIsOpen(false)
+      props.onSuccess?.(lastMessage.quizId)
+    } else if (lastMessage.status === 'FAILED') {
+      setIsGenerating(false)
+    }
+  }, [lastMessage, quizId, isGenerating])
 
   const onSubmit = async (data: QuizGenerationForm) => {
     if (selectedFiles.length === 0) {
