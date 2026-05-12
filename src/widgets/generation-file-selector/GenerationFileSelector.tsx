@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { BookOpen, File, FolderOpen, Upload } from 'lucide-react'
 import { uploadFileToTheme } from '@/entities/theme'
-import { uploadFileToSubject, useThemeFiles, useSubjectFiles, subjectKeys } from '@/entities/subject'
+import {
+  uploadFileToSubject,
+  useThemeFiles,
+  useSubjectFiles,
+  subjectKeys,
+} from '@/entities/subject'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import {
@@ -18,6 +23,14 @@ import { useGenerationFiles } from '@/features/generation'
 import { cn } from '@/shared/lib/utils'
 import { Badge } from '@/shared/ui/badge'
 import { useQueryClient } from '@tanstack/react-query'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from '@/shared/ui/context-menu'
+import { deleteFile } from '@/entities/file/api/api'
+import { toast } from 'sonner'
 
 interface FileItem {
   id: string
@@ -36,14 +49,18 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
   const [uploading, setUploading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
-  const [selectedUploadTarget, setSelectedUploadTarget] = useState<'theme' | 'subject' | null>(null)
+  const [selectedUploadTarget, setSelectedUploadTarget] = useState<
+    'theme' | 'subject' | null
+  >(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { current: currentTheme } = useTheme()
   const { current: currentSubject } = useSubject()
-  const { selectedFiles, setSelectedFiles } = useGenerationFiles()
+  const [selectedFiles, setSelectedFiles] = useState<Array<string>>([])
   const queryClient = useQueryClient()
 
-  const { data: themeFilesRaw = [], isLoading: themeLoading } = useThemeFiles(currentTheme?.id)
+  const { data: themeFilesRaw = [], isLoading: themeLoading } = useThemeFiles(
+    currentTheme?.id,
+  )
   const { data: subjectFilesRaw = [] } = useSubjectFiles(currentSubject?.id)
 
   const files: Array<FileItem> = [
@@ -54,11 +71,15 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
   // Auto-select all files when first loaded
   const initializedRef = useRef(false)
   useEffect(() => {
-    if (!initializedRef.current && files.length > 0 && selectedFiles.length === 0) {
+    if (
+      !initializedRef.current &&
+      files.length > 0 &&
+      selectedFiles.length === 0
+    ) {
       initializedRef.current = true
       setSelectedFiles(files.map((f) => f.id))
     }
-  }, [files.length])
+  }, [files.length, selectedFiles.length])
 
   const filteredFiles = files.filter((file) =>
     file.name.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -76,7 +97,29 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
     setDialogOpen(true)
   }
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileDeletion = (file: FileItem) => {
+    deleteFile(file.id)
+      .then(() => {
+        toast.success('Файл успешно удалён!')
+        setSelectedFiles((prev) => prev.filter((id) => id !== file.id))
+        if (file.type === 'theme' && currentTheme) {
+          queryClient.invalidateQueries({
+            queryKey: subjectKeys.themeFiles(currentTheme.id),
+          })
+        } else if (file.type === 'subject' && currentSubject) {
+          queryClient.invalidateQueries({
+            queryKey: subjectKeys.files(currentSubject.id),
+          })
+        }
+      })
+      .catch(() => {
+        toast.error('Возникла ошибка при удалении файла. Пичалько :(')
+      })
+  }
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0]
     if (!file || !selectedUploadTarget) {
       return
@@ -89,10 +132,14 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
     try {
       if (selectedUploadTarget === 'theme' && currentTheme) {
         await uploadFileToTheme(currentTheme.id, file)
-        queryClient.invalidateQueries({ queryKey: subjectKeys.themeFiles(currentTheme.id) })
+        queryClient.invalidateQueries({
+          queryKey: subjectKeys.themeFiles(currentTheme.id),
+        })
       } else if (selectedUploadTarget === 'subject' && currentSubject) {
         await uploadFileToSubject(currentSubject.id, file)
-        queryClient.invalidateQueries({ queryKey: subjectKeys.files(currentSubject.id) })
+        queryClient.invalidateQueries({
+          queryKey: subjectKeys.files(currentSubject.id),
+        })
       }
     } catch (err: any) {
       setError(err.message || 'Ошибка загрузки файла')
@@ -147,6 +194,8 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
     )
   }
 
+  console.log(selectedFiles)
+
   return (
     <div className={cn('flex flex-col py-2', className)}>
       <div className="flex gap-2 mb-2">
@@ -179,7 +228,8 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
             <DialogHeader>
               <DialogTitle>Выберите место загрузки файла</DialogTitle>
               <DialogDescription>
-                Выберите, куда вы хотите загрузить файл: в текущую тему или в предмет
+                Выберите, куда вы хотите загрузить файл: в текущую тему или в
+                предмет
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-3 py-4">
@@ -217,10 +267,7 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
               )}
             </div>
             <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setDialogOpen(false)}
-              >
+              <Button variant="outline" onClick={() => setDialogOpen(false)}>
                 Отмена
               </Button>
             </DialogFooter>
@@ -234,24 +281,33 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
           </div>
         ) : (
           filteredFiles.map((file) => (
-            <Button
-              key={file.id}
-              variant={selectedFiles.includes(file.id) ? 'default' : 'outline'}
-              onClick={() => handleToggleFile(file.id)}
-              className="justify-start"
-            >
-              <File className="h-4 w-4 mr-2" />
-              <span className="truncate flex-1 text-left">{file.name}</span>
-              <Badge
-                variant="secondary"
-                className="ml-2 mr-2"
-              >
-                {file.type === 'theme' ? 'тематический' : 'предметный'}
-              </Badge>
-              {selectedFiles.includes(file.id) && (
-                <span className="ml-auto">✓</span>
-              )}
-            </Button>
+            <ContextMenu key={file.id}>
+              <ContextMenuTrigger>
+                <Button
+                  variant={
+                    selectedFiles.includes(file.id) ? 'default' : 'outline'
+                  }
+                  onClick={() => handleToggleFile(file.id)}
+                  className="justify-start w-full overflow-hidden"
+                >
+                  <File className="h-4 w-4 mr-2 shrink-0" />
+                  <span className="truncate flex-1 text-left min-w-0">
+                    {file.name}
+                  </span>
+                  <Badge variant="secondary" className="ml-2 mr-2">
+                    {file.type === 'theme' ? 'тематический' : 'предметный'}
+                  </Badge>
+                  {selectedFiles.includes(file.id) && (
+                    <span className="ml-auto">✓</span>
+                  )}
+                </Button>
+              </ContextMenuTrigger>
+              <ContextMenuContent>
+                <ContextMenuItem onClick={() => handleFileDeletion(file)}>
+                  Удалить
+                </ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
           ))
         )}
       </div>

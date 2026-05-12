@@ -10,27 +10,22 @@ interface GenerationFilesState {
 }
 
 export const useGenerationFilesStore = create<GenerationFilesState>()(
-  persist(
-    (set) => ({
-      selectedFiles: [],
-      setSelectedFiles: (files) => set({ selectedFiles: files }),
-      addFile: (fileId) =>
-        set((state) => {
-          if (state.selectedFiles.includes(fileId)) {
-            return state
-          }
-          return { selectedFiles: [...state.selectedFiles, fileId] }
-        }),
-      removeFile: (fileId) =>
-        set((state) => ({
-          selectedFiles: state.selectedFiles.filter((id) => id !== fileId),
-        })),
-      clearSelectedFiles: () => set({ selectedFiles: [] }),
-    }),
-    {
-      name: 'generation-files-storage',
-    },
-  ),
+  (set) => ({
+    selectedFiles: [],
+    setSelectedFiles: (files) => set({ selectedFiles: files }),
+    addFile: (fileId) =>
+      set((state) => {
+        if (state.selectedFiles.includes(fileId)) {
+          return state
+        }
+        return { selectedFiles: [...state.selectedFiles, fileId] }
+      }),
+    removeFile: (fileId) =>
+      set((state) => ({
+        selectedFiles: state.selectedFiles.filter((id) => id !== fileId),
+      })),
+    clearSelectedFiles: () => set({ selectedFiles: [] }),
+  }),
 )
 
 export const useGenerationFiles = () => {
@@ -50,4 +45,3 @@ export const useGenerationFiles = () => {
     clearSelectedFiles,
   }
 }
-
