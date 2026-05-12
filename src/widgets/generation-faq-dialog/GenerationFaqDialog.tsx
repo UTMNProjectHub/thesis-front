@@ -42,7 +42,7 @@ interface IGenerationFaqDialog {
 }
 
 const faqGenerationSchema = z.object({
-  summaryId: z.number({ required_error: 'Выберите конспект' }),
+  summaryId: z.number({ error: 'Выберите конспект' }),
   title: z.string().min(1, 'Введите название'),
   numQuestions: z
     .number()
@@ -207,7 +207,9 @@ function GenerationFaqDialog(props: IGenerationFaqDialog) {
               <div className="flex items-center gap-2 mt-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
                 <span>
-                  {isConnected ? 'Генерация FAQ...' : 'Подключение к серверу...'}
+                  {isConnected
+                    ? 'Генерация FAQ...'
+                    : 'Подключение к серверу...'}
                 </span>
               </div>
             ) : (
