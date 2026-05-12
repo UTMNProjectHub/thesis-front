@@ -22,9 +22,10 @@ import { getSummaryLink } from '@/entities/summary/api/api'
 
 interface SummaryListProps {
   className?: string
+  selectedFiles: Array<string>
 }
 
-function SummaryList({ className }: SummaryListProps) {
+function SummaryList({ className, selectedFiles }: SummaryListProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
   const [summaryToDelete, setSummaryToDelete] = useState<Summary | null>(null)
   const { current: currentTheme } = useTheme()
@@ -118,7 +119,7 @@ function SummaryList({ className }: SummaryListProps) {
       <div className={cn('w-full flex flex-col', className)}>
         <div className="p-4 overflow-y-auto min-h-0 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <GenerationSummaryDialog onSuccess={() => refetch()}>
+            <GenerationSummaryDialog onSuccess={() => refetch()} selectedFiles={selectedFiles}>
               <CreateSummaryCard onClick={handleCreateSummary} />
             </GenerationSummaryDialog>
             {summaries.map((summary) => (

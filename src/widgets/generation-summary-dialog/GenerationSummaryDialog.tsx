@@ -22,12 +22,13 @@ import {
 } from '@/shared/ui/field'
 import { Textarea } from '@/shared/ui/textarea'
 import { useUserSocket } from '@/app/providers/UserSocketProvider'
-import { generateSummary, useGenerationFiles  } from '@/features/generation'
+import { generateSummary } from '@/features/generation'
 import { useTheme } from '@/features/theme-selection'
 import { useSubject } from '@/features/subject-selection'
 
 interface IGenerationSummaryDialog {
   children: ReactNode
+  selectedFiles: Array<string>
   onSuccess?: (summaryId: string) => void
 }
 
@@ -40,7 +41,6 @@ type SummaryGenerationForm = z.infer<typeof summaryGenerationSchema>
 function GenerationSummaryDialog(props: IGenerationSummaryDialog) {
   const [summaryId, setSummaryId] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
-  const { selectedFiles } = useGenerationFiles()
   const { current: currentTheme } = useTheme()
   const { current: currentSubject } = useSubject()
   const [isOpen, setIsOpen] = useState(false)
@@ -84,13 +84,13 @@ function GenerationSummaryDialog(props: IGenerationSummaryDialog) {
   }, [lastMessage, summaryId, isGenerating])
 
   const onSubmit = async (data: SummaryGenerationForm) => {
-    if (selectedFiles.length === 0) {
+    if (props.selectedFiles.length === 0) {
       return
     }
 
     generationMutation.mutate({
       ...data,
-      files: selectedFiles,
+      files: props.selectedFiles,
     })
   }
 

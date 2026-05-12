@@ -71,7 +71,7 @@ function Generation() {
         </div>
         <div>
           <h2 className="px-4 text-xl font-semibold">Конспекты: </h2>
-          <SummaryList />
+          <SummaryList selectedFiles={selectedFiles} />
         </div>
       </div>
     </div>
