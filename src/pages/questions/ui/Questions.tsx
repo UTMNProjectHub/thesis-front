@@ -1,19 +1,19 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
+import { useMediaQuery } from 'react-responsive'
 import { useQuizSession } from '../hooks/useQuizSession'
 import { useQuizAnswers } from '../hooks/useQuizAnswers'
 import { useQuizFinish } from '../hooks/useQuizFinish'
 import { QuestionsSidebar } from '../components/QuestionsSidebar'
 import { QuestionRenderer } from '../components/QuestionRenderer'
 import { FinishQuizDialog } from '../components/FinishQuizDialog'
+import { QuestionsMobileSelector } from '../components/QuestionsMobileSelector'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card'
 import { Button } from '@/shared/ui/button'
 import { Badge } from '@/shared/ui/badge'
 import { Separator } from '@/shared/ui/separator'
 import { useQuizQuestions } from '@/entities/quiz'
 import { SessionSelector } from '@/pages/session-selector/ui/SessionSelector'
-import { useMediaQuery } from 'react-responsive'
-import { QuestionsMobileSelector } from '../components/QuestionsMobileSelector'
 
 function Questions() {
   const { id } = useParams({ strict: false })

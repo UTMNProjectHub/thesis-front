@@ -3,6 +3,8 @@ export interface Subject {
   name: string
   shortName: string
   description: string
+  yearStart: number
+  yearEnd: number
 }
 
 export interface Theme {

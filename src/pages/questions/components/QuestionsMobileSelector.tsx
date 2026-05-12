@@ -1,6 +1,6 @@
+import { Check, X } from 'lucide-react'
 import type { Question, SubmitAnswerResponse } from '@/entities/quiz'
 import { Button } from '@/shared/ui/button'
-import { Check, X } from 'lucide-react'
 
 interface QuestionsMobileSelectorProps {
   questions: Array<Question>

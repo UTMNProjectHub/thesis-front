@@ -61,3 +61,36 @@ export const createTheme = async (
 ): Promise<void> => {
   await apiClient.client.post(`/subject/${subjectId}/themes`, data)
 }
+
+export const updateSubject = async (
+  id: number,
+  data: {
+    name?: string
+    shortName?: string
+    yearStart?: number
+    yearEnd?: number
+    description?: string | null
+  },
+): Promise<Subject> => {
+  const response = await apiClient.client.put<Subject>(`/subject/${id}`, data)
+  return response.data
+}
+
+export const deleteSubject = async (id: number): Promise<void> => {
+  await apiClient.client.delete(`/subject/${id}`)
+}
+
+export const updateTheme = async (
+  id: number,
+  data: {
+    name?: string
+    description?: string | null
+  },
+): Promise<Theme> => {
+  const response = await apiClient.client.put<Theme>(`/theme/${id}`, data)
+  return response.data
+}
+
+export const deleteTheme = async (id: number): Promise<void> => {
+  await apiClient.client.delete(`/theme/${id}`)
+}

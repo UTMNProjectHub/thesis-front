@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react'
-import type { ReactNode } from 'react'
 import { toast } from 'sonner'
+import type { ReactNode } from 'react'
 import { useUser } from '@/entities/user'
 import { useWebSocket } from '@/shared/hooks/useWebSocket'
 

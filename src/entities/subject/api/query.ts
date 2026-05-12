@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-import { getSubjects, getSubjectFiles, getThemesBySubjectId } from './api'
-import { getThemeFiles } from '@/entities/theme'
+import { getSubjectFiles, getSubjects, getThemesBySubjectId } from './api'
 import { subjectKeys } from './keys'
+import { getThemeFiles } from '@/entities/theme'
 import apiClient from '@/shared/api/api-client'
 
 export function useSubjects(q?: string) {

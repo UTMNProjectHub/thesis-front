@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import type { Summary } from '@/entities/summary'
 import GenerationSummaryDialog from '@/widgets/generation-summary-dialog/GenerationSummaryDialog'
-import { deleteSummary, useSummariesByTheme, summaryKeys } from '@/entities/summary'
+import { deleteSummary, summaryKeys, useSummariesByTheme } from '@/entities/summary'
 import { useTheme } from '@/features/theme-selection'
 import SummarySmallCard from '@/entities/summary/ui/SummarySmallCard'
 import CreateSummaryCard from '@/entities/summary/ui/CreateSummaryCard'
@@ -18,7 +19,6 @@ import {
 } from '@/shared/ui/dialog'
 import { Button } from '@/shared/ui/button'
 import { getSummaryLink } from '@/entities/summary/api/api'
-import { toast } from 'sonner'
 
 interface SummaryListProps {
   className?: string

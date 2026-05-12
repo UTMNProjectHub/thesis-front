@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { BookOpen, File, FolderOpen, Upload } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { uploadFileToTheme } from '@/entities/theme'
 import {
-  uploadFileToSubject,
-  useThemeFiles,
-  useSubjectFiles,
   subjectKeys,
+  uploadFileToSubject,
+  useSubjectFiles,
+  useThemeFiles,
 } from '@/entities/subject'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
@@ -22,7 +24,6 @@ import { useSubject } from '@/features/subject-selection'
 import { useGenerationFiles } from '@/features/generation'
 import { cn } from '@/shared/lib/utils'
 import { Badge } from '@/shared/ui/badge'
-import { useQueryClient } from '@tanstack/react-query'
 import {
   ContextMenu,
   ContextMenuContent,
@@ -30,7 +31,6 @@ import {
   ContextMenuTrigger,
 } from '@/shared/ui/context-menu'
 import { deleteFile } from '@/entities/file/api/api'
-import { toast } from 'sonner'
 
 interface FileItem {
   id: string

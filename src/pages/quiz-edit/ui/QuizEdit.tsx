@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
 import { Pencil } from 'lucide-react'
+import { toast } from 'sonner'
 import type { Question } from '@/entities/quiz'
 import {
   Card,
@@ -35,7 +36,6 @@ import { useQuiz, useQuizQuestions, useUpdateQuiz } from '@/entities/quiz'
 import { useSubject } from '@/features/subject-selection'
 import { getThemesBySubjectId } from '@/entities/subject'
 import { getQuizMoodleXMLExport } from '@/entities/quiz/api/api'
-import { toast } from 'sonner'
 
 const quizEditSchema = z.object({
   name: z.string().min(1, { message: 'Название обязательно' }),
