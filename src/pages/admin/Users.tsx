@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from '@/shared/ui/dialog'
 import { getUsers, updateUserRole, deleteUser, getRoles } from '@/models/Admin'
-import { Search, Trash2 } from 'lucide-react'
+import { Search, Trash2, UserCog} from 'lucide-react'
 
 interface User {
   id: string
@@ -42,6 +42,9 @@ export default function AdminUsers() {
   const [selectedRole, setSelectedRole] = useState<string>('all')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [userToDelete, setUserToDelete] = useState<User | null>(null)
+  const [roleDialogOpen, setRoleDialogOpen] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [newRoleId, setNewRoleId] = useState<number | undefined>()
 
   const { data: users, isLoading } = useQuery<User[]>({
     queryKey: ['admin', 'users'],
@@ -53,11 +56,15 @@ export default function AdminUsers() {
     queryFn: () => getRoles(),
   })
 
+  const filteredRoles = roles?.filter(role => role.slug !== 'admin') ?? [];
+
   const updateRoleMutation = useMutation({
     mutationFn: ({ userId, roleId }: { userId: string; roleId: number }) =>
       updateUserRole({ userId, roleId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'users'] })
+      setRoleDialogOpen(false)
+      setSelectedUser(null)
     },
   })
 
@@ -99,6 +106,13 @@ export default function AdminUsers() {
     const matchesRole = selectedRole === 'all' || userRoleSlug === selectedRole
     return matchesSearch && matchesRole
   })
+
+  const openRoleDialog = (user: User) => {
+    setSelectedUser(user)
+    const currentRoleId = user.usersToRoles[0]?.role?.id
+    setNewRoleId(currentRoleId)
+    setRoleDialogOpen(true)
+  }
 
   if (isLoading) {
     return (
@@ -165,25 +179,16 @@ export default function AdminUsers() {
                     )}
                   </TableCell>
                   <TableCell className="text-right space-x-2">
-                    {roles && (
-                      <Select
-                        defaultValue={String(userRole?.id)}
-                        onValueChange={(value) =>
-                          updateRoleMutation.mutate({ userId: user.id, roleId: Number(value) })
-                        }
-                      >
-                        <SelectTrigger className="w-[140px] inline-flex">
-                          <SelectValue placeholder="Изменить роль" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {roles.map((role) => (
-                            <SelectItem key={role.id} value={String(role.id)}>
-                              {role.title}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
+                  {/* Кнопка изменения роли */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openRoleDialog(user)}
+                      disabled={userRole?.slug === 'admin'}
+                    >
+                      <UserCog className="h-4 w-4 mr-1" />
+                      Изменить роль
+                    </Button>
                     <Button
                       variant="destructive"
                       size="sm"
@@ -236,6 +241,51 @@ export default function AdminUsers() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Диалог изменения роли */}
+      <Dialog open={roleDialogOpen} onOpenChange={setRoleDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Изменить роль пользователя</DialogTitle>
+            <DialogDescription>
+              Выберите новую роль для пользователя{' '}
+              <span className="font-medium">{selectedUser?.email}</span>.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Select
+              value={String(newRoleId)}
+              onValueChange={(value) => setNewRoleId(Number(value))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Выберите роль" />
+              </SelectTrigger>
+              <SelectContent>
+                {filteredRoles?.map((role) => (
+                  <SelectItem key={role.id} value={String(role.id)}>
+                    {role.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRoleDialogOpen(false)}>
+              Отмена
+            </Button>
+            <Button
+              onClick={() => {
+                if (selectedUser && newRoleId) {
+                  updateRoleMutation.mutate({ userId: selectedUser.id, roleId: newRoleId })
+                }
+              }}
+            >
+              Сохранить
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   )
 }

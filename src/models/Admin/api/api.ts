@@ -42,7 +42,7 @@ export const deleteUser = async (userId: string): Promise<DeleteUserResponse> =>
 
 // ========== ROLES ==========
 export const getRoles = async (): Promise<Role[]> => {
-  const response = await apiClient.client.get<Role[]>('/roles')
+  const response = await apiClient.client.get<Role[]>('/admin/roles')
   return response.data
 }
 
