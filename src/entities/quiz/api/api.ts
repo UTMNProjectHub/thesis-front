@@ -22,6 +22,8 @@ export const getQuizesByThemeId = async (
   const response = await apiClient.client.get<Array<Quiz>>(
     `/theme/${themeId}/quizes`,
   )
+
+  console.log(response)
   return response.data
 }
 

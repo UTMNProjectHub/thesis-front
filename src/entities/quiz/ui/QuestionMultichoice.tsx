@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { Question, SubmitAnswerResponse } from '@/entities/quiz'
 import { Field, FieldGroup, FieldLabel } from '@/shared/ui/field'
 import { Input } from '@/shared/ui/input'
@@ -21,37 +21,27 @@ export function QuestionMultichoice({
   isSubmitting = false,
 }: QuestionMultichoiceProps) {
   const isMultiAnswer = question.multiAnswer === true
-  const [selectedIds, setSelectedIds] = useState<Array<string>>([])
+  const [localSelectedIds, setLocalSelectedIds] = useState<Array<string>>([])
 
-  // Инициализируем выбранные варианты на основе submittedResponse
-  useEffect(() => {
-    if (submittedResponse && 'submittedVariants' in submittedResponse) {
-      const selectedVariantIds = submittedResponse.submittedVariants
-        .map((v) => {
-          // Находим вариант по variantId
-          const variant = variants.find(
-            (variant) =>
-              variant.variantId === v.variantId || 
-              variant.id === v.variantId,
-          )
-          return variant?.id
-        })
+  const submittedSelectedIds = submittedResponse && 'submittedVariants' in submittedResponse
+    ? submittedResponse.submittedVariants
+        .map((v) => variants.find((variant) => variant.variantId === v.variantId || variant.id === v.variantId)?.id)
         .filter((id): id is string => id !== undefined)
-      setSelectedIds(selectedVariantIds)
-    }
-  }, [submittedResponse, variants])
+    : null
+
+  const selectedIds = submittedSelectedIds ?? localSelectedIds
 
   const handleChange = (variantId: string) => {
     if (isSubmitted) return
 
     if (isMultiAnswer) {
-      setSelectedIds((prev) =>
+      setLocalSelectedIds((prev) =>
         prev.includes(variantId)
           ? prev.filter((id) => id !== variantId)
           : [...prev, variantId],
       )
     } else {
-      setSelectedIds([variantId])
+      setLocalSelectedIds([variantId])
     }
   }
 
@@ -71,8 +61,8 @@ export function QuestionMultichoice({
         {variants.map((variant) => {
           const isSelected = selectedIds.includes(variant.id)
           const submitted = response?.submittedVariants.find(
-            (v) => 
-              v.variantId === variant.variantId || 
+            (v) =>
+              v.variantId === variant.variantId ||
               v.variantId === variant.id
           )
           const isCorrect = submitted?.isRight ?? false
@@ -133,4 +123,3 @@ export function QuestionMultichoice({
     </div>
   )
 }
-

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { Question, SubmitAnswerResponse } from '@/entities/quiz'
 import { Field, FieldGroup, FieldLabel } from '@/shared/ui/field'
 import { Input } from '@/shared/ui/input'
@@ -20,29 +20,22 @@ export function QuestionTrueFalse({
   isSubmitted,
   isSubmitting = false,
 }: QuestionTrueFalseProps) {
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [localSelectedId, setLocalSelectedId] = useState<string | null>(null)
 
-  // Инициализируем выбранный вариант на основе submittedResponse
-  useEffect(() => {
-    if (submittedResponse && 'submittedVariants' in submittedResponse) {
-      const firstVariant = submittedResponse.submittedVariants[0]
-      // Находим вариант по variantId
-      const found = variants.find(
-        (v) =>
-          v.variantId === firstVariant.variantId ||
-          v.id === firstVariant.variantId,
-      )
-      if (found) {
-        setSelectedId(found.id)
-      }
-    }
-  }, [submittedResponse, variants])
+  const submittedSelectedId = submittedResponse && 'submittedVariants' in submittedResponse
+    ? (() => {
+        const firstVariant = submittedResponse.submittedVariants[0]
+        return variants.find(
+          (v) => v.variantId === firstVariant.variantId || v.id === firstVariant.variantId,
+        )?.id ?? null
+      })()
+    : null
 
-  console.log(submittedResponse);
+  const selectedId = submittedSelectedId ?? localSelectedId
 
   const handleChange = (variantId: string) => {
     if (isSubmitted) return
-    setSelectedId(variantId)
+    setLocalSelectedId(variantId)
   }
 
   const handleSubmit = () => {
@@ -61,7 +54,7 @@ export function QuestionTrueFalse({
         {variants.map((variant) => {
           const isSelected = selectedId === variant.id
           const submitted = response?.submittedVariants.find(
-            (v) => 
+            (v) =>
               v.variantId === variant.variantId ||
               v.variantId === variant.id,
           )
@@ -113,4 +106,3 @@ export function QuestionTrueFalse({
     </div>
   )
 }
-

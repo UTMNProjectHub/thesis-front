@@ -18,7 +18,14 @@ interface QuizCardProps {
   onResultView?: () => void
 }
 
-function QuizCard({ quiz, onOpen, onEdit, onDelete, onResultView }: QuizCardProps) {
+function QuizCard({
+  quiz,
+  onOpen,
+  onEdit,
+  onDelete,
+  onResultView,
+}: QuizCardProps) {
+  console.log(quiz)
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader>
@@ -28,7 +35,7 @@ function QuizCard({ quiz, onOpen, onEdit, onDelete, onResultView }: QuizCardProp
         </CardDescription>
       </CardHeader>
       <CardContent>
-      <CardAction>
+        <CardAction>
           <div className="flex gap-2">
             {onOpen && (
               <Button
@@ -75,6 +82,14 @@ function QuizCard({ quiz, onOpen, onEdit, onDelete, onResultView }: QuizCardProp
         <div className="flex flex-col gap-2 text-sm text-muted-foreground">
           <div>Тип: {quiz.type}</div>
           <div>Вопросов: {quiz.questionCount}</div>
+          <div>
+            Создан:{' '}
+            {new Date(quiz.createdAt).toLocaleDateString('ru-RU', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })}
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -82,4 +97,3 @@ function QuizCard({ quiz, onOpen, onEdit, onDelete, onResultView }: QuizCardProp
 }
 
 export default QuizCard
-

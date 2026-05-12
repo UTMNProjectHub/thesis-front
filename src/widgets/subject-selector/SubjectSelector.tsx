@@ -1,28 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { PlusCircle } from 'lucide-react'
 import CreateSubjectDialog from './CreateSubjectDialog'
 import type { Subject } from '@/entities/subject'
-import { getSubjects } from '@/entities/subject'
+import { useSubjects } from '@/entities/subject'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { useSubject } from '@/features/subject-selection'
 
 function SubjectSelector() {
-  const [subjects, setSubjects] = useState<Array<Subject>>([])
   const [subjectSelected, setSubjectSelected] = useState<number>(0)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const { setCurrent } = useSubject()
 
-  const loadSubjects = () => {
-    getSubjects(searchQuery || undefined).then((data) => {
-      setSubjects(data)
-    })
-  }
-
-  useEffect(() => {
-    loadSubjects()
-  }, [searchQuery])
+  const { data: subjects = [], refetch } = useSubjects(searchQuery || undefined)
 
   return (
     <div className="flex flex-col">
@@ -45,7 +36,7 @@ function SubjectSelector() {
         </Button>
       </div>
       <div className="flex flex-col gap-2 overflow-x-scroll max-h-[30vh]">
-        {subjects.map((subject) => (
+        {subjects.map((subject: Subject) => (
           <Button
             variant="outline"
             onClick={() => {
@@ -62,7 +53,7 @@ function SubjectSelector() {
         className="max-w-24 mt-2"
         onClick={() => {
           const selectedSubject = subjects.find(
-            (subject) => subject.id === subjectSelected,
+            (subject: Subject) => subject.id === subjectSelected,
           )
           if (selectedSubject) {
             setCurrent(selectedSubject)
@@ -75,7 +66,7 @@ function SubjectSelector() {
       <CreateSubjectDialog
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
-        onSuccess={loadSubjects}
+        onSuccess={() => refetch()}
       />
     </div>
   )

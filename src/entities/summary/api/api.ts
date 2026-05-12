@@ -1,10 +1,18 @@
 import type { Summary } from './dto'
 import apiClient from '@/shared/api/api-client'
 
-export const getSummariesByThemeId = async (themeId: number): Promise<Array<Summary>> => {
+export const getSummariesByThemeId = async (
+  themeId: number,
+): Promise<Array<Summary>> => {
   const response = await apiClient.client.get<Array<Summary>>(
     `/theme/${themeId}/summaries`,
   )
+  return response.data
+}
+
+export const getSummaryLink = async (id: string) => {
+  const response = await apiClient.client.get(`/summaries/${id}`)
+
   return response.data
 }
 

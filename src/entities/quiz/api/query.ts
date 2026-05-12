@@ -1,8 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { getQuestionVariants, getQuizById, getQuizQuestions } from './api'
+import { getQuestionVariants, getQuizById, getQuizQuestions, getQuizesByThemeId } from './api'
 import { quizKeys } from './keys'
 import apiClient from '@/shared/api/api-client'
+
+export function useQuizesByTheme(themeId: number | undefined) {
+  return useQuery({
+    queryKey: quizKeys.byTheme(themeId!),
+    queryFn: () => getQuizesByThemeId(themeId!),
+    enabled: !!themeId && apiClient.isAuthenticated(),
+  })
+}
 
 export function useQuiz(quizId: string) {
   return useQuery({

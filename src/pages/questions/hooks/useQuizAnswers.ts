@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useRef, useState, useMemo } from 'react'
 import { buildSubmittedAnswers } from '../utils/buildSubmittedAnswers'
 import type { AnswerPair, Question, SubmitAnswerResponse } from '@/entities/quiz'
 import { useSessionSubmits } from '@/entities/session'
@@ -11,14 +11,20 @@ export function useQuizAnswers(
 ) {
   const { data: sessionSubmits } = useSessionSubmits(quizId, sessionId)
   const submitMutation = useSubmitAnswer()
-  const [submitted, setSubmitted] = useState<Map<string, SubmitAnswerResponse>>(
-    new Map(),
-  )
 
-  useEffect(() => {
-    if (!sessionId || !sessionSubmits || !questions) return
-    setSubmitted(buildSubmittedAnswers(sessionSubmits, questions))
+  const serverSubmitted = useMemo(() => {
+    if (!sessionId || !sessionSubmits || !questions) return new Map<string, SubmitAnswerResponse>()
+    return buildSubmittedAnswers(sessionSubmits, questions)
   }, [sessionId, sessionSubmits, questions])
+
+  const [submitted, setSubmitted] = useState<Map<string, SubmitAnswerResponse>>(serverSubmitted)
+
+  // Sync state when server data changes without using useEffect
+  const serverRef = useRef(serverSubmitted)
+  if (serverRef.current !== serverSubmitted) {
+    serverRef.current = serverSubmitted
+    setSubmitted(serverSubmitted)
+  }
 
   const submit = async (
     question: Question,

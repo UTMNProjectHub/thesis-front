@@ -1,36 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { CirclePlus } from 'lucide-react'
 import CreateThemeDialog from './CreateThemeDialog'
 import type { Theme } from '@/entities/subject'
-import { getThemesBySubjectId } from '@/entities/subject'
+import { useThemesBySubject } from '@/entities/subject'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { useSubject } from '@/features/subject-selection'
 import { useTheme } from '@/features/theme-selection'
 
 function ThemeSelector() {
-  const [themes, setThemes] = useState<Array<Theme>>([])
   const [themeSelected, setThemeSelected] = useState<number>(0)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const { current: currentSubject } = useSubject()
   const { setCurrent } = useTheme()
 
-  const loadThemes = () => {
-    if (currentSubject) {
-      getThemesBySubjectId(
-          currentSubject.id,
-          searchQuery || undefined,
-        )
-        .then((data) => {
-          setThemes(data)
-        })
-    }
-  }
-
-  useEffect(() => {
-    loadThemes()
-  }, [currentSubject, searchQuery])
+  const { data: themes = [], refetch } = useThemesBySubject(currentSubject?.id, searchQuery || undefined)
 
   return (
     <div className="flex flex-col">
@@ -54,7 +39,7 @@ function ThemeSelector() {
         </Button>
       </div>
       <div className="flex flex-col gap-2 overflow-y-auto max-h-[70vh]">
-        {themes.map((theme) => (
+        {themes.map((theme: Theme) => (
           <Button
             variant="outline"
             onClick={() => {
@@ -67,10 +52,10 @@ function ThemeSelector() {
           </Button>
         ))}
       </div>
-      <Button 
+      <Button
           className="max-w-24 mt-2"
           onClick={() => {
-            const selectedTheme = themes.find(theme => theme.id === themeSelected)
+            const selectedTheme = themes.find((theme: Theme) => theme.id === themeSelected)
             if (selectedTheme) {
               setCurrent(selectedTheme)
             }
@@ -84,7 +69,7 @@ function ThemeSelector() {
           open={isCreateDialogOpen}
           onOpenChange={setIsCreateDialogOpen}
           subjectId={currentSubject.id}
-          onSuccess={loadThemes}
+          onSuccess={() => refetch()}
         />
       )}
     </div>

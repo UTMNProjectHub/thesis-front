@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { BookOpen, File, FolderOpen, Upload } from 'lucide-react'
-import { getThemeFiles, uploadFileToTheme } from '@/entities/theme'
-import { getSubjectFiles, uploadFileToSubject } from '@/entities/subject'
+import { uploadFileToTheme } from '@/entities/theme'
+import { uploadFileToSubject, useThemeFiles, useSubjectFiles, subjectKeys } from '@/entities/subject'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import {
@@ -17,6 +17,7 @@ import { useSubject } from '@/features/subject-selection'
 import { useGenerationFiles } from '@/features/generation'
 import { cn } from '@/shared/lib/utils'
 import { Badge } from '@/shared/ui/badge'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface FileItem {
   id: string
@@ -31,69 +32,33 @@ interface GenerationFileSelectorProps {
 }
 
 function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
-  const [files, setFiles] = useState<Array<FileItem>>([])
-  const [loading, setLoading] = useState<boolean>(false)
-  const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [uploading, setUploading] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [selectedUploadTarget, setSelectedUploadTarget] = useState<'theme' | 'subject' | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { current: currentTheme } = useTheme()
   const { current: currentSubject } = useSubject()
   const { selectedFiles, setSelectedFiles } = useGenerationFiles()
+  const queryClient = useQueryClient()
 
+  const { data: themeFilesRaw = [], isLoading: themeLoading } = useThemeFiles(currentTheme?.id)
+  const { data: subjectFilesRaw = [] } = useSubjectFiles(currentSubject?.id)
+
+  const files: Array<FileItem> = [
+    ...themeFilesRaw.map((f) => ({ ...f, type: 'theme' as const })),
+    ...subjectFilesRaw.map((f) => ({ ...f, type: 'subject' as const })),
+  ]
+
+  // Auto-select all files when first loaded
+  const initializedRef = useRef(false)
   useEffect(() => {
-    if (currentTheme) {
-      setLoading(true)
-      setError(null)
-      
-      const loadFiles = async () => {
-        try {
-          // Загружаем файлы темы
-          const themeFiles = await getThemeFiles(currentTheme.id)
-          const themeFilesWithType = themeFiles.map((file) => ({
-            ...file,
-            type: 'theme' as const,
-          }))
-
-          // Загружаем файлы предмета, если предмет выбран
-          let subjectFilesWithType: Array<FileItem> = []
-          if (currentSubject) {
-            try {
-              const subjectFiles = await getSubjectFiles(currentSubject.id)
-              subjectFilesWithType = subjectFiles.map((file) => ({
-                ...file,
-                type: 'subject' as const,
-              }))
-            } catch (err) {
-              // Игнорируем ошибки загрузки файлов предмета, если они есть
-              console.warn('Не удалось загрузить файлы предмета:', err)
-            }
-          }
-
-          // Объединяем файлы
-          const allFiles = [...themeFilesWithType, ...subjectFilesWithType]
-          setFiles(allFiles)
-          
-          // Выбираем все файлы по умолчанию, если еще ничего не выбрано
-          const allFileIds = allFiles.map((file) => file.id)
-          if (selectedFiles.length === 0) {
-            setSelectedFiles(allFileIds)
-          }
-          setLoading(false)
-        } catch (err: any) {
-          setError(err.message || 'Ошибка загрузки файлов')
-          setLoading(false)
-        }
-      }
-
-      loadFiles()
-    } else {
-      setFiles([])
-      setSelectedFiles([])
+    if (!initializedRef.current && files.length > 0 && selectedFiles.length === 0) {
+      initializedRef.current = true
+      setSelectedFiles(files.map((f) => f.id))
     }
-  }, [currentTheme, currentSubject])
+  }, [files.length])
 
   const filteredFiles = files.filter((file) =>
     file.name.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -124,42 +89,16 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
     try {
       if (selectedUploadTarget === 'theme' && currentTheme) {
         await uploadFileToTheme(currentTheme.id, file)
+        queryClient.invalidateQueries({ queryKey: subjectKeys.themeFiles(currentTheme.id) })
       } else if (selectedUploadTarget === 'subject' && currentSubject) {
         await uploadFileToSubject(currentSubject.id, file)
-      }
-
-      // Перезагружаем все файлы после загрузки
-      if (currentTheme) {
-        const themeFiles = await getThemeFiles(currentTheme.id)
-        const themeFilesWithType = themeFiles.map((file) => ({
-          ...file,
-          type: 'theme' as const,
-        }))
-
-        let subjectFilesWithType: Array<FileItem> = []
-        if (currentSubject) {
-          try {
-            const subjectFiles = await getSubjectFiles(currentSubject.id)
-            subjectFilesWithType = subjectFiles.map((file) => ({
-              ...file,
-              type: 'subject' as const,
-            }))
-          } catch (err) {
-            console.warn('Не удалось загрузить файлы предмета:', err)
-          }
-        }
-
-        const allFiles = [...themeFilesWithType, ...subjectFilesWithType]
-        setFiles(allFiles)
-        const allFileIds = allFiles.map((f) => f.id)
-        setSelectedFiles(allFileIds)
+        queryClient.invalidateQueries({ queryKey: subjectKeys.files(currentSubject.id) })
       }
     } catch (err: any) {
       setError(err.message || 'Ошибка загрузки файла')
     } finally {
       setUploading(false)
       setSelectedUploadTarget(null)
-      // Сбрасываем input
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
@@ -168,7 +107,6 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
 
   const handleTargetSelect = (target: 'theme' | 'subject') => {
     setSelectedUploadTarget(target)
-    // Небольшая задержка для закрытия диалога перед открытием файлового диалога
     setTimeout(() => {
       setDialogOpen(false)
       fileInputRef.current?.click()
@@ -188,7 +126,7 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
     )
   }
 
-  if (loading) {
+  if (themeLoading) {
     return (
       <div className={cn('flex items-center justify-center', className)}>
         <div className="text-muted-foreground">Загрузка файлов...</div>
@@ -304,8 +242,8 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
             >
               <File className="h-4 w-4 mr-2" />
               <span className="truncate flex-1 text-left">{file.name}</span>
-              <Badge 
-                variant="secondary" 
+              <Badge
+                variant="secondary"
                 className="ml-2 mr-2"
               >
                 {file.type === 'theme' ? 'тематический' : 'предметный'}
@@ -327,4 +265,3 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
 }
 
 export default GenerationFileSelector
-

@@ -33,7 +33,7 @@ import {
 import { Textarea } from '@/shared/ui/textarea'
 import { Checkbox } from '@/shared/ui/checkbox'
 import { useUserSocket } from '@/app/providers/UserSocketProvider'
-import { generateQuiz, useGenerationFiles  } from '@/features/generation'
+import { generateQuiz, useGenerationFiles } from '@/features/generation'
 import { useTheme } from '@/features/theme-selection'
 
 const QUESTION_TYPES = [
@@ -152,10 +152,7 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
                   name="difficulty"
                   control={control}
                   render={({ field }) => (
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
+                    <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
                         <SelectValue placeholder="Выберите сложность" />
                       </SelectTrigger>
@@ -235,7 +232,7 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
           </FieldSet>
           <DialogFooter>
             {isGenerating ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mt-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
                 <span>
                   {isConnected
@@ -244,13 +241,8 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
                 </span>
               </div>
             ) : (
-              <Button
-                type="submit"
-                disabled={generationMutation.isPending}
-              >
-                {generationMutation.isPending
-                  ? 'Отправка...'
-                  : 'Создать тест'}
+              <Button type="submit" disabled={generationMutation.isPending}>
+                {generationMutation.isPending ? 'Отправка...' : 'Создать тест'}
               </Button>
             )}
           </DialogFooter>

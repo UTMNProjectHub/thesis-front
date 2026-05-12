@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import type { Quiz } from '@/entities/quiz'
 import GenerationQuizDialog from '@/widgets/generation-quiz-dialog/GenerationQuizDialog'
-import { deleteQuiz, getQuizesByThemeId  } from '@/entities/quiz'
+import { deleteQuiz, getQuizesByThemeId } from '@/entities/quiz'
 import { useTheme } from '@/features/theme-selection'
 import QuizSmallCard from '@/entities/quiz/ui/QuizSmallCard'
 import CreateQuizCard from '@/entities/quiz/ui/CreateQuizCard'
@@ -29,7 +29,7 @@ function QuizList({ className }: QuizListProps) {
   const [quizToDelete, setQuizToDelete] = useState<Quiz | null>(null)
   const { current: currentTheme } = useTheme()
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const loadQuizes = useCallback(() => {
     if (currentTheme) {
@@ -59,13 +59,13 @@ function QuizList({ className }: QuizListProps) {
 
   const handleOpenQuiz = (quiz: Quiz) => {
     navigate({
-        to: `/quiz/${quiz.id}`
+      to: `/quiz/${quiz.id}`,
     })
   }
 
   const handleEditQuiz = (quiz: Quiz) => {
     navigate({
-      to: `/quiz/${quiz.id}/edit`
+      to: `/quiz/${quiz.id}/edit`,
     })
   }
 
@@ -78,28 +78,35 @@ function QuizList({ className }: QuizListProps) {
     navigate({
       to: `/quiz/${quiz.id}/results`,
       search: {
-        isTeacher: true
-      }
+        isTeacher: true,
+      },
     })
   }
 
   const confirmDeleteQuiz = () => {
     if (!quizToDelete) return
 
-    deleteQuiz(quizToDelete.id).then(() => {
-      setQuizes(quizes.filter((q) => q.id !== quizToDelete.id))
-      setDeleteDialogOpen(false)
-      setQuizToDelete(null)
-    }).catch((err: any) => {
-      setError(err.message || 'Ошибка удаления теста')
-      setDeleteDialogOpen(false)
-      setQuizToDelete(null)
-    })
+    deleteQuiz(quizToDelete.id)
+      .then(() => {
+        setQuizes(quizes.filter((q) => q.id !== quizToDelete.id))
+        setDeleteDialogOpen(false)
+        setQuizToDelete(null)
+      })
+      .catch((err: any) => {
+        setError(err.message || 'Ошибка удаления теста')
+        setDeleteDialogOpen(false)
+        setQuizToDelete(null)
+      })
   }
 
   if (!currentTheme) {
     return (
-      <div className={cn('flex items-center justify-center text-muted-foreground', className)}>
+      <div
+        className={cn(
+          'flex items-center justify-center text-muted-foreground',
+          className,
+        )}
+      >
         Выберите тему для отображения квизов
       </div>
     )
@@ -115,7 +122,12 @@ function QuizList({ className }: QuizListProps) {
 
   if (error) {
     return (
-      <div className={cn('flex items-center justify-center text-destructive', className)}>
+      <div
+        className={cn(
+          'flex items-center justify-center text-destructive',
+          className,
+        )}
+      >
         {error}
       </div>
     )
@@ -153,7 +165,8 @@ function QuizList({ className }: QuizListProps) {
           <DialogHeader>
             <DialogTitle>Подтверждение удаления</DialogTitle>
             <DialogDescription>
-              Вы уверены, что хотите удалить тест "{quizToDelete?.name}"? Это действие нельзя отменить.
+              Вы уверены, что хотите удалить тест "{quizToDelete?.name}"? Это
+              действие нельзя отменить.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -166,10 +179,7 @@ function QuizList({ className }: QuizListProps) {
             >
               Отмена
             </Button>
-            <Button
-              variant="destructive"
-              onClick={confirmDeleteQuiz}
-            >
+            <Button variant="destructive" onClick={confirmDeleteQuiz}>
               Удалить
             </Button>
           </DialogFooter>
@@ -180,4 +190,3 @@ function QuizList({ className }: QuizListProps) {
 }
 
 export default QuizList
-

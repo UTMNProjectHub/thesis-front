@@ -17,13 +17,23 @@ interface SummaryCardProps {
   onDelete?: () => void
 }
 
-function SummarySmallCard({ summary, onOpen, onEdit, onDelete }: SummaryCardProps) {
+function SummarySmallCard({
+  summary,
+  onOpen,
+  onEdit,
+  onDelete,
+}: SummaryCardProps) {
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader>
         <CardTitle className="text-lg">{summary.name}</CardTitle>
         <CardDescription className="line-clamp-2">
-          {summary.description}
+          Создан{' '}
+          {new Date(summary.createdAt).toLocaleDateString('ru-RU', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })}
         </CardDescription>
       </CardHeader>
       <CardContent>

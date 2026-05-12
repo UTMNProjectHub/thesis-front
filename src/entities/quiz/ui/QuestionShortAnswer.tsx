@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { Question, SubmitAnswerResponse } from '@/entities/quiz'
 import { Field, FieldLabel } from '@/shared/ui/field'
 import { Input } from '@/shared/ui/input'
@@ -19,22 +19,16 @@ export function QuestionShortAnswer({
   isSubmitted,
   isSubmitting = false,
 }: QuestionShortAnswerProps) {
-  const [answer, setAnswer] = useState('')
+  const [localAnswer, setLocalAnswer] = useState('')
 
-  // Инициализируем ответ на основе submittedResponse
-  useEffect(() => {
-    if (
-      submittedResponse &&
-      'submittedAnswer' in submittedResponse &&
-      submittedResponse.submittedAnswer.answer
-    ) {
-      setAnswer(String(submittedResponse.submittedAnswer.answer))
-    }
-  }, [submittedResponse])
+  const displayAnswer =
+    submittedResponse && 'submittedAnswer' in submittedResponse && submittedResponse.submittedAnswer.answer
+      ? String(submittedResponse.submittedAnswer.answer)
+      : localAnswer
 
   const handleSubmit = () => {
-    if (answer.trim() && !isSubmitted) {
-      onSubmit(answer.trim())
+    if (localAnswer.trim() && !isSubmitted) {
+      onSubmit(localAnswer.trim())
     }
   }
 
@@ -48,8 +42,8 @@ export function QuestionShortAnswer({
         <FieldLabel>Ваш ответ</FieldLabel>
         <Input
           type="text"
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
+          value={displayAnswer}
+          onChange={(e) => setLocalAnswer(e.target.value)}
           disabled={isSubmitted}
           placeholder="Введите ответ"
           className="w-full"
@@ -74,7 +68,7 @@ export function QuestionShortAnswer({
       {!isSubmitted && (
         <button
           onClick={handleSubmit}
-          disabled={!answer.trim() || isSubmitting}
+          disabled={!localAnswer.trim() || isSubmitting}
           className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? 'Отправка...' : 'Отправить ответ'}
@@ -83,4 +77,3 @@ export function QuestionShortAnswer({
     </div>
   )
 }
-

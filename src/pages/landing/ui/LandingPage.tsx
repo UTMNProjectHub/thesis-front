@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   ArrowRight,
   BarChart3,
@@ -24,11 +24,7 @@ import { Card } from '@/shared/ui/card'
 
 function App() {
   const user = useUser()
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    setIsVisible(true)
-  }, [])
+  const [isVisible] = useState(true)
 
   return (
     <div className="min-h-screen bg-white relative">

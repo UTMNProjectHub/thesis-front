@@ -6,6 +6,7 @@ export interface Quiz {
   themeId: number | null
   questionCount: number
   maxSessions: number
+  createdAt: Date
 }
 
 export interface MatchingLeftItem {
@@ -118,7 +119,11 @@ export interface MultichoiceAnswerResponse {
 export interface MatchingAnswerResponse {
   question: Question
   isRight: boolean
-  pairsGraded: Array<{ leftMatching: string; rightMatching: string; isRight: boolean }>
+  pairsGraded: Array<{
+    leftMatching: string
+    rightMatching: string
+    isRight: boolean
+  }>
 }
 
 // Response for shortanswer/essay/numerical questions

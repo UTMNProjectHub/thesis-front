@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
+import { useQueryClient } from '@tanstack/react-query'
 import type { Summary } from '@/entities/summary'
 import GenerationSummaryDialog from '@/widgets/generation-summary-dialog/GenerationSummaryDialog'
-import { deleteSummary, getSummariesByThemeId  } from '@/entities/summary'
+import { deleteSummary, useSummariesByTheme, summaryKeys } from '@/entities/summary'
 import { useTheme } from '@/features/theme-selection'
 import SummarySmallCard from '@/entities/summary/ui/SummarySmallCard'
 import CreateSummaryCard from '@/entities/summary/ui/CreateSummaryCard'
@@ -16,51 +17,37 @@ import {
   DialogTitle,
 } from '@/shared/ui/dialog'
 import { Button } from '@/shared/ui/button'
+import { getSummaryLink } from '@/entities/summary/api/api'
+import { toast } from 'sonner'
 
 interface SummaryListProps {
   className?: string
 }
 
 function SummaryList({ className }: SummaryListProps) {
-  const [summaries, setSummaries] = useState<Array<Summary>>([])
-  const [loading, setLoading] = useState<boolean>(false)
-  const [error, setError] = useState<string | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
   const [summaryToDelete, setSummaryToDelete] = useState<Summary | null>(null)
   const { current: currentTheme } = useTheme()
+  const queryClient = useQueryClient()
 
   const navigate = useNavigate()
 
-  const loadSummaries = useCallback(() => {
-    if (currentTheme) {
-      setLoading(true)
-      setError(null)
-      getSummariesByThemeId(currentTheme.id)
-        .then((data) => {
-          setSummaries(data)
-          setLoading(false)
-        })
-        .catch((err) => {
-          setError(err.message || 'Ошибка загрузки конспектов')
-          setLoading(false)
-        })
-    } else {
-      setSummaries([])
-    }
-  }, [currentTheme])
-
-  useEffect(() => {
-    loadSummaries()
-  }, [loadSummaries])
+  const { data: summaries = [], isLoading, isError, refetch } = useSummariesByTheme(currentTheme?.id)
 
   const handleCreateSummary = () => {
     // Заглушка для будущей функциональности
   }
 
   const handleOpenSummary = (summary: Summary) => {
-    navigate({
-      to: `/summary/${summary.id}`,
-    })
+    getSummaryLink(summary.id)
+      .then((link) => {
+        window.open(link, '_blank')
+      })
+      .catch(() => {
+        toast.error(
+          'Произошла ошибка при получении ссылки на конспект. Пичалько :(',
+        )
+      })
   }
 
   const handleEditSummary = (summary: Summary) => {
@@ -77,26 +64,35 @@ function SummaryList({ className }: SummaryListProps) {
   const confirmDeleteSummary = () => {
     if (!summaryToDelete) return
 
-    deleteSummary(summaryToDelete.id).then(() => {
-      setSummaries(summaries.filter((s) => s.id !== summaryToDelete.id))
-      setDeleteDialogOpen(false)
-      setSummaryToDelete(null)
-    }).catch((err: any) => {
-      setError(err.message || 'Ошибка удаления конспекта')
-      setDeleteDialogOpen(false)
-      setSummaryToDelete(null)
-    })
+    deleteSummary(summaryToDelete.id)
+      .then(() => {
+        setDeleteDialogOpen(false)
+        setSummaryToDelete(null)
+        if (currentTheme) {
+          queryClient.invalidateQueries({ queryKey: summaryKeys.byTheme(currentTheme.id) })
+        }
+      })
+      .catch((err: any) => {
+        console.error(err.message || 'Ошибка удаления конспекта')
+        setDeleteDialogOpen(false)
+        setSummaryToDelete(null)
+      })
   }
 
   if (!currentTheme) {
     return (
-      <div className={cn('flex items-center justify-center text-muted-foreground', className)}>
+      <div
+        className={cn(
+          'flex items-center justify-center text-muted-foreground',
+          className,
+        )}
+      >
         Выберите тему для отображения конспектов
       </div>
     )
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className={cn('flex items-center justify-center', className)}>
         <div className="text-muted-foreground">Загрузка конспектов...</div>
@@ -104,10 +100,15 @@ function SummaryList({ className }: SummaryListProps) {
     )
   }
 
-  if (error) {
+  if (isError) {
     return (
-      <div className={cn('flex items-center justify-center text-destructive', className)}>
-        {error}
+      <div
+        className={cn(
+          'flex items-center justify-center text-destructive',
+          className,
+        )}
+      >
+        Ошибка загрузки конспектов
       </div>
     )
   }
@@ -117,7 +118,7 @@ function SummaryList({ className }: SummaryListProps) {
       <div className={cn('w-full flex flex-col', className)}>
         <div className="p-4 overflow-y-auto min-h-0 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <GenerationSummaryDialog onSuccess={loadSummaries}>
+            <GenerationSummaryDialog onSuccess={() => refetch()}>
               <CreateSummaryCard onClick={handleCreateSummary} />
             </GenerationSummaryDialog>
             {summaries.map((summary) => (
@@ -143,7 +144,8 @@ function SummaryList({ className }: SummaryListProps) {
           <DialogHeader>
             <DialogTitle>Подтверждение удаления</DialogTitle>
             <DialogDescription>
-              Вы уверены, что хотите удалить конспект "{summaryToDelete?.name}"? Это действие нельзя отменить.
+              Вы уверены, что хотите удалить конспект "{summaryToDelete?.name}"?
+              Это действие нельзя отменить.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -156,10 +158,7 @@ function SummaryList({ className }: SummaryListProps) {
             >
               Отмена
             </Button>
-            <Button
-              variant="destructive"
-              onClick={confirmDeleteSummary}
-            >
+            <Button variant="destructive" onClick={confirmDeleteSummary}>
               Удалить
             </Button>
           </DialogFooter>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { Question, SubmitAnswerResponse } from '@/entities/quiz'
 import { Field, FieldLabel } from '@/shared/ui/field'
 import { cn } from '@/shared/lib/utils'
@@ -18,22 +18,16 @@ export function QuestionEssay({
   isSubmitted,
   isSubmitting = false,
 }: QuestionEssayProps) {
-  const [answer, setAnswer] = useState('')
+  const [localAnswer, setLocalAnswer] = useState('')
 
-  // Инициализируем ответ на основе submittedResponse
-  useEffect(() => {
-    if (
-      submittedResponse &&
-      'submittedAnswer' in submittedResponse &&
-      submittedResponse.submittedAnswer.answer
-    ) {
-      setAnswer(String(submittedResponse.submittedAnswer.answer))
-    }
-  }, [submittedResponse])
+  const displayAnswer =
+    submittedResponse && 'submittedAnswer' in submittedResponse && submittedResponse.submittedAnswer.answer
+      ? String(submittedResponse.submittedAnswer.answer)
+      : localAnswer
 
   const handleSubmit = () => {
-    if (answer.trim() && !isSubmitted) {
-      onSubmit(answer.trim())
+    if (localAnswer.trim() && !isSubmitted) {
+      onSubmit(localAnswer.trim())
     }
   }
 
@@ -46,8 +40,8 @@ export function QuestionEssay({
       <Field>
         <FieldLabel>Ваш ответ</FieldLabel>
         <textarea
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
+          value={displayAnswer}
+          onChange={(e) => setLocalAnswer(e.target.value)}
           disabled={isSubmitted}
           placeholder="Введите развернутый ответ"
           rows={6}
@@ -76,7 +70,7 @@ export function QuestionEssay({
       {!isSubmitted && (
         <button
           onClick={handleSubmit}
-          disabled={!answer.trim() || isSubmitting}
+          disabled={!localAnswer.trim() || isSubmitting}
           className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? 'Отправка...' : 'Отправить ответ'}
@@ -85,4 +79,3 @@ export function QuestionEssay({
     </div>
   )
 }
-

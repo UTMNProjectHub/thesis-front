@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { Question, SubmitAnswerResponse } from '@/entities/quiz'
 import { Field, FieldLabel } from '@/shared/ui/field'
 import { Input } from '@/shared/ui/input'
@@ -19,24 +19,16 @@ export function QuestionNumerical({
   isSubmitted,
   isSubmitting = false,
 }: QuestionNumericalProps) {
-  const [answer, setAnswer] = useState('')
+  const [localAnswer, setLocalAnswer] = useState('')
 
-  console.log(submittedResponse);
-
-  // Инициализируем ответ на основе submittedResponse
-  useEffect(() => {
-    if (
-      submittedResponse &&
-      'submittedAnswer' in submittedResponse &&
-      submittedResponse.submittedAnswer.answer
-    ) {
-      setAnswer(String(submittedResponse.submittedAnswer.answer.text))
-    }
-  }, [submittedResponse])
+  const displayAnswer =
+    submittedResponse && 'submittedAnswer' in submittedResponse && submittedResponse.submittedAnswer.answer
+      ? String(submittedResponse.submittedAnswer.answer.text)
+      : localAnswer
 
   const handleSubmit = () => {
-    if (answer.trim() && !isSubmitted) {
-      onSubmit(answer.trim())
+    if (localAnswer.trim() && !isSubmitted) {
+      onSubmit(localAnswer.trim())
     }
   }
 
@@ -44,16 +36,14 @@ export function QuestionNumerical({
     | { isRight: boolean | null; explanation: string | null }
     | undefined
 
-  console.log(submittedResponse);
-
   return (
     <div className="space-y-4">
       <Field>
         <FieldLabel>Ваш ответ</FieldLabel>
         <Input
           type="number"
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
+          value={displayAnswer}
+          onChange={(e) => setLocalAnswer(e.target.value)}
           disabled={isSubmitted}
           placeholder="Введите число"
           className="w-full"
@@ -74,17 +64,17 @@ export function QuestionNumerical({
             <p className="mt-2 text-sm">{response.explanation}</p>
           )}
           {submittedResponse &&
-      'submittedAnswer' in submittedResponse &&
-      submittedResponse.submittedAnswer.answer &&
-      'explanation' in submittedResponse.submittedAnswer && (
-            <p className="mt-2 text-sm">{submittedResponse.submittedAnswer.explanation}</p>
-          )}
+            'submittedAnswer' in submittedResponse &&
+            submittedResponse.submittedAnswer.answer &&
+            'explanation' in submittedResponse.submittedAnswer && (
+              <p className="mt-2 text-sm">{submittedResponse.submittedAnswer.explanation}</p>
+            )}
         </div>
       )}
       {!isSubmitted && (
         <button
           onClick={handleSubmit}
-          disabled={!answer.trim() || isSubmitting}
+          disabled={!localAnswer.trim() || isSubmitting}
           className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? 'Отправка...' : 'Отправить ответ'}
@@ -93,4 +83,3 @@ export function QuestionNumerical({
     </div>
   )
 }
-

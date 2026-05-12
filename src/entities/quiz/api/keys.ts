@@ -1,6 +1,7 @@
 export const quizKeys = {
   all: ['quiz'] as const,
   quiz: (id: string) => [...quizKeys.all, id] as const,
+  byTheme: (themeId: number) => [...quizKeys.all, 'theme', themeId] as const,
   usersSessions: (id: string) =>
     [...quizKeys.all, id, 'usersSessions'] as const,
   questions: (id: string) => [...quizKeys.all, id, 'questions'] as const,
