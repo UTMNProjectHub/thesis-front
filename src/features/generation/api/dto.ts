@@ -33,3 +33,17 @@ export interface GenerateSummaryResponse {
   message: string
   summaryId: string
 }
+
+export interface GenerateFaqRequest {
+  summaryId: number
+  title: string
+  numQuestions: number
+  detailLevel: 'easy' | 'medium' | 'hard'
+  additionalRequirements?: string
+}
+
+export interface GenerateFaqResponse {
+  success: boolean
+  message: string
+  faqId: string
+}

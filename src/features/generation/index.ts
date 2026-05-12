@@ -1,9 +1,11 @@
-export { generateQuiz, generateSummary } from './api/api'
+export { generateQuiz, generateSummary, generateFaq } from './api/api'
 export type {
   GenerateQuizRequest,
   GenerateQuizResponse,
   GenerateSummaryRequest,
   GenerateSummaryResponse,
+  GenerateFaqRequest,
+  GenerateFaqResponse,
 } from './api/dto'
 export {
   useGenerationFilesStore,

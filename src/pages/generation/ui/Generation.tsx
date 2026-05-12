@@ -13,6 +13,7 @@ import { useTheme } from '@/features/theme-selection'
 import QuizList from '@/widgets/quiz-list/QuizList'
 import GenerationFileSelector from '@/widgets/generation-file-selector/GenerationFileSelector'
 import SummaryList from '@/widgets/summary-list/SummaryList'
+import FaqList from '@/widgets/faq-list/FaqList'
 
 function Generation() {
   const [selectedFiles, setSelectedFiles] = useState<Array<string>>([])
@@ -72,6 +73,10 @@ function Generation() {
         <div>
           <h2 className="px-4 text-xl font-semibold">Конспекты: </h2>
           <SummaryList selectedFiles={selectedFiles} />
+        </div>
+        <div>
+          <h2 className="px-4 text-xl font-semibold">FAQ: </h2>
+          <FaqList />
         </div>
       </div>
     </div>
