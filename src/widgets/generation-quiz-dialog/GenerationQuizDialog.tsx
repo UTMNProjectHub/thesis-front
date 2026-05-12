@@ -33,7 +33,7 @@ import {
 import { Textarea } from '@/shared/ui/textarea'
 import { Checkbox } from '@/shared/ui/checkbox'
 import { useUserSocket } from '@/app/providers/UserSocketProvider'
-import { generateQuiz, useGenerationFiles } from '@/features/generation'
+import { generateQuiz } from '@/features/generation'
 import { useTheme } from '@/features/theme-selection'
 
 const QUESTION_TYPES = [
@@ -47,6 +47,7 @@ const QUESTION_TYPES = [
 
 interface IGenerationQuizDialog {
   children: ReactNode
+  selectedFiles: Array<string>
   onSuccess?: (quizId: string) => void
 }
 
@@ -78,7 +79,6 @@ type QuizGenerationForm = z.infer<typeof quizGenerationSchema>
 function GenerationQuizDialog(props: IGenerationQuizDialog) {
   const [quizId, setQuizId] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
-  const { selectedFiles } = useGenerationFiles()
   const { current } = useTheme()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -126,13 +126,13 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
   }, [lastMessage, quizId, isGenerating])
 
   const onSubmit = async (data: QuizGenerationForm) => {
-    if (selectedFiles.length === 0) {
+    if (props.selectedFiles.length === 0) {
       return
     }
 
     generationMutation.mutate({
       ...data,
-      files: selectedFiles,
+      files: props.selectedFiles,
     })
   }
 

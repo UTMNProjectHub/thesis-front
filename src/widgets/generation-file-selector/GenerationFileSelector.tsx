@@ -21,7 +21,6 @@ import {
 } from '@/shared/ui/dialog'
 import { useTheme } from '@/features/theme-selection'
 import { useSubject } from '@/features/subject-selection'
-import { useGenerationFiles } from '@/features/generation'
 import { cn } from '@/shared/lib/utils'
 import { Badge } from '@/shared/ui/badge'
 import {
@@ -42,9 +41,10 @@ interface FileItem {
 
 interface GenerationFileSelectorProps {
   className?: string
+  onSelectionChange?: (files: Array<string>) => void
 }
 
-function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
+function GenerationFileSelector({ className, onSelectionChange }: GenerationFileSelectorProps) {
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [uploading, setUploading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
@@ -52,10 +52,10 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
   const [selectedUploadTarget, setSelectedUploadTarget] = useState<
     'theme' | 'subject' | null
   >(null)
+  const [selectedFiles, setSelectedFiles] = useState<Array<string>>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { current: currentTheme } = useTheme()
   const { current: currentSubject } = useSubject()
-  const [selectedFiles, setSelectedFiles] = useState<Array<string>>([])
   const queryClient = useQueryClient()
 
   const { data: themeFilesRaw = [], isLoading: themeLoading } = useThemeFiles(
@@ -68,18 +68,15 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
     ...subjectFilesRaw.map((f) => ({ ...f, type: 'subject' as const })),
   ]
 
-  // Auto-select all files when first loaded
   const initializedRef = useRef(false)
   useEffect(() => {
-    if (
-      !initializedRef.current &&
-      files.length > 0 &&
-      selectedFiles.length === 0
-    ) {
+    if (!initializedRef.current && files.length > 0) {
       initializedRef.current = true
-      setSelectedFiles(files.map((f) => f.id))
+      const all = files.map((f) => f.id)
+      setSelectedFiles(all)
+      onSelectionChange?.(all)
     }
-  }, [files.length, selectedFiles.length])
+  }, [files.length])
 
   const filteredFiles = files.filter((file) =>
     file.name.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -91,6 +88,7 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
       : [...selectedFiles, fileId]
 
     setSelectedFiles(newSelection)
+    onSelectionChange?.(newSelection)
   }
 
   const handleUploadClick = () => {
@@ -101,7 +99,9 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
     deleteFile(file.id)
       .then(() => {
         toast.success('Файл успешно удалён!')
-        setSelectedFiles((prev) => prev.filter((id) => id !== file.id))
+        const newSelection = selectedFiles.filter((id) => id !== file.id)
+        setSelectedFiles(newSelection)
+        onSelectionChange?.(newSelection)
         if (file.type === 'theme' && currentTheme) {
           queryClient.invalidateQueries({
             queryKey: subjectKeys.themeFiles(currentTheme.id),
@@ -193,8 +193,6 @@ function GenerationFileSelector({ className }: GenerationFileSelectorProps) {
       </div>
     )
   }
-
-  console.log(selectedFiles)
 
   return (
     <div className={cn('flex flex-col py-2', className)}>

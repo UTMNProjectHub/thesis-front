@@ -19,9 +19,10 @@ import { Button } from '@/shared/ui/button'
 
 interface QuizListProps {
   className?: string
+  selectedFiles: Array<string>
 }
 
-function QuizList({ className }: QuizListProps) {
+function QuizList({ className, selectedFiles }: QuizListProps) {
   const [quizes, setQuizes] = useState<Array<Quiz>>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
@@ -138,7 +139,7 @@ function QuizList({ className }: QuizListProps) {
       <div className={cn('w-full flex flex-col', className)}>
         <div className="p-4 overflow-y-auto min-h-0 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <GenerationQuizDialog onSuccess={loadQuizes}>
+            <GenerationQuizDialog onSuccess={loadQuizes} selectedFiles={selectedFiles}>
               <CreateQuizCard onClick={handleCreateQuiz} />
             </GenerationQuizDialog>
             {quizes.map((quiz) => (

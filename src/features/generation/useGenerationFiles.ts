@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 
 interface GenerationFilesState {
   selectedFiles: Array<string>

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import ThemeSelector from '@/widgets/theme-selector/ThemeSelector'
 import SubjectSelector from '@/widgets/subject-selector/SubjectSelector'
 import {
@@ -14,6 +15,7 @@ import GenerationFileSelector from '@/widgets/generation-file-selector/Generatio
 import SummaryList from '@/widgets/summary-list/SummaryList'
 
 function Generation() {
+  const [selectedFiles, setSelectedFiles] = useState<Array<string>>([])
   const { clearCurrent: clearCurrentSubject, current: currentSubject } =
     useSubject()
   const { clearCurrent: clearCurrentTheme, current: currentTheme } = useTheme()
@@ -53,14 +55,19 @@ function Generation() {
         </Breadcrumb>
         {!currentSubject && <SubjectSelector />}
         {currentSubject && !currentTheme && <ThemeSelector />}
-        {currentSubject && currentTheme && <GenerationFileSelector />}
+        {currentSubject && currentTheme && (
+          <GenerationFileSelector
+            key={`${currentTheme.id}-${currentSubject.id}`}
+            onSelectionChange={setSelectedFiles}
+          />
+        )}
       </div>
 
       <Separator orientation="vertical" />
       <div className="flex flex-col w-full py-4 px-2 gap-8">
         <div>
           <h2 className="px-4 text-xl font-semibold">Тесты: </h2>
-          <QuizList />
+          <QuizList selectedFiles={selectedFiles} />
         </div>
         <div>
           <h2 className="px-4 text-xl font-semibold">Конспекты: </h2>
