@@ -1,6 +1,7 @@
 export interface GenerateQuizRequest {
   files: Array<string>
   themeId: number
+  summaryId?: string
   difficulty: 'easy' | 'medium' | 'hard'
   question_count: number
   question_types: Array<

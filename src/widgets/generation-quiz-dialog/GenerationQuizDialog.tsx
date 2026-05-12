@@ -35,6 +35,7 @@ import { Checkbox } from '@/shared/ui/checkbox'
 import { useUserSocket } from '@/app/providers/UserSocketProvider'
 import { generateQuiz } from '@/features/generation'
 import { useTheme } from '@/features/theme-selection'
+import { useSummariesByTheme } from '@/entities/summary/api/query'
 
 const QUESTION_TYPES = [
   { value: 'multichoice', label: 'Множественный выбор' },
@@ -52,6 +53,7 @@ interface IGenerationQuizDialog {
 }
 
 const quizGenerationSchema = z.object({
+  summaryId: z.string().uuid().optional(),
   difficulty: z.enum(['easy', 'medium', 'hard'], {
     message: 'Выберите сложность',
   }),
@@ -80,6 +82,7 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
   const [quizId, setQuizId] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const { current } = useTheme()
+  const { data: summaries } = useSummariesByTheme(current?.id)
   const [isOpen, setIsOpen] = useState(false)
 
   const {
@@ -90,6 +93,7 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
   } = useForm<QuizGenerationForm>({
     resolver: zodResolver(quizGenerationSchema),
     defaultValues: {
+      summaryId: undefined,
       difficulty: 'medium',
       question_count: 10,
       question_types: [],
@@ -99,7 +103,11 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
 
   const generationMutation = useMutation({
     mutationFn: (data: QuizGenerationForm & { files: Array<string> }) =>
-      generateQuiz({ ...data, themeId: current!.id }),
+      generateQuiz({
+        ...data,
+        themeId: current!.id,
+        summaryId: data.summaryId,
+      }),
     onSuccess: (response: GenerateQuizResponse) => {
       if (response.success) {
         setQuizId(response.quizId)
@@ -219,6 +227,35 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
                   <FieldError>{errors.question_types.message}</FieldError>
                 )}
               </Field>
+              {summaries && summaries.length > 0 && (
+                <Field>
+                  <FieldLabel>Конспект</FieldLabel>
+                  <Controller
+                    name="summaryId"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value ?? 'none'}
+                        onValueChange={(val) =>
+                          field.onChange(val === 'none' ? undefined : val)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Не выбрано" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">Не выбрано</SelectItem>
+                          {summaries.map((s) => (
+                            <SelectItem key={s.id} value={s.id}>
+                              {s.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </Field>
+              )}
               <FieldSeparator />
               <Field>
                 <FieldLabel>Пожелания к тесту</FieldLabel>
