@@ -52,6 +52,7 @@ const faqGenerationSchema = z.object({
     message: 'Выберите уровень детализации',
   }),
   additionalRequirements: z.string().optional(),
+  themeId: z.number(),
 })
 
 type FaqGenerationForm = z.infer<typeof faqGenerationSchema>
@@ -71,10 +72,12 @@ function GenerationFaqDialog(props: IGenerationFaqDialog) {
   } = useForm<FaqGenerationForm>({
     resolver: zodResolver(faqGenerationSchema),
     defaultValues: {
+      summaryId: undefined,
       title: '',
       numQuestions: 10,
       detailLevel: 'medium',
       additionalRequirements: '',
+      themeId: current?.id,
     },
   })
 
