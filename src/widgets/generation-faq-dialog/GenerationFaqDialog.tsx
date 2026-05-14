@@ -126,7 +126,7 @@ function GenerationFaqDialog(props: IGenerationFaqDialog) {
                   control={control}
                   render={({ field }) => (
                     <Select
-                      value={field.value?.toString() ?? ''}
+                      value={field.value.toString()}
                       onValueChange={(val) => field.onChange(Number(val))}
                     >
                       <SelectTrigger>

@@ -25,7 +25,6 @@ import {
 } from '@/shared/ui/table'
 import { useQuiz, useQuizQuestions } from '@/entities/quiz'
 import { useQuizUsersSessions, useSessionSubmits } from '@/entities/session'
-import { SessionStats } from '@/widgets/quiz-session-stats/SessionStats'
 import QuizResultView from '@/widgets/quiz-result-view/QuizResultView'
 
 type QuizResultsRow = QuizUserSession | QuizUserSessionItem
@@ -105,13 +104,16 @@ function QuizResultsTable({ quizId }: QuizResultsTableProps) {
             parentData && isUserSession(parentData) ? parentData.userId : null
           return (
             <div className="flex items-center gap-2">
-              <span>
-                Решено {data.totalSubmits} / {quizInfo?.questionCount}
-              </span>
-              <span>
-                Решено правильно {data.rightAnswers} /{' '}
-                {quizInfo?.questionCount}{' '}
-              </span>
+              <div className="flex flex-col gap-0.5">
+                <span>
+                  Решено {data.totalSubmits} / {quizInfo?.questionCount}
+                </span>
+                <span>
+                  Решено правильно {data.rightAnswers} /{' '}
+                  {quizInfo?.questionCount}{' '}
+                </span>
+              </div>
+
               {userId && (
                 <Button
                   size="sm"
