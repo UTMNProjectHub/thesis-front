@@ -8,6 +8,7 @@ import { QuestionsSidebar } from '../components/QuestionsSidebar'
 import { QuestionRenderer } from '../components/QuestionRenderer'
 import { FinishQuizDialog } from '../components/FinishQuizDialog'
 import { QuestionsMobileSelector } from '../components/QuestionsMobileSelector'
+import { QuestionChat } from '../components/QuestionChat'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card'
 import { Button } from '@/shared/ui/button'
 import { Badge } from '@/shared/ui/badge'
@@ -156,6 +157,16 @@ function Questions() {
                 isSubmitting={answers.isSubmitting}
                 onSubmit={answers.submit}
               />
+              {answers.submitted.has(currentQuestion.id) &&
+                session.selectedId && (
+                  <>
+                    <Separator />
+                    <QuestionChat
+                      questionId={currentQuestion.id}
+                      sessionId={session.selectedId}
+                    />
+                  </>
+                )}
               <Separator />
               <div className="flex justify-between">
                 <Button
