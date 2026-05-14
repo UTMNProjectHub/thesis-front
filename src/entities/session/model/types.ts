@@ -13,16 +13,16 @@ export interface Session {
 export type { SubmittedAnswer as SessionSubmitWithDetails }
 
 export interface QuizUserSessionItem {
-  id: string;
-  timeStart: Date;
-  timeEnd: Date | null;
-  percentSolved: number;
-  percentRight: number;
+  id: string
+  timeStart: Date
+  timeEnd: Date | null
+  rightAnswers: number
+  totalSubmits: number
 }
 
 export interface QuizUserSession {
-  userId: string;
-  fullName: string;
-  email: string;
-  sessions: Array<QuizUserSessionItem>;
+  userId: string
+  fullName: string
+  email: string
+  sessions: Array<QuizUserSessionItem>
 }

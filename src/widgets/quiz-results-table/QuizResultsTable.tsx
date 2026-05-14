@@ -23,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/shared/ui/table'
-import { useQuizQuestions } from '@/entities/quiz'
+import { useQuiz, useQuizQuestions } from '@/entities/quiz'
 import { useQuizUsersSessions, useSessionSubmits } from '@/entities/session'
 import { SessionStats } from '@/widgets/quiz-session-stats/SessionStats'
 import QuizResultView from '@/widgets/quiz-result-view/QuizResultView'
@@ -40,6 +40,8 @@ interface QuizResultsTableProps {
 
 function QuizResultsTable({ quizId }: QuizResultsTableProps) {
   const { data: usersSessions } = useQuizUsersSessions(quizId || '')
+  const { data: quizInfo } = useQuiz(quizId)
+
   const [selectedSession, setSelectedSession] =
     useState<QuizUserSessionItem | null>(null)
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
@@ -103,11 +105,13 @@ function QuizResultsTable({ quizId }: QuizResultsTableProps) {
             parentData && isUserSession(parentData) ? parentData.userId : null
           return (
             <div className="flex items-center gap-2">
-              <SessionStats
-                solvedPercent={data.percentSolved}
-                rightPercent={data.percentRight}
-                compact
-              />
+              <span>
+                Решено {data.totalSubmits} / {quizInfo?.questionCount}
+              </span>
+              <span>
+                Решено правильно {data.rightAnswers} /{' '}
+                {quizInfo?.questionCount}{' '}
+              </span>
               {userId && (
                 <Button
                   size="sm"
@@ -123,7 +127,7 @@ function QuizResultsTable({ quizId }: QuizResultsTableProps) {
         },
       }),
     ]
-  }, [])
+  }, [quizInfo])
 
   const table = useReactTable<QuizResultsRow>({
     columns,
