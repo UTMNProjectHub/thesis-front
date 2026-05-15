@@ -67,12 +67,12 @@ function Generation() {
       <Separator orientation="vertical" />
       <div className="flex flex-col w-full py-4 px-2 gap-8">
         <div>
-          <h2 className="px-4 text-xl font-semibold">Тесты: </h2>
-          <QuizList selectedFiles={selectedFiles} />
-        </div>
-        <div>
           <h2 className="px-4 text-xl font-semibold">Лекции: </h2>
           <SummaryList selectedFiles={selectedFiles} />
+        </div>
+        <div>
+          <h2 className="px-4 text-xl font-semibold">Тесты: </h2>
+          <QuizList selectedFiles={selectedFiles} />
         </div>
         <div>
           <h2 className="px-4 text-xl font-semibold">FAQ: </h2>
