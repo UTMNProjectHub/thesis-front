@@ -53,7 +53,7 @@ interface IGenerationQuizDialog {
 }
 
 const quizGenerationSchema = z.object({
-  summaryId: z.number().optional(),
+  summaryId: z.number({ error: 'Выберите лекцию' }),
   difficulty: z.enum(['easy', 'medium', 'hard'], {
     message: 'Выберите сложность',
   }),
@@ -229,35 +229,33 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
                   <FieldError>{errors.question_types.message}</FieldError>
                 )}
               </Field>
-              {summaries && summaries.length > 0 && (
-                <Field>
-                  <FieldLabel>Лекция</FieldLabel>
-                  <Controller
-                    name="summaryId"
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        value={field.value ? field.value.toString() : ''}
-                        onValueChange={(val) => field.onChange(Number(val))}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Выберите лекцию" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {summaries.map((s) => (
-                            <SelectItem key={s.id} value={s.id.toString()}>
-                              {s.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                  {errors.summaryId && (
-                    <FieldError>{errors.summaryId.message}</FieldError>
+              <Field>
+                <FieldLabel>Лекция</FieldLabel>
+                <Controller
+                  name="summaryId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value ? field.value.toString() : ''}
+                      onValueChange={(val) => field.onChange(Number(val))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Выберите лекцию" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {(summaries ?? []).map((s) => (
+                          <SelectItem key={s.id} value={s.id.toString()}>
+                            {s.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   )}
-                </Field>
-              )}
+                />
+                {errors.summaryId && (
+                  <FieldError>{errors.summaryId.message}</FieldError>
+                )}
+              </Field>
               <FieldSeparator />
               <Field>
                 <FieldLabel>Пожелания к тесту</FieldLabel>
