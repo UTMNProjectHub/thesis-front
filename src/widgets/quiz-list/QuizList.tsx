@@ -139,7 +139,10 @@ function QuizList({ className, selectedFiles }: QuizListProps) {
       <div className={cn('w-full flex flex-col', className)}>
         <div className="p-4 overflow-y-auto min-h-0 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <GenerationQuizDialog onSuccess={loadQuizes} selectedFiles={selectedFiles}>
+            <GenerationQuizDialog
+              onSuccess={loadQuizes}
+              selectedFiles={selectedFiles}
+            >
               <CreateQuizCard onClick={handleCreateQuiz} />
             </GenerationQuizDialog>
             {quizes.map((quiz) => (
@@ -153,11 +156,6 @@ function QuizList({ className, selectedFiles }: QuizListProps) {
               />
             ))}
           </div>
-          {quizes.length === 0 && (
-            <div className="flex items-center justify-center h-64 text-muted-foreground">
-              Тесты не найдены
-            </div>
-          )}
         </div>
       </div>
 

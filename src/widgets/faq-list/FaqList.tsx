@@ -2,7 +2,14 @@ import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type { Faq } from '@/entities/faq'
-import { CreateFaqCard, FaqSmallCard, deleteFaq, faqKeys, getFaqLink, useFaqsByTheme } from '@/entities/faq'
+import {
+  CreateFaqCard,
+  FaqSmallCard,
+  deleteFaq,
+  faqKeys,
+  getFaqLink,
+  useFaqsByTheme,
+} from '@/entities/faq'
 import GenerationFaqDialog from '@/widgets/generation-faq-dialog/GenerationFaqDialog'
 import { useTheme } from '@/features/theme-selection'
 import { cn } from '@/shared/lib/utils'
@@ -26,7 +33,12 @@ function FaqList({ className }: FaqListProps) {
   const { current: currentTheme } = useTheme()
   const queryClient = useQueryClient()
 
-  const { data: faqs = [], isLoading, isError, refetch } = useFaqsByTheme(currentTheme?.id)
+  const {
+    data: faqs = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useFaqsByTheme(currentTheme?.id)
 
   const handleOpenFaq = (f: Faq) => {
     getFaqLink(f.id)
@@ -46,7 +58,9 @@ function FaqList({ className }: FaqListProps) {
         setDeleteDialogOpen(false)
         setFaqToDelete(null)
         if (currentTheme) {
-          queryClient.invalidateQueries({ queryKey: faqKeys.byTheme(currentTheme.id) })
+          queryClient.invalidateQueries({
+            queryKey: faqKeys.byTheme(currentTheme.id),
+          })
         }
       })
       .catch(() => {
@@ -58,7 +72,12 @@ function FaqList({ className }: FaqListProps) {
 
   if (!currentTheme) {
     return (
-      <div className={cn('flex items-center justify-center text-muted-foreground', className)}>
+      <div
+        className={cn(
+          'flex items-center justify-center text-muted-foreground',
+          className,
+        )}
+      >
         Выберите тему для отображения FAQ
       </div>
     )
@@ -74,7 +93,12 @@ function FaqList({ className }: FaqListProps) {
 
   if (isError) {
     return (
-      <div className={cn('flex items-center justify-center text-destructive', className)}>
+      <div
+        className={cn(
+          'flex items-center justify-center text-destructive',
+          className,
+        )}
+      >
         Ошибка загрузки FAQ
       </div>
     )
@@ -97,11 +121,6 @@ function FaqList({ className }: FaqListProps) {
               />
             ))}
           </div>
-          {faqs.length === 0 && (
-            <div className="flex items-center justify-center h-64 text-muted-foreground">
-              FAQ не найдены
-            </div>
-          )}
         </div>
       </div>
 
@@ -110,7 +129,8 @@ function FaqList({ className }: FaqListProps) {
           <DialogHeader>
             <DialogTitle>Подтверждение удаления</DialogTitle>
             <DialogDescription>
-              Вы уверены, что хотите удалить этот FAQ? Это действие нельзя отменить.
+              Вы уверены, что хотите удалить этот FAQ? Это действие нельзя
+              отменить.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

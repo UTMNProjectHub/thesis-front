@@ -4,7 +4,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type { Summary } from '@/entities/summary'
 import GenerationSummaryDialog from '@/widgets/generation-summary-dialog/GenerationSummaryDialog'
-import { deleteSummary, summaryKeys, useSummariesByTheme } from '@/entities/summary'
+import {
+  deleteSummary,
+  summaryKeys,
+  useSummariesByTheme,
+} from '@/entities/summary'
 import { useTheme } from '@/features/theme-selection'
 import SummarySmallCard from '@/entities/summary/ui/SummarySmallCard'
 import CreateSummaryCard from '@/entities/summary/ui/CreateSummaryCard'
@@ -33,7 +37,12 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
 
   const navigate = useNavigate()
 
-  const { data: summaries = [], isLoading, isError, refetch } = useSummariesByTheme(currentTheme?.id)
+  const {
+    data: summaries = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useSummariesByTheme(currentTheme?.id)
 
   const handleCreateSummary = () => {
     // Заглушка для будущей функциональности
@@ -70,7 +79,9 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
         setDeleteDialogOpen(false)
         setSummaryToDelete(null)
         if (currentTheme) {
-          queryClient.invalidateQueries({ queryKey: summaryKeys.byTheme(currentTheme.id) })
+          queryClient.invalidateQueries({
+            queryKey: summaryKeys.byTheme(currentTheme.id),
+          })
         }
       })
       .catch((err: any) => {
@@ -119,7 +130,15 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
       <div className={cn('w-full flex flex-col', className)}>
         <div className="p-4 overflow-y-auto min-h-0 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <GenerationSummaryDialog onSuccess={() => refetch()} selectedFiles={selectedFiles}>
+            {summaries.length === 0 && (
+              <div className="flex items-center outline rounded-xl justify-center">
+                Для начала работы с генерацией, начните с лекции
+              </div>
+            )}
+            <GenerationSummaryDialog
+              onSuccess={() => refetch()}
+              selectedFiles={selectedFiles}
+            >
               <CreateSummaryCard onClick={handleCreateSummary} />
             </GenerationSummaryDialog>
             {summaries.map((summary) => (
@@ -132,11 +151,6 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
               />
             ))}
           </div>
-          {summaries.length === 0 && (
-            <div className="flex items-center justify-center h-64 text-muted-foreground">
-              Лекции не найдены
-            </div>
-          )}
         </div>
       </div>
 
