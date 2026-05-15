@@ -71,7 +71,7 @@ function Generation() {
           <QuizList selectedFiles={selectedFiles} />
         </div>
         <div>
-          <h2 className="px-4 text-xl font-semibold">Конспекты: </h2>
+          <h2 className="px-4 text-xl font-semibold">Лекции: </h2>
           <SummaryList selectedFiles={selectedFiles} />
         </div>
         <div>

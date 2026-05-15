@@ -46,7 +46,7 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
       })
       .catch(() => {
         toast.error(
-          'Произошла ошибка при получении ссылки на конспект. Пичалько :(',
+          'Произошла ошибка при получении ссылки на лекцию. Пичалько :(',
         )
       })
   }
@@ -74,7 +74,7 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
         }
       })
       .catch((err: any) => {
-        console.error(err.message || 'Ошибка удаления конспекта')
+        console.error(err.message || 'Ошибка удаления лекции')
         setDeleteDialogOpen(false)
         setSummaryToDelete(null)
       })
@@ -88,7 +88,7 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
           className,
         )}
       >
-        Выберите тему для отображения конспектов
+        Выберите тему для отображения лекций
       </div>
     )
   }
@@ -96,7 +96,7 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
   if (isLoading) {
     return (
       <div className={cn('flex items-center justify-center', className)}>
-        <div className="text-muted-foreground">Загрузка конспектов...</div>
+        <div className="text-muted-foreground">Загрузка лекций...</div>
       </div>
     )
   }
@@ -109,7 +109,7 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
           className,
         )}
       >
-        Ошибка загрузки конспектов
+        Ошибка загрузки лекций
       </div>
     )
   }
@@ -134,7 +134,7 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
           </div>
           {summaries.length === 0 && (
             <div className="flex items-center justify-center h-64 text-muted-foreground">
-              Конспекты не найдены
+              Лекции не найдены
             </div>
           )}
         </div>
@@ -145,7 +145,7 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
           <DialogHeader>
             <DialogTitle>Подтверждение удаления</DialogTitle>
             <DialogDescription>
-              Вы уверены, что хотите удалить конспект "{summaryToDelete?.name}"?
+              Вы уверены, что хотите удалить лекцию "{summaryToDelete?.name}"?
               Это действие нельзя отменить.
             </DialogDescription>
           </DialogHeader>

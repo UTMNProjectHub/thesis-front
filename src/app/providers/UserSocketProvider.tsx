@@ -21,7 +21,7 @@ export function UserSocketProvider({ children }: { children: ReactNode }) {
       setLastMessage(data)
       if (data.status === 'SUCCESS') {
         if (data.quizId) toast.success('Тест готов!')
-        if (data.summaryId) toast.success('Конспект готов!')
+        if (data.summaryId) toast.success('Текст лекции готов!')
         if (data.faqId) toast.success('FAQ готов!')
       } else if (data.status === 'FAILED') {
         toast.error(`Ошибка генерации: ${data.error ?? 'неизвестная ошибка'}`)

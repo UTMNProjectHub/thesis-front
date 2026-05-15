@@ -44,7 +44,7 @@ function SummarySmallCard({
                 variant="ghost"
                 size="sm"
                 onClick={onOpen}
-                title="Открыть конспект"
+                title="Открыть лекцию"
               >
                 <Eye className="h-4 w-4" />
               </Button>

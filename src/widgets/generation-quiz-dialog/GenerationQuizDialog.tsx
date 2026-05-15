@@ -231,7 +231,7 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
               </Field>
               {summaries && summaries.length > 0 && (
                 <Field>
-                  <FieldLabel>Конспект</FieldLabel>
+                  <FieldLabel>Лекция</FieldLabel>
                   <Controller
                     name="summaryId"
                     control={control}
@@ -241,7 +241,7 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
                         onValueChange={(val) => field.onChange(Number(val))}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Выберите конспект" />
+                          <SelectValue placeholder="Выберите лекцию" />
                         </SelectTrigger>
                         <SelectContent>
                           {summaries.map((s) => (

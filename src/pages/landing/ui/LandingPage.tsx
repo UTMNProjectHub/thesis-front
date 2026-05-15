@@ -66,7 +66,7 @@ function App() {
             </h1>
 
             <p className="text-center text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-14 leading-relaxed">
-              Генерируйте тесты, FAQ и конспекты по любой теме
+              Генерируйте тесты, FAQ и лекции по любой теме
               с помощью ИИ — всё в одном месте.
             </p>
 
@@ -134,7 +134,7 @@ function App() {
                       <div>
                         <div className="text-xs font-semibold text-purple-500 uppercase tracking-wider mb-1">Шаг 2</div>
                         <div className="font-semibold text-gray-900">ИИ генерирует контент</div>
-                        <div className="text-sm text-gray-500 mt-1">Тесты, FAQ и конспекты</div>
+                        <div className="text-sm text-gray-500 mt-1">Тесты, FAQ и лекции</div>
                       </div>
                     </div>
                   </div>
@@ -145,7 +145,7 @@ function App() {
                     <div>
                       <div className="text-xs font-semibold text-purple-500 uppercase tracking-wider mb-1">Шаг 2</div>
                       <div className="font-semibold text-gray-900">ИИ генерирует контент</div>
-                      <div className="text-sm text-gray-500 mt-1">Тесты, FAQ и конспекты</div>
+                      <div className="text-sm text-gray-500 mt-1">Тесты, FAQ и лекции</div>
                     </div>
                   </div>
 
@@ -242,10 +242,10 @@ function App() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    Конспекты по темам
+                    Лекции по темам
                   </h3>
                   <p className="text-gray-500 leading-relaxed">
-                    Получайте структурированные конспекты по указанным темам.
+                    Получайте структурированные тексты лекций по указанным темам.
                     Удобный формат для быстрого повторения материала.
                   </p>
                   <div className="mt-4 flex flex-col gap-2">
@@ -255,7 +255,7 @@ function App() {
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                      Структурированные конспекты
+                      Структурированные лекции
                     </div>
                   </div>
                 </div>
@@ -315,7 +315,7 @@ function App() {
                 <Brain className="w-6 h-6 text-purple-500" />
               </div>
               <div className="text-sm font-medium text-gray-900">ИИ-движок</div>
-              <div className="text-xs text-gray-400 mt-0.5">Тесты, FAQ и конспекты</div>
+              <div className="text-xs text-gray-400 mt-0.5">Тесты, FAQ и лекции</div>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-3">
@@ -346,7 +346,7 @@ function App() {
                 Готовы попробовать?
               </h2>
               <p className="text-lg text-gray-400 max-w-xl mx-auto mb-10">
-                Сгенерируйте тест, FAQ или конспекты по любой теме прямо сейчас.
+                Сгенерируйте тест, FAQ или лекцию по любой теме прямо сейчас.
                 Регистрация занимает меньше минуты.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

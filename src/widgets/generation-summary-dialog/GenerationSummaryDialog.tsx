@@ -99,7 +99,7 @@ function GenerationSummaryDialog(props: IGenerationSummaryDialog) {
       <DialogTrigger>{props.children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Опции для создания конспекта</DialogTitle>
+          <DialogTitle>Опции для создания лекции</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FieldSet>
@@ -107,7 +107,7 @@ function GenerationSummaryDialog(props: IGenerationSummaryDialog) {
               <Field>
                 <FieldLabel>Дополнительные требования</FieldLabel>
                 <Textarea
-                  placeholder="Введите дополнительные требования к конспекту"
+                  placeholder="Введите дополнительные требования к лекции"
                   rows={4}
                   {...register('additional_requirements')}
                 />
@@ -120,7 +120,7 @@ function GenerationSummaryDialog(props: IGenerationSummaryDialog) {
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
                 <span>
                   {isConnected
-                    ? 'Генерация конспекта...'
+                    ? 'Генерация лекции...'
                     : 'Подключение к серверу...'}
                 </span>
               </div>
@@ -131,7 +131,7 @@ function GenerationSummaryDialog(props: IGenerationSummaryDialog) {
               >
                 {generationMutation.isPending
                   ? 'Отправка...'
-                  : 'Создать конспект'}
+                  : 'Создать лекцию'}
               </Button>
             )}
           </DialogFooter>

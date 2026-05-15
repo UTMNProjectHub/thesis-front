@@ -42,7 +42,7 @@ interface IGenerationFaqDialog {
 }
 
 const faqGenerationSchema = z.object({
-  summaryId: z.number({ error: 'Выберите конспект' }),
+  summaryId: z.number({ error: 'Выберите лекцию' }),
   title: z.string().min(1, 'Введите название'),
   numQuestions: z
     .number()
@@ -125,7 +125,7 @@ function GenerationFaqDialog(props: IGenerationFaqDialog) {
           <FieldSet>
             <FieldGroup>
               <Field>
-                <FieldLabel>Конспект</FieldLabel>
+                <FieldLabel>Лекция</FieldLabel>
                 <Controller
                   name="summaryId"
                   control={control}
@@ -135,7 +135,7 @@ function GenerationFaqDialog(props: IGenerationFaqDialog) {
                       onValueChange={(val) => field.onChange(Number(val))}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Выберите конспект" />
+                        <SelectValue placeholder="Выберите лекцию" />
                       </SelectTrigger>
                       <SelectContent>
                         {summaries.map((s) => (
