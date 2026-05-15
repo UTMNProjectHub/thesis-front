@@ -17,7 +17,7 @@ export const fetchChatMessages = async (
   questionId: string,
   sessionId: string,
 ): Promise<ChatHistory> => {
-  const response = await apiClient.client.get<ChatHistory>('/questions/chat', {
+  const response = await apiClient.client.get<ChatHistory>('/questions-chat', {
     params: { questionId, sessionId },
   })
   return response.data
@@ -28,5 +28,5 @@ export const sendChatMessage = async (body: {
   sessionId: string
   text: string
 }): Promise<void> => {
-  await apiClient.client.post('/questions/chat', body)
+  await apiClient.client.post('/questions-chat', body)
 }
