@@ -53,7 +53,7 @@ interface IGenerationQuizDialog {
 }
 
 const quizGenerationSchema = z.object({
-  summaryId: z.string().uuid().optional(),
+  summaryId: z.number().optional(),
   difficulty: z.enum(['easy', 'medium', 'hard'], {
     message: 'Выберите сложность',
   }),
@@ -137,6 +137,8 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
     if (props.selectedFiles.length === 0) {
       return
     }
+
+    console.log(data)
 
     generationMutation.mutate({
       ...data,
@@ -235,18 +237,15 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
                     control={control}
                     render={({ field }) => (
                       <Select
-                        value={field.value ?? 'none'}
-                        onValueChange={(val) =>
-                          field.onChange(val === 'none' ? undefined : val)
-                        }
+                        value={field.value ? field.value.toString() : ''}
+                        onValueChange={(val) => field.onChange(Number(val))}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Не выбрано" />
+                          <SelectValue placeholder="Выберите конспект" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="none">Не выбрано</SelectItem>
                           {summaries.map((s) => (
-                            <SelectItem key={s.id} value={s.id}>
+                            <SelectItem key={s.id} value={s.id.toString()}>
                               {s.name}
                             </SelectItem>
                           ))}
@@ -254,6 +253,9 @@ function GenerationQuizDialog(props: IGenerationQuizDialog) {
                       </Select>
                     )}
                   />
+                  {errors.summaryId && (
+                    <FieldError>{errors.summaryId.message}</FieldError>
+                  )}
                 </Field>
               )}
               <FieldSeparator />
