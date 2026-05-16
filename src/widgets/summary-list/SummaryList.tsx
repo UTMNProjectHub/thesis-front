@@ -35,8 +35,6 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
   const { current: currentTheme } = useTheme()
   const queryClient = useQueryClient()
 
-  const navigate = useNavigate()
-
   const {
     data: summaries = [],
     isLoading,

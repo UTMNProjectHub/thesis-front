@@ -4,4 +4,5 @@ export interface Faq {
   difficultyLevel: string
   num_questions: number
   summaryId: number | null
+  createdAt: Date
 }

@@ -29,7 +29,17 @@ function FaqSmallCard({ faq, onOpen, onDelete }: FaqCardProps) {
         <CardTitle className="text-lg">FAQ</CardTitle>
         <CardDescription>
           {DIFFICULTY_LABELS[faq.difficultyLevel] ?? faq.difficultyLevel} ·{' '}
-          {faq.num_questions} вопросов
+          {faq.num_questions} вопросов ·
+          {` сгенерирован ${new Date(faq.createdAt).toLocaleDateString(
+            'ru-RU',
+            {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            },
+          )}`}
         </CardDescription>
       </CardHeader>
       <CardContent>
