@@ -146,7 +146,9 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
                 key={summary.id}
                 summary={summary}
                 onOpen={() => handleOpenSummary(summary)}
-                onEdit={() => handleEditSummary(summary)}
+                onEdit={() => {
+                  toast.info('Редактирование лекций еще не разработано.')
+                }}
                 onDelete={() => handleDeleteSummary(summary)}
               />
             ))}
