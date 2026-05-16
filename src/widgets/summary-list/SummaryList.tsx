@@ -60,12 +60,6 @@ function SummaryList({ className, selectedFiles }: SummaryListProps) {
       })
   }
 
-  const handleEditSummary = (summary: Summary) => {
-    navigate({
-      to: `/summary/${summary.id}/edit`,
-    })
-  }
-
   const handleDeleteSummary = (summary: Summary) => {
     setSummaryToDelete(summary)
     setDeleteDialogOpen(true)
